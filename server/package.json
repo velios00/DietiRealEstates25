@@ -1,0 +1,28 @@
+{
+  "name": "dietirealestates25",
+  "version": "1.0.0",
+  "description": "an ingsw project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velios00/DietiRealEstates25.git"
+  },
+  "author": "Simone Veniero, Simone Iavarone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/velios00/DietiRealEstates25/issues"
+  },
+  "homepage": "https://github.com/velios00/DietiRealEstates25#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7"
+  }
+}
