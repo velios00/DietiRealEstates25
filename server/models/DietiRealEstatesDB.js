@@ -8,11 +8,12 @@ import { createModel as createOffertaModel } from "./Offerta.js";
 import { createModel as createRecensioneAgenteModel } from "./RecensioneAgente.js";
 import { createModel as createUtenteModel } from "./Utente.js";
 
-import dotenv from 'dotenv/config.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
-export const database = new Sequelize({
-    storage: process.env.DB_CONNECTION_URI,
+export const database = new Sequelize(process.env.DB_CONNECTION_URI, {
     dialect: process.env.DIALECT,
+    //logging: false
 })
 
 createAdminModel(database);
