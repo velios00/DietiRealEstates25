@@ -2,27 +2,24 @@ import { DataTypes } from "sequelize";
 import { createHash } from "crypto";
 
 export function createModel(database) {
-    database.define("Immobile", {
-        idImmobile: {
+    database.define("Agent", {
+        idAgent: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        descrizione: {
-            type: DataTypes.STRING,
-        },
-        foto: {
-            type: DataTypes.STRING,
-        },
-        prezzo: {
-            type: DataTypes.DECIMAL(10, 2), //occhio qui
-            allowNull: false
-        },
-        dimensioni: {
+        idAgency: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        idAgenzia: {
+        photo: {
+            type: DataTypes.STRING
+        },
+        bio: {
+            type: DataTypes.STRING,
+            defaultValue: "Ancora nessuna biografia !"
+        },
+        idManager: {
             type: DataTypes.INTEGER,
             allowNull: false
         }

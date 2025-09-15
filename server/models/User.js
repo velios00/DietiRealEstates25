@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import { createHash } from "crypto";
 
 export function createModel(database) {
-    database.define("Utente", {
-        idUtente: {
+    database.define("User", {
+        idUser: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
@@ -13,11 +13,11 @@ export function createModel(database) {
             allowNull: false,
             unique: true,
         },
-        nome: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        cognome: {
+        surname: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -29,8 +29,12 @@ export function createModel(database) {
                 this.setDataValue("password", hash.update(value).digest("hex"));
             }
         },
-        indirizzoUtente: {
+        userAddress: {
             type: DataTypes.STRING
+        },
+        role: {
+            allowNull: false,
+            type: DataTypes.ENUM("admin", "user", "manager", "agent")
         }
     } )
 }

@@ -2,36 +2,36 @@ import { DataTypes } from "sequelize";
 import { createHash } from "crypto";
 
 export function createModel(database) {
-    database.define("Offerta", {
-        idOfferta: {
+    database.define("Offer", {
+        idOffer: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        somma: {
+        amount: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        dataOfferta: {
+        dateOffer: {
             type: DataTypes.DATE,
             allowNull: false
         },
-        inSistema: {
+        inSistem: {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
-        idUtente: {
+        idUser: {
             type: DataTypes.INTEGER
         },
-        idAgente: {
+        idAgent: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        idImmobile: {
+        idRealEstate: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        idAgenzia: {
+        idAgency: {
             type: DataTypes.INTEGER,
             allowNull: false
         }

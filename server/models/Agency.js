@@ -2,24 +2,18 @@ import { DataTypes } from "sequelize";
 import { createHash } from "crypto";
 
 export function createModel(database) {
-    database.define("RecensioneAgente", {
-        idRecensione: {
+    database.define("Agency", {
+        idAgency: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        contenuto: {
+        agencyName: {
             type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
         },
-        voto: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        idAgente: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        idUtente: {
+        idManager: {
             type: DataTypes.INTEGER,
             allowNull: false
         }

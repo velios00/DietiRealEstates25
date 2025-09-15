@@ -1,12 +1,11 @@
 import { Sequelize } from "sequelize";
 import { createModel as createAdminModel } from "./Admin.js";
-import { createModel as createAgenteModel } from "./Agente.js";
-import { createModel as createAgenziaModel } from "./Agenzia.js";
-import { createModel as createImmobileModel } from "./Immobile.js";
+import { createModel as createAgentModel } from "./Agent.js";
+import { createModel as createAgencyModel } from "./Agency.js";
+import { createModel as createRealEstateModel } from "./RealEstate.js";
 import { createModel as createManagerModel } from "./Manager.js";
-import { createModel as createOffertaModel } from "./Offerta.js";
-import { createModel as createRecensioneAgenteModel } from "./RecensioneAgente.js";
-import { createModel as createUtenteModel } from "./Utente.js";
+import { createModel as createOfferModel } from "./Offer.js";
+import { createModel as createUserModel } from "./User.js";
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -17,87 +16,96 @@ export const database = new Sequelize(process.env.DB_CONNECTION_URI, {
 })
 
 createAdminModel(database);
-createAgenteModel(database);
-createAgenziaModel(database);
-createImmobileModel(database);
+createAgentModel(database);
+createAgencyModel(database);
+createRealEstateModel(database);
 createManagerModel(database);
-createOffertaModel(database);
-createRecensioneAgenteModel(database);
-createUtenteModel(database);
+createOfferModel(database);
+createUserModel(database);
 
-export const { Admin, Agente, Agenzia, Immobile, Manager, Offerta, RecensioneAgente, Utente } = database.models;
+export const { Admin, Agent, Agency, RealEstate, Manager, Offer, User } = database.models;
 
 //Definizione delle associazioni tra i modelli
-//Manager - Agenzia
-Manager.Agenzia = Manager.hasOne(Agenzia, {
+
+//User - Agent
+User.Agent = User.hasOne(Agent, {
+    foreignKey: { name: "idAgent", allowNull: false }
+})
+
+Agent.User = Agent.belongsTo(User, {
+    foreignKey: { name: "idAgent", allowNull: false }
+});
+
+// User - Manager
+User.Manager = User.hasOne(Manager, {
+    foreignKey: { name: "idManager", allowNull: false }
+});
+Manager.User = Manager.belongsTo(User, {
+    foreignKey: { name: "idManager", allowNull: false }
+});
+
+// User - Admin
+User.Admin = User.hasOne(Admin, {
+    foreignKey: { name: "idAdmin", allowNull: false }
+});
+Admin.User = Admin.belongsTo(User, {
+    foreignKey: { name: "idAdmin", allowNull: false }
+});
+
+//Manager - Agency
+Manager.Agency = Manager.hasOne(Agency, {
     foreignKey: {name: "idManager", allowNull: false}
 });
-Agenzia.Manager = Agenzia.belongsTo(Manager, {
+Agency.Manager = Agency.belongsTo(Manager, {
     foreignKey: {name: "idManager", allowNull: false}
 })
 
-//Manager - Agente
-Manager.Agente = Manager.hasMany(Agente, {
+//Manager - Agent
+Manager.Agent = Manager.hasMany(Agent, {
     foreignKey: {name: "idManager", allowNull: false}
 })
-Agente.Manager = Agente.belongsTo(Manager, {
+Agent.Manager = Agent.belongsTo(Manager, {
     foreignKey: {name: "idManager", allowNull: false}
 })
 
-//Agenzia - Agente
-Agenzia.Agente = Agenzia.hasMany(Agente, {
-    foreignKey: {name: "idAgenzia", allowNull: false}
+//Agency - Agent
+Agency.Agent = Agency.hasMany(Agent, {
+    foreignKey: {name: "idAgency", allowNull: false}
 })
-Agente.Agenzia = Agente.belongsTo(Agenzia, {
-    foreignKey: {name: "idAgenzia", allowNull: false}
-})
-
-//Utente - RecensioneAgente
-Utente.RecensioneAgente = Utente.hasMany(RecensioneAgente, {
-    foreignKey: {name: "idUtente", allowNull: false}
-})
-RecensioneAgente.Utente = RecensioneAgente.belongsTo(Utente, {
-    foreignKey: {name: "idUtente", allowNull: false}
+Agent.Agency = Agent.belongsTo(Agency, {
+    foreignKey: {name: "idAgency", allowNull: false}
 })
 
-//Agente - RecensioneAgente
-Agente.RecensioneAgente = Agente.hasMany(RecensioneAgente, {
-    foreignKey: {name: "idAgente", allowNull: false}
+//Agency = RealEstate
+Agency.RealEstate = Agency.hasMany(RealEstate, {
+    foreignKey: {name: "idAgency", allowNull: false}
 })
-RecensioneAgente.Agente = RecensioneAgente.belongsTo(Agente, {
-    foreignKey: {name: "idAgente", allowNull: false}
-})
-
-//Agenzia = Immobile
-Agenzia.Immobile = Agenzia.hasMany(Immobile, {
-    foreignKey: {name: "idAgenzia", allowNull: false}
-})
-Immobile.Agenzia = Immobile.belongsTo(Agenzia, {
-    foreignKey: {name: "idAgenzia", allowNull: false}
+RealEstate.Agency = RealEstate.belongsTo(Agency, {
+    foreignKey: {name: "idAgency", allowNull: false}
 })
 
-//Utente - Offerta
-Utente.Offerta = Utente.hasMany(Offerta, {
-    foreignKey: {name: "idUtente", allowNull: false}
+//User - Offer
+User.Offer = User.hasMany(Offer, {
+    foreignKey: {name: "idUser", allowNull: false}
 })
-Offerta.Utente = Offerta.belongsTo(Utente, {
-    foreignKey: {name: "idUtente", allowNull: false}
-})
-
-//Immobile - Offerta
-Immobile.Offerta = Immobile.hasMany(Offerta, {
-    foreignKey: {name: "idImmobile", allowNull: false}
-})
-Offerta.Immobile = Offerta.belongsTo(Immobile, {
-    foreignKey: {name: "idImmobile", allowNull: false}
+Offer.User = Offer.belongsTo(User, {
+    foreignKey: {name: "idUser", allowNull: false}
 })
 
-//Agente - Immobile
-Agente.Immobile = Agente.hasMany(Immobile, {
-    foreignKey: {name: "idAgente", allowNull: false}
+//RealEstate - Offer
+RealEstate.Offer = RealEstate.hasMany(Offer, {
+    foreignKey: {name: "idRealEstate", allowNull: false}
 })
-Immobile.Agente = Immobile.belongsTo(Agente, {
-    foreignKey: {name: "idAgente", allowNull: false}
+Offer.RealEstate = Offer.belongsTo(RealEstate, {
+    foreignKey: {name: "idRealEstate", allowNull: false}
+})
+
+//Agent - RealEstate
+Agent.RealEstate = Agent.hasMany(RealEstate, {
+    foreignKey: {name: "idAgent", allowNull: false}
+})
+RealEstate.Agent = RealEstate.belongsTo(Agent, {
+    foreignKey: {name: "idAgent", allowNull: false}
 })
 
 

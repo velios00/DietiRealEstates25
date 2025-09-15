@@ -1,36 +1,37 @@
-import { Admin, Manager, Agente, Utente } from "../models/DietiRealEstatesDB.js"
+import { Admin, Manager, Agent, User } from "../models/DietiRealEstatesDB.js"
 import Jwt from "jsonwebtoken";
 
 
 export class AuthenticationController {
-    //Registrazione di un utente normale
+    //Registrazione di un User normale
     static async registerUser(body) {
-        const { email, username, password, nome, cognome, indirizzo } = body;
+        const { email, username, password, name, surname, address, role } = body;
 
-        const found = await Utente.findOne({ where: { email } });
+        const found = await User.findOne({ where: { email } });
         if (found) {
-            throw new Error("Email esistente");
+            throw new Error("Email already exists");
         }
-        const newUser = await Utente.create({
+        const newUser = await User.create({
             email,
             username,
             password,
-            nome,
-            cognome,
-            indirizzo
+            name,
+            surname,
+            address,
+            role
         });
 
         return newUser;
     }
 
     static async loginUser(body) {
-        const user = new Utente({ email: body.email, password: body.password });
+        const user = new User({ email: body.email, password: body.password });
 
-        console.log("Utente in login", user)
-        const foundUser = await Utente.findOne({ where: { email: user.email, password: user.password } });
+        //console.log("User in login", user)
+        const foundUser = await User.findOne({ where: { email: user.email, password: user.password } });
 
         if(!foundUser) {
-            throw new Error("email o password invalidi");
+            throw new Error("email or password incorrect");
         }
         return foundUser;
     }
@@ -39,8 +40,9 @@ export class AuthenticationController {
         const createdToken = Jwt.sign(
             {
                 user: {
-                    id: user.id,
+                    id: user.idUser,
                     username: user.email,
+                    role: user.role
                 },
             },
             process.env.TOKEN_SECRET,
