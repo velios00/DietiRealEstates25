@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { authenticationRouter } from './routes/authenticationRouter.js';
 import { realEstateRouter } from './routes/realEstateRouter.js';
+import { agencyRouter } from './routes/agencyRouter.js';
 //app.use(cors());
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use(authenticationRouter);
 app.use("/real-estates", realEstateRouter);
+app.use("/agencies", agencyRouter);
 
 
 app.use((err, req, res, next) => {

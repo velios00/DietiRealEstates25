@@ -15,7 +15,7 @@ export function createModel(database) {
         },
         idManager: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         }
     } )
 }
