@@ -12,7 +12,7 @@ export function enforceAuthentication(req, res, next) {
             return res.status(401).json({ message: "Unauthorized" });
         } else {
             req.username = token.user.username;
-            req.userId = token.user.id;
+            req.userId = token.user.idUser;
             req.role = token.user.role;
             next();
         }

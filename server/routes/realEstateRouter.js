@@ -5,9 +5,17 @@ import { enforceAuthentication, authorizeRoles } from '../middleware/authorizati
 export const realEstateRouter = express.Router();
 
 realEstateRouter.post(
-    "/",
+    "/create",
     enforceAuthentication,
-    authorizeRoles("agente", "manager"),
-    RealEstateController.createRealEstate
+    authorizeRoles("agent", "manager"),
+    (req, res, next) => {
+        RealEstateController.createRealEstate(req.body, req.userId)
+            .then((realEstate) => {
+                res.status(201).json(realEstate);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    }
 );
 

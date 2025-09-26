@@ -1,28 +1,22 @@
-import { RealEstate } from "../models/DietiRealEstatesDB.js";
+import { Agent, RealEstate } from "../models/DietiRealEstatesDB.js";
 
 export class RealEstateController {
-    static async createRealEstate(req, res) {
-        try {
-            const { title, description, price, address, idAgency } = req.body;
-
-            //prendiamo id dell'agente loggato dal token
-            const idAgent = req.userId;
-
-            const realEstate = await RealEstate.create({
-                title,
-                description,
-                price,
-                address,
-                idAgency,
-                idAgent
-            });
-
-            return res.status(201).json(realEstate);
-        } catch (err) {
-            return res.status(500).json({
-                message: "Error creating real estate",
-                error: err.message
-            });
+    static async createRealEstate(body, userId) {
+        const agent = await Agent.findOne({ where: { idAgent: userId }});
+        console.log(agent)
+        if(!agent) {
+            throw new Error("Only agents can create real estate listings.");
         }
+        const newRealEstate = await RealEstate.create({
+            title: body.title,
+            description: body.description,
+            price: body.price,
+            address: body.address,
+            size: body.size,
+            idAgency: body.idAgency,
+            idAgent: agent.id
+        })
+
+        return newRealEstate;
     }
 }

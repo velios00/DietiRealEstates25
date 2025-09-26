@@ -40,7 +40,7 @@ export class AuthenticationController {
         const createdToken = Jwt.sign(
             {
                 user: {
-                    id: user.idUser,
+                    idUser: user.idUser,
                     username: user.email,
                     role: user.role
                 },
