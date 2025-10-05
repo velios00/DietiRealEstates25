@@ -8,7 +8,7 @@ managerRouter.post("/create-agent",
     enforceAuthentication,
     authorizeRoles("manager"),
     (req, res) => {
-    ManagerController.createAgent(req.body, req.user.id)
+    ManagerController.createAgent(req.body, req.userId)
         .then((agent) => {
             res.status(201).json(agent);
         })

@@ -5,6 +5,7 @@ import { realEstateRouter } from './routes/realEstateRouter.js';
 import { agencyRouter } from './routes/agencyRouter.js';
 import { userRouter } from './routes/userRouter.js';
 import { managerRouter } from './routes/managerRouter.js';
+import { adminRouter } from './routes/adminRouter.js';
 //app.use(cors());
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/real-estates", realEstateRouter);
 app.use("/agencies", agencyRouter);
 app.use("/users", userRouter);
 app.use("/managers", managerRouter);
+app.use("/admin", adminRouter);
 
 
 app.use((err, req, res, next) => {

@@ -19,3 +19,13 @@ realEstateRouter.post(
     }
 );
 
+realEstateRouter.get("/", (req, res, next) => {
+    RealEstateController.getAllRealEstates()
+        .then((realEstates) => {
+            res.json(realEstates);
+        })
+        .catch((err) => {
+            next(err);
+        });
+})
+
