@@ -6,6 +6,7 @@ import { agencyRouter } from './routes/agencyRouter.js';
 import { userRouter } from './routes/userRouter.js';
 import { managerRouter } from './routes/managerRouter.js';
 import { adminRouter } from './routes/adminRouter.js';
+import { agentRouter } from './routes/agentRouter.js';
 //app.use(cors());
 
 const app = express();
@@ -19,6 +20,7 @@ app.use("/agencies", agencyRouter);
 app.use("/users", userRouter);
 app.use("/managers", managerRouter);
 app.use("/admin", adminRouter);
+app.use("/agents", agentRouter);
 
 
 app.use((err, req, res, next) => {

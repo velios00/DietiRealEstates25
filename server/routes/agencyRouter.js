@@ -5,21 +5,6 @@ import { authorizeRoles } from "../middleware/authorization.js";
 
 export const agencyRouter = express.Router();
 
-agencyRouter.post(
-    "/create",
-    enforceAuthentication,
-    authorizeRoles("admin"),
-    (req, res, next) => {
-        AgencyController.createAgencyWithMgr(req.body)
-            .then((agency) => {
-                res.status(201).json(agency);
-            })
-            .catch((err) => {
-                next(err);
-            })
-    }
-)
-
 agencyRouter.get(
     "/",
     enforceAuthentication,
@@ -43,6 +28,21 @@ agencyRouter.get(
         AgencyController.getAgencyById(req.params.id)
             .then((agency) => {
                 res.status(201).json(agency);
+            })
+            .catch((err) => {
+                next(err);
+            })
+    }
+)
+
+agencyRouter.get(
+    "/:id/real-estates",
+    enforceAuthentication,
+    authorizeRoles("admin", "manager", "agent", "user"),
+    (req, res, next) => {
+        AgencyController.getRealEstatesByAgencyId(req.params.id)
+            .then((realEstates) => {
+                res.status(201).json(realEstates);
             })
             .catch((err) => {
                 next(err);

@@ -1,7 +1,13 @@
-import { Agent } from "../models/DietiRealEstatesDB.js"
+import { Agent, User } from "../models/DietiRealEstatesDB.js"
 
 export class AgentController {
     static async getAllAgents() {
-        return Agent.findAll();
+        //fai una funzione che ritorna tutti gli agenti includento l'utente associato
+        return Agent.findAll({
+            include: [{
+                model: User,
+                attributes: { exclude: ['password'] }
+            }]
+        })
     }
 }

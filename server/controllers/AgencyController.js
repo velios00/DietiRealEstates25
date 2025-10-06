@@ -1,4 +1,4 @@
-import { Agency, User, Manager } from "../models/DietiRealEstatesDB.js"
+import { Agency, User, Manager, RealEstate, Agent } from "../models/DietiRealEstatesDB.js"
 
 export class AgencyController {
 
@@ -24,5 +24,22 @@ export class AgencyController {
                 }]
             }]
         })
+    }
+
+    static async getRealEstatesByAgencyId(id) {
+        const agency = await Agency.findByPk(id, {
+            include: [{
+                model: RealEstate,
+                include: [{
+                    model: Agent,
+                    attributes: ["idAgent"]
+                }]
+            }]
+        })
+        if(!agency) {
+            throw new Error("Agency not found.");
+        }
+
+        return agency;
     }
 }
