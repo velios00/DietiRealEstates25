@@ -21,4 +21,18 @@ export class AgencyController {
             next(err);
         }
     }
+
+    static async getAllAgencies(req, res, next) {
+        try {
+            const agencies = await AgencyService.getAllAgencies(
+                Agency, 
+                Manager,
+                User
+            );
+            const result = AgencyMapper.agencyListToDTO(agencies);
+            res.status(200).json(result);
+        } catch (err) {
+            next(err);
+        }
+    }
 }

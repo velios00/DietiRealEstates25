@@ -1,5 +1,7 @@
 import randomatic from "randomatic";
 
+
+
 export class AgencyService {
     
     static async createAgency(Agency, User, Manager, dto){
@@ -26,10 +28,26 @@ export class AgencyService {
             idManager: newUser.idUser,
             idAgency: newAgency.idAgency
         });
-
+        console.log("password del manager creata:", randomString); //poi bisogna inviarla per email, aggiustare
+        console.log("idAgency del manager creata:", newAgency.idAgency);
         return {
             agency: newAgency,
             manager: newUser
-        }
+        };
+    }
+
+    static async getAllAgencies(Agency, Manager, User){    //manager e' null, aggiustare
+        const agencies = await Agency.findAll({
+            include: [{
+                model: Manager,
+                include: [
+                    {
+                        model: User,
+                    }
+                ]
+            }]
+        });
+        return agencies;
     }
 }
+

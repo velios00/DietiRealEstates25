@@ -8,5 +8,13 @@ export class CreateAgencyDTO {
         this.url = url;
         this.manager = manager;
     }
+}
 
+export class AgencyDTO {
+    constructor({ idAgency, agencyName, idManager, managerName }) {
+        this.idAgency = idAgency;
+        this.agencyName = agencyName;
+        this.idManager = idManager;
+        this.managerName = managerName;
+    }
 }

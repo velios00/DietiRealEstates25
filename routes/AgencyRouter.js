@@ -11,3 +11,8 @@ AgencyRouter.post(
     authorizeRoles("admin"),
     AgencyController.createAgency
 )
+
+AgencyRouter.get(
+    "/",
+    AgencyController.getAllAgencies
+)
