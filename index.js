@@ -13,7 +13,6 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-
 app.use(AuthenticationRouter);
 //app.use("/real-estates", realEstateRouter);
 app.use("/agency", AgencyRouter);

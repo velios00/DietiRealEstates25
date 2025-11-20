@@ -24,10 +24,15 @@ export class UserService {
         return { message: 'Password changed successfully' };
     }
 
-    //funzionalità di debugging
-    static async getAllUsers() {
+    static async getAllUsers(User) {
         return await User.findAll({
             attributes: { exclude: ['password'] } // Exclude password from the result
+        });
+    }
+
+        static async getUserById(User, idUser) {
+        return await User.findByPk(idUser, {
+            attributes: { exclude: ['password'] } // Don't return password
         });
     }
 
