@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { AuthenticationRouter } from './routes/AuthenticationRouter.js';
-//import { realEstateRouter } from './routes/realEstateRouter.js';
+import { EstateRouter } from './routes/EstateRouter.js';
 import { AgencyRouter } from './routes/AgencyRouter.js';
 import { UserRouter } from './routes/userRouter.js';
 //import { managerRouter } from './routes/managerRouter.js';
@@ -15,7 +15,7 @@ const PORT = 3000;
 app.use(express.json());
 
 app.use(AuthenticationRouter);
-//app.use("/real-estates", realEstateRouter);
+app.use("/real-estates", EstateRouter);
 app.use("/agency", AgencyRouter);
 //app.use("/managers", managerRouter);
 //app.use("/admin", adminRouter);

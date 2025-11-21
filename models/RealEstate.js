@@ -22,6 +22,10 @@ export function createModel(database) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        idAgent: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
         idAgency: {
             type: DataTypes.INTEGER,
             allowNull: false
