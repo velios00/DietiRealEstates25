@@ -44,7 +44,7 @@ Manager.User = Manager.belongsTo(User, {
     foreignKey: { name: "idManager", allowNull: false }
 });
 
-// User - Admin
+// User - Admin - da rivedere
 User.Admin = User.hasOne(Admin, {
     foreignKey: { name: "idAdmin", allowNull: false }
 });
@@ -100,15 +100,21 @@ Offer.RealEstate = Offer.belongsTo(RealEstate, {
     foreignKey: {name: "idRealEstate", allowNull: false}
 })
 
-//Agent - RealEstate
+// Agent - RealEstate (
 Agent.RealEstate = Agent.hasMany(RealEstate, {
-    foreignKey: {name: "idAgent", allowNull: false}
+    foreignKey: {name: "idAgent", allowNull: true}
 })
 RealEstate.Agent = RealEstate.belongsTo(Agent, {
-    foreignKey: {name: "idAgent", allowNull: false}
+    foreignKey: {name: "idAgent", allowNull: true}
 })
 
-
+// Manager - RealEstate 
+Manager.RealEstate = Manager.hasMany(RealEstate, {
+    foreignKey: {name: "idManager", allowNull: true}
+})
+RealEstate.Manager = RealEstate.belongsTo(Manager, {
+    foreignKey: {name: "idManager", allowNull: true}
+})
 
 //Sincronizzazione database
 database

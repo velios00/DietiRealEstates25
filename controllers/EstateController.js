@@ -10,6 +10,8 @@ export class EstateController {
             const userId = req.userId;
             const dto = EstateMapper.toCreateEstateDTO(req.body);
 
+            console.log("dto", dto);
+
             const created = EstateService.createEstate(
                 RealEstate,
                 Agent,

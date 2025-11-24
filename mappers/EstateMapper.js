@@ -2,23 +2,26 @@ import { createEstateDTO } from "../DTOs/EstateDTO.js";
 
 export class EstateMapper {
     static toCreateEstateDTO(body) {
-        return new createEstateDTO(
-            body.description,
-            body.photo,
-            body.price,
-            body.size,
-            //body.idAgency
-        );
+        //valutare se inserire validazioni qui per prezzo e dimensioni
+        return new createEstateDTO({
+            description: body.description,
+            photo: body.photo,
+            price: body.price,
+            size: body.size,
+            //idAgency: body.idAgency
+    });
     }
 
     static estateToDTO(estate) {
         return {
-            idEstate: estate.idEstate,
+            idRealEstate: estate.idRealEstate,
             description: estate.description,
             photo: estate.photo,
             price: estate.price,
             size: estate.size,
-            idAgency: estate.idAgency 
+            idAgency: estate.idAgency,
+            createdBy: estate.createdBy,
+            creatorId: estate.createdBy === "agent" ? estate.idAgent : estate.idManager
         }
     }
 }

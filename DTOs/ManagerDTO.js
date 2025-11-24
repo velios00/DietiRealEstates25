@@ -1,5 +1,5 @@
 export class createManagerDTO {
-    constructor({ email, password, name, surname }) {
+    constructor({ email, password, name, surname }) { 
         this.email = email;
         this.password = password;
         this.name = name;
