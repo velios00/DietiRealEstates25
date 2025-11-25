@@ -12,15 +12,16 @@ export class EstateController {
 
             console.log("dto", dto);
 
-            const created = EstateService.createEstate(
+            const created = await EstateService.createEstate(
                 RealEstate,
                 Agent,
                 Manager,
                 userId,
                 dto
             )
+            
             const result = EstateMapper.estateToDTO(created);
-
+            console.log("estate raaaaaaaaaaesult", result)
             res.status(201).json(result);
         } catch (err) {
             next(err);

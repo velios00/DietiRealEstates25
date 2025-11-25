@@ -13,22 +13,17 @@ export class AgentService {
             role: "agent"
         });
 
-        //console.log("User", newUser);
-        //Trova l'agenzia associata al manager
         const manager = await Manager.findByPk(ManagerId);
         if (!manager) {
             throw new Error("Manager not found");
         }
-        //console.log("Manager", manager);
         const agencyId = manager.idAgency;
-        console.log("Agency ID:", agencyId);
-        // devo anche aggiungere idAgency
         const newAgent = await Agent.create({
             idAgent: newUser.idUser,
             idManager: ManagerId,
             idAgency: agencyId
         });
-
+        console.log("Password dell'agente creata", randomPassword)
         return { user: newUser, agent: newAgent };
     }
 }

@@ -1,17 +1,22 @@
 export class EstateService {
     static async createEstate(RealEstate, Agent, Manager, userId, dto) {
         
-        let agencyId = null
-        let userRole = null 
+        let agencyId = null;
+        let idManager = null;
+        let idAgent = null;
+        let createdBy = null;
+
         const manager = await Manager.findByPk(userId);
         if(manager) {
             agencyId = manager.idAgency;
-            userRole = "manager";
+            createdBy = "manager";
+            idManager = manager.idManager;
         } else {
             const agent = await Agent.findByPk(userId);
             if(agent) {
                 agencyId = agent.idAgency;
-                userRole = "agent";
+                createdBy = "agent";
+                idAgent = agent.idAgent;
             }
         }
         if(!agencyId) {
@@ -25,18 +30,12 @@ export class EstateService {
             photo: dto.photo,
             price: dto.price,
             size: dto.size,
-            idAgent: userId,
-            idAgency: agencyId
-        })
-
-        if(userRole === "manager") {
-            newEstate.idManager = userId;
-            newEstate.idAgent = null;
-        } else{
-            newEstate.idAgent = userId;
-            newEstate.idManager = null;
-        }
-
+            idAgent,
+            idAgency: agencyId,
+            createdBy,
+            idManager
+        });
+        console.log("nuova estate creata", newEstate)
         return newEstate;
     }
 }
