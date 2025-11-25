@@ -1,4 +1,5 @@
 import randomatic from "randomatic";
+import { EmailTemplates } from "../utils/mailer.js";
 
 export class AgentService {
     static async createAgent(User, Agent, Manager, ManagerId, dto) {
@@ -23,7 +24,20 @@ export class AgentService {
             idManager: ManagerId,
             idAgency: agencyId
         });
-        console.log("Password dell'agente creata", randomPassword)
+
+        
+        //Invio Email
+        try {
+            await EmailTemplates.sendAgentWelcome(
+                dto.email,
+                dto.name,
+                randomPassword
+            )
+            console.log("Email inviata con successo a:", dto.manager.email);
+        } catch (emailError) {
+            console.error("Errore nell'invio dell'email a:", dto.manager.email, emailError);
+        }
+
         return { user: newUser, agent: newAgent };
     }
 }

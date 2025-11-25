@@ -1,13 +1,14 @@
 import randomatic from "randomatic";
+import { EmailTemplates } from "../utils/mailer.js";
 
 export class AgencyService {
     
     static async createAgency(Agency, User, Manager, dto){
-        const randomString = randomatic("Aa0", 10);
+        const temporaryPassword = randomatic("Aa0", 10);
 
         const newUser = await User.create({
             email: dto.manager.email,
-            password: randomString,
+            password: temporaryPassword,
             name: dto.manager.name,
             surname: dto.manager.surname,
             role: "manager"
@@ -26,8 +27,20 @@ export class AgencyService {
             idManager: newUser.idUser,
             idAgency: newAgency.idAgency
         });
-        console.log("password del manager creata:", randomString); //poi bisogna inviarla per email, aggiustare
-        console.log("idAgency del manager creata:", newAgency.idAgency);
+
+        //Invio Email
+        try {
+            await EmailTemplates.sendManagerWelcome(
+                dto.manager.email,
+                dto.manager.name,
+                dto.agencyName,
+                temporaryPassword
+            );
+            console.log("Email inviata con successo a:", dto.manager.email);
+        } catch (emailError) {
+            console.error("Errore nell'invio dell'email a:", dto.manager.email, emailError);
+        }
+
         return {
             agency: newAgency,
             manager: newUser
