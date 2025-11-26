@@ -13,7 +13,7 @@ export class EstateMapper {
     }
 
     static estateToDTO(estate) {
-        return {
+        return new createEstateDTO({
             idRealEstate: estate.idRealEstate,
             description: estate.description,
             photo: estate.photo,
@@ -22,7 +22,7 @@ export class EstateMapper {
             idAgency: estate.idAgency,
             createdBy: estate.createdBy,
             creatorId: estate.createdBy === "agent" ? estate.idAgent : estate.idManager
-        }
+        })
     }
 
     // Optional: If you want to format delete responses consistently

@@ -49,4 +49,28 @@ export class EstateController {
             next(err);
         }
     }
+
+    static async getEstateById(req, res, next){
+            try{
+                const estateId = parseInt(req.params.id); // Change here
+        
+                if (isNaN(estateId)) {
+                    return res.status(400).json({ error: "Invalid estate ID" });
+                }
+
+                const estate = await EstateService.getEstateById(RealEstate, req.params.id);
+    
+                if (!estate) {
+                     return res.status(404).json({ message: "Estate not found" });
+                    }
+    
+                const result = EstateMapper.estateToDTO(estate);
+                res.status(200).json(result);
+            }
+    
+            catch (err) { 
+                next(err);
+            }
+        }
+
 }

@@ -89,7 +89,7 @@ export class EstateService {
         return { message: "Estate deleted successfully" };
     }
         //W.I.P.
-        static async getEstateById(User, idUser) {
+        static async getEstateById(Estate, idRealEstate) {
             return await Estate.findByPk(idRealEstate);
         }
 }

@@ -17,4 +17,9 @@ EstateRouter.delete(
     enforceAuthentication,
     authorizeRoles("agent", "manager"),
     EstateController.deleteEstate
-);
+); 
+
+EstateRouter.get(
+    "/:id",
+    EstateController.getEstateById
+    );
