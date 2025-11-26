@@ -3,7 +3,6 @@ import { authorizeRoles } from "../middleware/authorization.js";
 import { enforceAuthentication } from "../middleware/authorization.js";
 import { EstateController } from "../controllers/EstateController.js";
 
-
 export const EstateRouter = express.Router();
 
 EstateRouter.post(
@@ -11,5 +10,11 @@ EstateRouter.post(
     enforceAuthentication,
     authorizeRoles("agent", "manager"),
     EstateController.createEstate
-)
+);
 
+EstateRouter.delete(
+    "/:id",
+    enforceAuthentication,
+    authorizeRoles("agent", "manager"),
+    EstateController.deleteEstate
+);

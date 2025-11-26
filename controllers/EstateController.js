@@ -2,7 +2,6 @@ import { EstateMapper } from "../mappers/EstateMapper.js";
 import { EstateService } from "../services/EstateService.js";
 import { RealEstate, Manager, Agent } from "../models/DietiRealEstatesDB.js";
 
-
 export class EstateController {
     static async createEstate(req, res, next) {
         try {
@@ -23,6 +22,29 @@ export class EstateController {
             const result = EstateMapper.estateToDTO(created);
             console.log("estate raaaaaaaaaaesult", result)
             res.status(201).json(result);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    static async deleteEstate(req, res, next) {
+        try {
+            const userId = req.userId;
+            const estateId = parseInt(req.params.id);
+
+            if (isNaN(estateId)) {
+                return res.status(400).json({ error: "Invalid estate ID" });
+            }
+
+            await EstateService.deleteEstate(
+                RealEstate,
+                Agent,
+                Manager,
+                userId,
+                estateId
+            );
+
+            res.status(200).json({ message: "Estate deleted successfully" });
         } catch (err) {
             next(err);
         }
