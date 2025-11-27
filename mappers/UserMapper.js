@@ -12,6 +12,8 @@ export class UserMapper {
         });
     }
 
+
+
 static toUserDTOList(users) {return users.map(user => UserMapper.toUserDTO(user));}
 
 }

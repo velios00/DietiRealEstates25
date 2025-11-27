@@ -1,13 +1,15 @@
 import { UserService } from "../services/UserService.js";
 import { UserMapper } from "../mappers/UserMapper.js";
 import { ChangePasswordDTO } from "../DTOs/UserDTO.js";
-import { User } from "../models/DietiRealEstatesDB.js";
+import { User, Admin } from "../models/DietiRealEstatesDB.js";
 
 export class UserController {
 
     static async changePassword(req, res, next) {
         try {
-            const dto = new ChangePasswordDTO(req.body)
+            const dto = new ChangePasswordDTO(req.body);
+
+        
             const result = await UserService.changePassword(
                 User,
                 dto,
@@ -18,7 +20,6 @@ export class UserController {
                 next(err);
         }
     }
-
 
     static async getUserById(req, res, next){
         try{
@@ -49,4 +50,16 @@ export class UserController {
         }
 
     }
+
+
+    static async createAdmin(req, res, next){
+        try {
+            const dto = req.body;
+            const admin = await UserService.createAdmin(User, Admin, dto);
+            const result = UserMapper.toUserDTO(admin);
+            res.status(201).json(result);
+        } catch (err) {
+            next(err);
+        }
+}
 }

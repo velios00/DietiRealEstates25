@@ -3,7 +3,7 @@ import cors from 'cors';
 import { AuthenticationRouter } from './routes/AuthenticationRouter.js';
 import { EstateRouter } from './routes/EstateRouter.js';
 import { AgencyRouter } from './routes/AgencyRouter.js';
-import { UserRouter } from './routes/userRouter.js';
+import { UserRouter } from './routes/UserRouter.js';
 //import { managerRouter } from './routes/managerRouter.js';
 //import { adminRouter } from './routes/adminRouter.js';
 import { AgentRouter } from './routes/AgentRouter.js';

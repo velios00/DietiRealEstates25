@@ -1,28 +1,36 @@
-import { AuthenticationService } from './AuthenticationService.js';
-import { User, Manager, Agent, Admin } from '../models/DietiRealEstatesDB.js';
 import { createHash } from 'crypto';
+import randomatic from "randomatic";
 
 export class UserService {
 
-    static hashPassword(password){return createHash("sha256").update(password).digest("hex")}
+    static hashPassword(password){
+        if(!password) 
+            {throw new Error('Password cannot be empty');}
+        
+        return createHash("sha256").update(password).digest("hex")
+        }
 
     static async changePassword(User, dto, userId) {
-        const user = await User.findByPk(userId); 
-        
-        if(!user) { 
-            throw new Error('User not found');
-        }
-
-        const oldPwd = UserService.hashPassword(dto.oldPassword);
-        if(user.password !== oldPwd) {
-            throw new Error('Old password is incorrect');
-        }
+    const user = await User.findByPk(userId); 
     
-        user.password = dto.newPassword;
-        await user.save();
-
-        return { message: 'Password changed successfully' };
+    if(!user) { 
+        throw new Error('User not found');
     }
+
+    // Create a temporary user to hash the old password the same way the model does
+    const tempUser = User.build({ password: dto.oldPassword });
+    const oldHashedPassword = tempUser.password;
+
+    if(user.password !== oldHashedPassword) {
+        throw new Error('Old password is incorrect');
+    }
+
+    // Let model handle new password hashing
+    user.password = dto.newPassword;
+    await user.save();
+
+    return { message: 'Password changed successfully' };
+}
 
     static async getAllUsers(User) {
         return await User.findAll({
@@ -34,6 +42,30 @@ export class UserService {
         return await User.findByPk(idUser, {
             attributes: { exclude: ['password'] } // Don't return password
         });
+    }
+
+    static async createAdmin(User, Admin, dto){
+        const temporaryPassword = randomatic("Aa0", 10);
+        
+        console.log(dto);
+
+        const newUser = await User.create({
+            email: dto.email,
+            password: temporaryPassword,
+            name: dto.name,
+            surname: dto.surname,
+            role: "admin"
+        });
+        
+        await Admin.create({
+            idAdmin: newUser.idUser
+        });    
+
+        /*AGGIUNGERE INVIO MAIL*/
+        console.log(temporaryPassword);
+
+        return newUser;
+
     }
 
 }

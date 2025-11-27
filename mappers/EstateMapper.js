@@ -25,7 +25,7 @@ export class EstateMapper {
         })
     }
 
-    // Optional: If you want to format delete responses consistently
+
     static toDeleteResponse(message, estateId) {
         return {
             message: message,

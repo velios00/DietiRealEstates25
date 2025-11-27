@@ -20,8 +20,14 @@ UserRouter.get(
 UserRouter.get(
     "/:idUser",
     enforceAuthentication,
-    UserController.getUserById
-    //authorizeRoles('admin', 'manager', 'agent') dovrebbe esserci ma per ora lo teniamo fuori
+    UserController.getUserById,
+    authorizeRoles('admin', 'manager', 'agent')
     );
 
 
+UserRouter.post(
+    '/admin/create', 
+    enforceAuthentication,
+    UserController.createAdmin,
+    authorizeRoles('admin')
+);
