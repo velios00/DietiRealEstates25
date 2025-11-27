@@ -1,6 +1,6 @@
 import { EstateMapper } from "../mappers/EstateMapper.js";
 import { EstateService } from "../services/EstateService.js";
-import { RealEstate, Manager, Agent } from "../models/DietiRealEstatesDB.js";
+import { RealEstate, Manager, Agent, Place } from "../models/DietiRealEstatesDB.js";
 
 export class EstateController {
     static async createEstate(req, res, next) {
@@ -10,17 +10,21 @@ export class EstateController {
             const dto = EstateMapper.toCreateEstateDTO(req.body);
 
             console.log("dto", dto);
-
+            console.log("process.env.API_KEY_GEOAPIFY", process.env.API_KEY_GEOAPIFY);
             const created = await EstateService.createEstate(
                 RealEstate,
                 Agent,
                 Manager,
+                Place,
                 userId,
-                dto
+                dto,
+                process.env.API_KEY_GEOAPIFY
             )
-            
-            const result = EstateMapper.estateToDTO(created);
-            console.log("estate raaaaaaaaaaesult", result)
+
+            const estateWithPlace = await RealEstate.findByPk(created.idRealEstate, {
+                include: [Place]
+            });
+            const result = EstateMapper.estateToDTO(estateWithPlace);
             res.status(201).json(result);
         } catch (err) {
             next(err);

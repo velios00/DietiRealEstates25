@@ -37,6 +37,10 @@ export function createModel(database) {
         createdBy: {
             type: DataTypes.ENUM("agent", "manager"),
             allowNull: false
+        },
+        idPlace: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         }
     },{
         validate: {

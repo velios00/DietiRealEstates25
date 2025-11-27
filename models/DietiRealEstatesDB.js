@@ -6,6 +6,7 @@ import { createModel as createRealEstateModel } from "./RealEstate.js";
 import { createModel as createManagerModel } from "./Manager.js";
 import { createModel as createOfferModel } from "./Offer.js";
 import { createModel as createUserModel } from "./User.js";
+import { createModel as createPlaceModel } from "./Place.js";
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -22,8 +23,9 @@ createRealEstateModel(database);
 createManagerModel(database);
 createOfferModel(database);
 createUserModel(database);
+createPlaceModel(database);
 
-export const { Admin, Agent, Agency, RealEstate, Manager, Offer, User } = database.models;
+export const { Admin, Agent, Agency, RealEstate, Manager, Offer, User, Place } = database.models;
 
 //Definizione delle associazioni tra i modelli
 
@@ -114,6 +116,14 @@ Manager.RealEstate = Manager.hasMany(RealEstate, {
 })
 RealEstate.Manager = RealEstate.belongsTo(Manager, {
     foreignKey: {name: "idManager", allowNull: true}
+})
+
+// RealEstate - Place
+Place.RealEstate = Place.hasMany(RealEstate, {
+    foreignKey: {name: "idPlace", allowNull: false}
+})
+RealEstate.Place = RealEstate.belongsTo(Place, {
+    foreignKey: {name: "idPlace", allowNull: false}
 })
 
 //Sincronizzazione database

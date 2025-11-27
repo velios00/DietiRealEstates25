@@ -1,5 +1,7 @@
+import { geoCodeAddress, getPOIs } from "../utils/geoapify.js";
+
 export class EstateService {
-    static async createEstate(RealEstate, Agent, Manager, userId, dto) {
+    static async createEstate(RealEstate, Agent, Manager, Place, userId, dto, apiKey) {
         
         let agencyId = null;
         let idManager = null;
@@ -7,7 +9,7 @@ export class EstateService {
         let createdBy = null;
 
         const manager = await Manager.findByPk(userId);
-        if(manager) {
+        if(manager) {                                       //refactor possibile
             agencyId = manager.idAgency;
             createdBy = "manager";
             idManager = manager.idManager;
@@ -23,7 +25,23 @@ export class EstateService {
             throw new Error("User is neither a manager nor an agent");
         }
 
-        console.log("id", agencyId)
+        const geo = await geoCodeAddress(dto.address, apiKey);
+
+        let place = await Place.findOne({
+            where: {
+                lat: geo.lat,
+                lon: geo.lon
+            }
+        });
+        //Se non esiste crea e aggiungi POI
+        if(!place) {
+            const pois = await getPOIs(geo.lat, geo.lon, apiKey);
+
+            place = await Place.create({
+                ...geo,
+                pois: JSON.stringify(pois)
+            });
+        }
 
         const newEstate = await RealEstate.create({
             description: dto.description,
@@ -33,9 +51,9 @@ export class EstateService {
             idAgent,
             idAgency: agencyId,
             createdBy,
-            idManager
+            idManager,
+            idPlace: place.idPlace
         });
-        console.log("nuova estate creata", newEstate)
         return newEstate;
     }
 

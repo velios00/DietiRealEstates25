@@ -1,4 +1,5 @@
 import express from 'express';
+import dotenv from "dotenv";
 import cors from 'cors';
 import { AuthenticationRouter } from './routes/AuthenticationRouter.js';
 import { EstateRouter } from './routes/EstateRouter.js';
@@ -9,6 +10,7 @@ import { UserRouter } from './routes/userRouter.js';
 import { AgentRouter } from './routes/AgentRouter.js';
 //app.use(cors());
 
+dotenv.config();
 const app = express();
 const PORT = 3000;
 

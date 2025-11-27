@@ -2,34 +2,39 @@ import { createEstateDTO } from "../DTOs/EstateDTO.js";
 
 export class EstateMapper {
     static toCreateEstateDTO(body) {
-        //valutare se inserire validazioni qui per prezzo e dimensioni
         return new createEstateDTO({
             description: body.description,
             photo: body.photo,
             price: body.price,
             size: body.size,
+            address: body.address,
+            nRooms: body.nRooms,
+            nBathrooms: body.nBathrooms,
+            energyClass: body.energyClass,
+            floor: body.floor
             //idAgency: body.idAgency
         });
     }
 
     static estateToDTO(estate) {
-        return new createEstateDTO({
-            idRealEstate: estate.idRealEstate,
+        return {
+            idEstate: estate.idEstate,
             description: estate.description,
-            photo: estate.photo,
+            //photo: estate.photo,
             price: estate.price,
             size: estate.size,
-            idAgency: estate.idAgency,
-            createdBy: estate.createdBy,
-            creatorId: estate.createdBy === "agent" ? estate.idAgent : estate.idManager
-        })
-    }
-
-    // Optional: If you want to format delete responses consistently
-    static toDeleteResponse(message, estateId) {
-        return {
-            message: message,
-            deletedEstateId: estateId
-        };
+            nRooms: estate.nRooms,
+            nBathrooms: estate.nBathrooms,
+            energyClass: estate.energyClass,
+            floor: estate.floor,
+            idPlace: estate.idPlace,
+            place: estate.Place
+                ? {
+                    ...estate.Place.toJSON(),
+                    pois: estate.Place.pois ? JSON.parse(estate.Place.pois) : []
+                }
+                : null
+            //idAgency: estate.idAgency 
+        }
     }
 }
