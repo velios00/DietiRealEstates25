@@ -22,6 +22,18 @@ export function createModel(database) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        nRooms: {
+            type: DataTypes.INTEGER,
+        },
+        nBathrooms: {
+            type: DataTypes.INTEGER,
+        },
+        energyClass: {
+            type: DataTypes.STRING,
+        },
+        floor: {
+            type: DataTypes.INTEGER,
+        },
         idAgent: {
             type: DataTypes.INTEGER,
             allowNull: true

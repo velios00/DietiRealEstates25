@@ -115,6 +115,7 @@ export class EstateService {
         static async searchEstates(RealEstate, Place, filters, EstateMapper) {
             const whereConditions = {};
 
+            //refactorare in un altro file questa
             if (filters.minPrice !== null || filters.maxPrice !== null) {
                 whereConditions.price = {};
                 if (filters.minPrice !== null) {
