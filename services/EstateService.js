@@ -1,4 +1,5 @@
 import { geoCodeAddress, getPOIs } from "../utils/geoapify.js";
+import { Op } from "sequelize";
 
 export class EstateService {
     static async createEstate(RealEstate, Agent, Manager, Place, userId, dto, apiKey) {
@@ -109,5 +110,61 @@ export class EstateService {
         //W.I.P.
         static async getEstateById(Estate, idRealEstate) {
             return await Estate.findByPk(idRealEstate);
+        }
+
+        static async searchEstates(RealEstate, Place, filters, EstateMapper) {
+            const whereConditions = {};
+
+            if (filters.minPrice !== null || filters.maxPrice !== null) {
+                whereConditions.price = {};
+                if (filters.minPrice !== null) {
+                    whereConditions.price[Op.gte] = filters.minPrice;
+                }
+                if (filters.maxPrice !== null) {
+                    whereConditions.price[Op.lte] = filters.maxPrice;
+                }
+            }
+
+            if (filters.nRooms !== null) {
+                whereConditions.nRooms = filters.nRooms;
+            }
+
+            if(filters.nBathrooms !== null) {
+                whereConditions.nBathrooms = filters.nBathrooms;
+            }
+
+            if (filters.minSize !== null || filters.maxSize !== null) {
+                whereConditions.size = {};
+                if (filters.minSize !== null) {
+                    whereConditions.size[Op.gte] = filters.minSize;
+                }
+                if (filters.maxSize !== null) {
+                    whereConditions.size[Op.lte] = filters.maxSize;
+                }
+            }
+
+            if (filters.energyClass !== null) {
+                whereConditions.energyClass = filters.energyClass;
+            }
+
+            if (filters.floor !== null) {
+                whereConditions.floor = filters.floor;
+            }
+
+            const estates = await RealEstate.findAll({
+                where: whereConditions,
+                include: [{
+                    model: Place,
+                    where: {
+                        city: {
+                            [Op.like]: `%${filters.city || ""}%`
+                        }
+                    },
+                    required: true //inner join
+                }],
+                order: [['price', 'ASC']]
+            });
+
+             return estates.map(estate => EstateMapper.estateToDTO(estate));
         }
 }
