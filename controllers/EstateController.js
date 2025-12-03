@@ -72,5 +72,27 @@ export class EstateController {
                 next(err);
             }
         }
+    
+    static async getEstateByAgencyId(req, res, next){
+        try{
+            const { agencyId } = req.params;
+
+            if(isNaN(agencyId)) {
+                return res.status(400).json({ error: "Invalid estate ID" });
+            }
+
+            const estates = await EstateService.getEstatesByAgencyId(RealEstate, agencyId);
+
+            if (!estates || estates.length == 0) {
+                return res.status(404).json({ message: "Estate not found" });
+            }
+
+        const result = estates.map(e => EstateMapper.estateToDTO(e));
+        res.status(200).json(result);
+        }
+        catch (err) {
+            next(err);
+        }
+    }
 
 }

@@ -20,6 +20,12 @@ EstateRouter.delete(
 ); 
 
 EstateRouter.get(
+    "/agency/:agencyId",
+    EstateController.getEstateByAgencyId
+    );
+
+EstateRouter.get(
     "/:id",
     EstateController.getEstateById
     );
+

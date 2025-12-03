@@ -92,4 +92,10 @@ export class EstateService {
         static async getEstateById(Estate, idRealEstate) {
             return await Estate.findByPk(idRealEstate);
         }
+
+    static async getEstatesByAgencyId(RealEstate, agencyId) {
+        return await RealEstate.findAll({
+            where: { idAgency: agencyId }
+        });
+}
 }
