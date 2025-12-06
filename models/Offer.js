@@ -20,18 +20,15 @@ export function createModel(database) {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
+        status: {
+            type: DataTypes.ENUM("pending", "accepted", "rejected", "countered"),
+            allowNull: false,
+            defaultValue: "pending"
+        },
         idUser: {
             type: DataTypes.INTEGER
-        },
-        idAgent: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
+        }, 
         idRealEstate: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        idAgency: {
             type: DataTypes.INTEGER,
             allowNull: false
         }

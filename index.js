@@ -8,6 +8,7 @@ import { UserRouter } from './routes/UserRouter.js';
 //import { managerRouter } from './routes/managerRouter.js';
 //import { adminRouter } from './routes/adminRouter.js';
 import { AgentRouter } from './routes/AgentRouter.js';
+import { OfferRouter } from './routes/OfferRouter.js';
 //app.use(cors());
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use("/agency", AgencyRouter);
 //app.use("/admin", adminRouter);
 app.use("/agents", AgentRouter);
 app.use("/user", UserRouter);
+app.use("/offers", OfferRouter)
 
 
 app.use((err, req, res, next) => {
