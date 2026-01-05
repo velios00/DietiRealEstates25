@@ -21,11 +21,13 @@
   "homepage": "https://github.com/velios00/DietiRealEstates25#readme",
   "dependencies": {
     "axios": "^1.13.2",
+    "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.6",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
