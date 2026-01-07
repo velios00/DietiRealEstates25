@@ -15,3 +15,12 @@ export class LoginUserDTO {
     this.password = password;
   }
 }
+
+export class GoogleLoginDTO {
+  constructor({ idToken }) {
+    if (!idToken) {
+      throw new Error("idToken is required for Google Login");
+    }
+    this.idToken = idToken;
+  }
+}

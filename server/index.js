@@ -11,7 +11,7 @@ import { AgentRouter } from "./routes/AgentRouter.js";
 import { OfferRouter } from "./routes/OfferRouter.js";
 import { ImageRouter } from "./routes/ImageRouter.js";
 
-app.use(cors());
+// app.use(cors());
 dotenv.config();
 const app = express();
 const PORT = 3000;

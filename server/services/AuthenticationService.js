@@ -32,12 +32,29 @@ export class AuthenticationService {
     const foundUser = await userModel.findOne({
       where: { email: dto.email, password: hashedPassword },
     });
-
     if (!foundUser) {
       throw new Error("Invalid email or password");
     }
-
     return foundUser;
+  }
+
+  static async googleLogin(userModel, decodedToken) {
+    if (!decodedToken.email) {
+      throw new Error("Invalid token: email not found");
+    }
+    const user = await userModel.findOne({ where: decodedToken.email });
+
+    if (!user) {
+      user = await userModel.create({
+        email: decodedToken.email,
+        name: decodedToken.name,
+        surname: decodedToken.surname,
+        password: null,
+        authProvider: "google",
+        role: "user",
+      });
+    }
+    return user;
   }
 
   static issueToken(user) {

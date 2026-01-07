@@ -4,6 +4,7 @@ import {
   authorizeRoles,
   enforceAuthentication,
 } from "../middleware/authorization.js";
+import { ImageController } from "../controllers/ImageController.js";
 
 export const ImageRouter = express.Router();
 
