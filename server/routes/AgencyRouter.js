@@ -6,13 +6,10 @@ import { authorizeRoles } from "../middleware/authorization.js";
 export const AgencyRouter = express.Router();
 
 AgencyRouter.post(
-    "/createAgency",
-    enforceAuthentication,
-    authorizeRoles("admin"),
-    AgencyController.createAgency
-)
+  "/createAgency",
+  enforceAuthentication,
+  authorizeRoles("admin"),
+  AgencyController.createAgency
+);
 
-AgencyRouter.get(
-    "/",
-    AgencyController.getAllAgencies
-)
+AgencyRouter.get("/", AgencyController.getAllAgencies);

@@ -2,42 +2,45 @@ import randomatic from "randomatic";
 import { EmailTemplates } from "../utils/mailer.js";
 
 export class AgentService {
-    static async createAgent(User, Agent, Manager, ManagerId, dto) {
-        const randomPassword = randomatic("Aa0", 10);
+  static async createAgent(User, Agent, Manager, ManagerId, dto) {
+    const randomPassword = randomatic("Aa0", 10);
 
-        const newUser = await User.create({
-            email: dto.email,
-            password: randomPassword,
-            name: dto.name,
-            surname: dto.surname,
-            profileImage: dto.profileImage,
-            role: "agent"
-        });
+    const newUser = await User.create({
+      email: dto.email,
+      password: randomPassword,
+      name: dto.name,
+      surname: dto.surname,
+      profileImage: dto.profileImage,
+      role: "agent",
+    });
 
-        const manager = await Manager.findByPk(ManagerId);
-        if (!manager) {
-            throw new Error("Manager not found");
-        }
-        const agencyId = manager.idAgency;
-        const newAgent = await Agent.create({
-            idAgent: newUser.idUser,
-            idManager: ManagerId,
-            idAgency: agencyId
-        });
-
-        
-        //Invio Email
-        try {
-            await EmailTemplates.sendAgentWelcome(
-                dto.email,
-                dto.name,
-                randomPassword
-            )
-            console.log("Email inviata con successo a:", dto.manager.email);
-        } catch (emailError) {
-            console.error("Errore nell'invio dell'email a:", dto.manager.email, emailError);
-        }
-
-        return { user: newUser, agent: newAgent };
+    const manager = await Manager.findByPk(ManagerId);
+    if (!manager) {
+      throw new Error("Manager not found");
     }
+    const agencyId = manager.idAgency;
+    const newAgent = await Agent.create({
+      idAgent: newUser.idUser,
+      idManager: ManagerId,
+      idAgency: agencyId,
+    });
+
+    //Invio Email
+    try {
+      await EmailTemplates.sendAgentWelcome(
+        dto.email,
+        dto.name,
+        randomPassword
+      );
+      console.log("Email inviata con successo a:", dto.manager.email);
+    } catch (emailError) {
+      console.error(
+        "Errore nell'invio dell'email a:",
+        dto.manager.email,
+        emailError
+      );
+    }
+
+    return { user: newUser, agent: newAgent };
+  }
 }

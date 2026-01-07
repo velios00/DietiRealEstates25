@@ -1,18 +1,17 @@
-import express from 'express';
+import express from "express";
 import dotenv from "dotenv";
-import cors from 'cors';
-import { AuthenticationRouter } from './routes/AuthenticationRouter.js';
-import { EstateRouter } from './routes/EstateRouter.js';
-import { AgencyRouter } from './routes/AgencyRouter.js';
-import { UserRouter } from './routes/UserRouter.js';
+import cors from "cors";
+import { AuthenticationRouter } from "./routes/AuthenticationRouter.js";
+import { EstateRouter } from "./routes/EstateRouter.js";
+import { AgencyRouter } from "./routes/AgencyRouter.js";
+import { UserRouter } from "./routes/UserRouter.js";
 //import { managerRouter } from './routes/managerRouter.js';
 //import { adminRouter } from './routes/adminRouter.js';
-import { AgentRouter } from './routes/AgentRouter.js';
-import { OfferRouter } from './routes/OfferRouter.js';
-import { ImageRouter } from './routes/ImageRouter.js';
+import { AgentRouter } from "./routes/AgentRouter.js";
+import { OfferRouter } from "./routes/OfferRouter.js";
+import { ImageRouter } from "./routes/ImageRouter.js";
 
-//app.use(cors());
-
+app.use(cors());
 dotenv.config();
 const app = express();
 const PORT = 3000;
@@ -29,14 +28,13 @@ app.use("/user", UserRouter);
 app.use("/offers", OfferRouter);
 app.use("/images", ImageRouter);
 
-
 app.use((err, req, res, next) => {
-    res.status(err.status || 500).json({
-      code: err.status || 500,
-      description: err.message || "An error occurred",
-    });
+  res.status(err.status || 500).json({
+    code: err.status || 500,
+    description: err.message || "An error occurred",
   });
+});
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

@@ -4,36 +4,36 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT) || 587,
-    secure: false,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    }
-})
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT) || 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 export async function sendMail({ to, subject, text, html }) {
-    try {
-        const info = await transporter.sendMail({
-            from: `"DietiRealEstates" <${process.env.SMTP_USER}>`,
-            to,
-            subject,
-            text,
-            html,
-        });
-        console.log("Message sent: ", info.messageId);
-    } catch(err) {
-        console.error("Error sending email: ", err);
-        throw err;
-    }
+  try {
+    const info = await transporter.sendMail({
+      from: `"DietiRealEstates" <${process.env.SMTP_USER}>`,
+      to,
+      subject,
+      text,
+      html,
+    });
+    console.log("Message sent: ", info.messageId);
+  } catch (err) {
+    console.error("Error sending email: ", err);
+    throw err;
+  }
 }
 
 export class EmailTemplates {
-    static async sendManagerWelcome(email, name, agencyName, temporaryPassword) {
-        const subject = "Welcome to DietiRealEstates!";
+  static async sendManagerWelcome(email, name, agencyName, temporaryPassword) {
+    const subject = "Welcome to DietiRealEstates!";
 
-        const html = `
+    const html = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #007bff;">Benvenuto in DietiRealEstates</h2>
                 <p>Ciao <strong>${name}</strong>,</p>
@@ -49,7 +49,7 @@ export class EmailTemplates {
             </div>
         `;
 
-        const text = `
+    const text = `
             Benvenuto in DietiRealEstates
             
             Ciao ${name},
@@ -64,18 +64,18 @@ export class EmailTemplates {
             Team DietiRealEstates
         `;
 
-        return await sendMail({
-            to: email,
-            subject: subject,
-            text: text,
-            html: html
-        });
-    }
+    return await sendMail({
+      to: email,
+      subject: subject,
+      text: text,
+      html: html,
+    });
+  }
 
-    static async sendAgentWelcome(email, name, temporaryPassword) {
-        const subject = "Welcome to DietiRealEstates!";
+  static async sendAgentWelcome(email, name, temporaryPassword) {
+    const subject = "Welcome to DietiRealEstates!";
 
-        const html = `
+    const html = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #007bff;">Benvenuto in DietiRealEstates</h2>
                 <p>Ciao <strong>${name}</strong>,</p>
@@ -91,7 +91,7 @@ export class EmailTemplates {
             </div>
         `;
 
-        const text = `
+    const text = `
             Benvenuto in DietiRealEstates
             
             Ciao ${name},
@@ -106,11 +106,11 @@ export class EmailTemplates {
             Team DietiRealEstates
         `;
 
-        return await sendMail({
-            to: email,
-            subject: subject,
-            text: text,
-            html: html
-        });
-    }
+    return await sendMail({
+      to: email,
+      subject: subject,
+      text: text,
+      html: html,
+    });
+  }
 }

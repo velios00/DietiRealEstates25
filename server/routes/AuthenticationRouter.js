@@ -1,14 +1,8 @@
-import express from 'express';
-import { AuthenticationController } from '../controllers/AuthenticationController.js';
+import express from "express";
+import { AuthenticationController } from "../controllers/AuthenticationController.js";
 
 export const AuthenticationRouter = express.Router();
 
-AuthenticationRouter.post(
-    '/register', 
-    AuthenticationController.register
-);
+AuthenticationRouter.post("/register", AuthenticationController.register);
 
-AuthenticationRouter.post(
-    '/login', 
-    AuthenticationController.login
-);
+AuthenticationRouter.post("/login", AuthenticationController.login);
