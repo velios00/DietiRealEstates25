@@ -14,6 +14,11 @@ export class OfferController {
       );
       res.status(201).json(createdOffer);
     } catch (err) {
+      if (err.name === "SequelizeUniqueConstraintError") {
+        return res.status(409).json({
+          error: "Hai già un'offerta in attesa per questo immobile",
+        });
+      }
       next(err);
     }
   }
