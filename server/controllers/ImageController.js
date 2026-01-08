@@ -1,3 +1,5 @@
+import { ImageService } from "../services/ImageService.js";
+
 export class ImageController {
   static async uploadImage(req, res, next) {
     try {

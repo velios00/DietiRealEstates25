@@ -1,4 +1,4 @@
-import cloudinary from "../utils/cloudinary";
+import cloudinary from "../utils/cloudinary.js";
 
 export class ImageService {
   static async uploadImage(file) {
