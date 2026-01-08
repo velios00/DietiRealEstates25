@@ -13,3 +13,12 @@ AgencyRouter.post(
 );
 
 AgencyRouter.get("/", AgencyController.getAllAgencies);
+
+// getestatesbyagencyID
+
+AgencyRouter.get(
+  "/:idAgency/real-estates",
+  enforceAuthentication,
+  authorizeRoles("admin", "manager"),
+  AgencyController.getRealEstatesByAgencyId
+);

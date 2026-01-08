@@ -66,4 +66,14 @@ export class AgencyService {
     });
     return agencies;
   }
+
+  static async getRealEstatesByAgencyId(Agency, idAgency) {
+    const agency = await Agency.findByPk(idAgency, {
+      include: ["RealEstates"],
+    });
+    if (!agency) {
+      throw new Error("Agency not found");
+    }
+    return agency.RealEstates;
+  }
 }

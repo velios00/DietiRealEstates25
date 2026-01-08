@@ -6,5 +6,3 @@ export class createManagerDTO {
     this.surname = surname;
   }
 }
-
-//forse da eliminare
