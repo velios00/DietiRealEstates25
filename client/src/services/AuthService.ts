@@ -4,7 +4,7 @@ import type {
   RegisterRequest,
   GoogleAuthRequest,
   LoginRequest,
-} from "../shared/models/AuthRequest";
+} from "../shared/models/AuthRequest.model";
 
 export function loginUser(authRequest: LoginRequest) {
   return API.post(`${endpoints.auth}/login`, authRequest);
@@ -15,8 +15,8 @@ export function registerUser(registerRequest: RegisterRequest) {
 }
 
 export function googleLoginUser(authRequest: GoogleAuthRequest) {
-  return (
-    API.post(`${endpoints.auth}/googleLogin`, authRequest),
+  return API.post(
+    `${endpoints.auth}/googleLogin`,
     {},
     {
       headers: {
