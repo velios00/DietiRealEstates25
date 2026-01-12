@@ -6,7 +6,7 @@ export interface LoginRequest {
 export interface RegisterRequest extends LoginRequest {
   name: string;
   surname: string;
-  userAddress: string;
+  // userAddress: string;
 }
 
 export interface GoogleAuthRequest {

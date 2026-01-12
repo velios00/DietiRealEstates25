@@ -9,7 +9,7 @@ import { UserContext } from "./shared/context/UserContext";
 import { Roles } from "./shared/enums/Roles.enum";
 
 function App() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [userData, setUserData] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<Roles | null>(null);
 
