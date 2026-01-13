@@ -1,5 +1,4 @@
 import { API } from "../shared/axios/Interceptors";
-import { endpoints } from "../shared/constants/api";
 import type {
   RegisterRequest,
   GoogleAuthRequest,
@@ -7,16 +6,16 @@ import type {
 } from "../shared/models/AuthRequest.model";
 
 export function loginUser(authRequest: LoginRequest) {
-  return API.post(`${endpoints.auth}/login`, authRequest);
+  return API.post(`/login`, authRequest);
 }
 
 export function registerUser(registerRequest: RegisterRequest) {
-  return API.post(`${endpoints.auth}/register`, registerRequest);
+  return API.post(`/register`, registerRequest);
 }
 
 export function googleLoginUser(authRequest: GoogleAuthRequest) {
   return API.post(
-    `${endpoints.auth}/googleLogin`,
+    `/googleLogin`,
     {},
     {
       headers: {
