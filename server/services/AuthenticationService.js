@@ -22,6 +22,7 @@ export class AuthenticationService {
       userAddress: dto.userAddress,
       role: dto.role,
     });
+    console.log("Utente salvato");
 
     return newUser;
   }

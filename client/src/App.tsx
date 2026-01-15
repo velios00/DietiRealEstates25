@@ -1,33 +1,67 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
+import { User } from "./shared/models/User.model";
+import { Outlet, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { JwtPayload } from "./shared/models/JwtPayload.model";
+import { getUserById } from "./services/UserService";
+import { UserContext } from "./shared/context/UserContext";
+import { Roles } from "./shared/enums/Roles.enum";
 
 function App() {
-  const [count, setCount] = useState(0);
+  // const navigate = useNavigate();
+  const [userData, setUserData] = useState<User | null>(null);
+  const [userRole, setUserRole] = useState<Roles | null>(null);
+
+  const changeUserDataContext = useCallback((user: User | null) => {
+    setUserData(user);
+  }, []);
+
+  const fetchUserData = useCallback(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const decodedToken = jwtDecode<JwtPayload>(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
+        console.log("token scaduto, mettere logout");
+      } else {
+        getUserById(decodedToken.user.idUser).then(({ data: user }) => {
+          setUserData(user);
+          setUserRole(decodedToken.user.role);
+        });
+      }
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     const decodedToken = jwtDecode<JwtPayload>(token);
+  //     const currentTime = Date.now() / 1000; // Convert to seconds
+  //     if (decodedToken.exp && decodedToken.exp < currentTime) {
+  //       localStorage.removeItem("token");
+  //       navigate("/login");
+  //     } else {
+  //       getUserData(decodedToken.user.id).then(({ data: user }) => {
+  //         setUserData(user);
+  //       });
+  //     }
+  //   }
+  // }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1 className="text-red-800">Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <UserContext.Provider
+        value={{
+          user: userData,
+          setUser: changeUserDataContext,
+          role: userRole,
+          setRole: setUserRole,
+        }}
+      >
+        <Outlet />
+      </UserContext.Provider>
     </>
   );
 }
