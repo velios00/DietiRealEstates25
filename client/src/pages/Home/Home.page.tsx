@@ -1,13 +1,21 @@
-import { Box } from "@mui/material";
-import Header from "../../shared/components/Header/Header";
-import { Hero } from "../../shared/components/Hero/Hero";
+import { useState } from "react";
+import Header from "../../shared/layout/Header";
+import HeroSection from "../../shared/components/Hero/HeroSection";
+import ListingsSection from "../../shared/listings/ListingsSection";
+import React from "react";
 
-export default function Home() {
+export default function Home(): React.JSX.Element {
+  const [query, setQuery] = useState<string>("");
+
+  const handleSearch = (): void => {
+    console.log("Ricerca:", query);
+  };
+
   return (
     <>
-      <Box className="min-h-screen bg-gray-50">
-        <Header />
-      </Box>
+      <Header />
+      <HeroSection query={query} setQuery={setQuery} onSearch={handleSearch} />
+      <ListingsSection />
     </>
   );
 }
