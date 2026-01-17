@@ -12,7 +12,7 @@ export default function SearchBar({
   onChange,
   onSearch,
   onOpenFilters,
-}: SearchBarProps): React.JSX.Element {
+}: SearchBarProps) {
   return (
     <div className="search-bar">
       <button onClick={onOpenFilters}>☰</button>

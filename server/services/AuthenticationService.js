@@ -63,7 +63,7 @@ export class AuthenticationService {
       {
         user: {
           idUser: user.idUser,
-          username: user.email,
+          username: user.email, //da cambiare in email probabilmente
           role: user.role,
         },
       },

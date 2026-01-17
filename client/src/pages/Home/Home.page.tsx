@@ -1,10 +1,11 @@
 import { useState } from "react";
-import Header from "../../shared/layout/Header";
-import HeroSection from "../../shared/components/Hero/HeroSection";
+import Header from "../../shared/components/Header/Header";
+import Hero from "../../shared/components/Hero/Hero";
 import ListingsSection from "../../shared/listings/ListingsSection";
 import React from "react";
+import { Box } from "@mui/material";
 
-export default function Home(): React.JSX.Element {
+export default function Home() {
   const [query, setQuery] = useState<string>("");
 
   const handleSearch = (): void => {
@@ -13,9 +14,11 @@ export default function Home(): React.JSX.Element {
 
   return (
     <>
-      <Header />
-      <HeroSection query={query} setQuery={setQuery} onSearch={handleSearch} />
-      <ListingsSection />
+      <Box sx={{ height: "64px" }}>
+        <Header />
+        <Hero query={query} setQuery={setQuery} onSearch={handleSearch} />
+        <ListingsSection />
+      </Box>
     </>
   );
 }

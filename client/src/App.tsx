@@ -7,6 +7,14 @@ import { JwtPayload } from "./shared/models/JwtPayload.model";
 import { getUserById } from "./services/UserService";
 import { UserContext } from "./shared/context/UserContext";
 import { Roles } from "./shared/enums/Roles.enum";
+import { createTheme, ThemeProvider } from "@mui/material";
+import "@fontsource/montserrat/400.css";
+import "@fontsource/montserrat/700.css";
+const theme = createTheme({
+  typography: {
+    fontFamily: '"Montserrat", sans-serif',
+  },
+});
 
 function App() {
   // const navigate = useNavigate();
@@ -52,16 +60,18 @@ function App() {
 
   return (
     <>
-      <UserContext.Provider
-        value={{
-          user: userData,
-          setUser: changeUserDataContext,
-          role: userRole,
-          setRole: setUserRole,
-        }}
-      >
-        <Outlet />
-      </UserContext.Provider>
+      <ThemeProvider theme={theme}>
+        <UserContext.Provider
+          value={{
+            user: userData,
+            setUser: changeUserDataContext,
+            role: userRole,
+            setRole: setUserRole,
+          }}
+        >
+          <Outlet />
+        </UserContext.Provider>
+      </ThemeProvider>
     </>
   );
 }

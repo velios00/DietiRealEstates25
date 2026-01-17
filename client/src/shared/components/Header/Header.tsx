@@ -20,12 +20,15 @@ export default function Header() {
           backgroundColor: "white",
           boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
           borderRadius: "0 0 32px 32px",
-          paddingX: { xs: 2, md: 4 },
-          paddingY: 2,
+          paddingX: { xs: 2, md: 6 },
+          paddingY: 1,
+          height: { xs: "50px", md: "60px", lg: "75px" }, // ALTEZZA FISSA
+          width: "100%",
+          justifyContent: "center",
         }}
         elevation={0}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth={false}>
           <Toolbar
             sx={{
               display: "flex",
@@ -34,94 +37,104 @@ export default function Header() {
               minHeight: "auto !important",
             }}
           >
-            {/*Logo*/}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Box
-                component="img"
-                src={"/src/assets/Dieticolorato.png"}
-                alt="DIETI Logo"
-                sx={{
-                  height: { xs: 30, md: 40 },
-                  width: "auto",
-                  objectFit: "contain",
-                }}
-              />
-            </Box>
-            {/*Nav menu*/}
             <Box
               sx={{
-                display: { xs: "none", md: "flex" },
+                display: "flex",
                 alignItems: "center",
-                gap: 4,
+                gap: { xs: 2, md: 6 }, // Spazio tra logo e menu
               }}
             >
-              <Button
-                color="primary"
+              {/*Logo*/}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box
+                  component="img"
+                  src={"/src/assets/Dieticolorato.png"}
+                  alt="DIETI Logo"
+                  sx={{
+                    height: { xs: 40, md: 170 },
+                    width: { xs: "auto", md: "auto" }, // Larghezza automatica
+                    objectFit: "contain",
+                    aspectRatio: "1080 / 1350", // Proporzioni originali
+                  }}
+                />
+              </Box>
+              {/*Nav menu*/}
+              <Box
                 sx={{
-                  color: "#60a5fa",
-                  fontWeight: 500,
-                  fontSize: "1rem",
-                  textTransform: "lowercase",
-                  "&:hover": {
-                    color: "#3b82f6",
-                    backgroundColor: "transparent",
-                  },
+                  display: { xs: "none", md: "flex" },
+                  alignItems: "center",
+                  gap: 4,
+                  paddingLeft: 20,
                 }}
               >
-                compra
-              </Button>
+                <Button
+                  color="primary"
+                  sx={{
+                    color: "#62A1BA",
+                    fontWeight: 800,
+                    fontSize: "1.3rem",
+                    textTransform: "lowercase",
+                    "&:hover": {
+                      color: "#62A1BA",
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  compra
+                </Button>
 
-              <Divider
-                orientation="vertical"
-                flexItem
-                sx={{
-                  backgroundColor: "grey.200",
-                  height: 24,
-                  marginY: "auto",
-                }}
-              />
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{
+                    backgroundColor: "#62A1BA",
+                    height: 32,
+                    marginY: "auto",
+                  }}
+                />
 
-              <Button
-                color="primary"
-                sx={{
-                  color: "#60a5fa",
-                  fontWeight: 500,
-                  fontSize: "1rem",
-                  textTransform: "lowercase",
-                  "&:hover": {
-                    color: "#3b82f6",
-                    backgroundColor: "transparent",
-                  },
-                }}
-              >
-                affitta
-              </Button>
+                <Button
+                  color="primary"
+                  sx={{
+                    color: "#62A1BA",
+                    fontWeight: 800,
+                    fontSize: "1.3rem",
+                    textTransform: "lowercase",
+                    "&:hover": {
+                      color: "#62A1BA",
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  affitta
+                </Button>
 
-              <Divider
-                orientation="vertical"
-                flexItem
-                sx={{
-                  backgroundColor: "grey.200",
-                  height: 24,
-                  marginY: "auto",
-                }}
-              />
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{
+                    backgroundColor: "#62A1BA",
+                    height: 32,
+                    marginY: "auto",
+                  }}
+                />
 
-              <Button
-                color="primary"
-                sx={{
-                  color: "#60a5fa",
-                  fontWeight: 500,
-                  fontSize: "1rem",
-                  textTransform: "lowercase",
-                  "&:hover": {
-                    color: "#3b82f6",
-                    backgroundColor: "transparent",
-                  },
-                }}
-              >
-                agenzie
-              </Button>
+                <Button
+                  color="primary"
+                  sx={{
+                    color: "#62A1BA",
+                    fontWeight: 800,
+                    fontSize: "1.3rem",
+                    textTransform: "lowercase",
+                    "&:hover": {
+                      color: "#62A1BA",
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  agenzie
+                </Button>
+              </Box>
             </Box>
             {/* Login Button */}
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -130,30 +143,32 @@ export default function Header() {
                 startIcon={
                   <Avatar
                     sx={{
-                      backgroundColor: "#60a5fa",
-                      width: 32,
-                      height: 32,
-                      marginRight: -0.5,
+                      backgroundColor: "#62A1BA",
+                      width: 40,
+                      height: 40,
+                      marginRight: 0.5,
                       "&:hover": {
-                        backgroundColor: "#3b82f6",
+                        backgroundColor: "#62A1BA",
                       },
                     }}
                   >
-                    <PersonOutlineIcon sx={{ color: "white", fontSize: 20 }} />
+                    <PersonOutlineIcon
+                      sx={{ color: "white", fontSize: 40, px: 0.2 }}
+                    />
                   </Avatar>
                 }
                 sx={{
-                  color: "#60a5fa",
-                  borderColor: "#60a5fa",
+                  color: "#62A1BA",
+                  borderColor: "#62A1BA",
                   borderRadius: 28,
                   px: 3,
                   py: 1,
-                  fontWeight: 500,
-                  fontSize: "1rem",
+                  fontWeight: 800,
+                  fontSize: "1.3rem",
                   textTransform: "lowercase",
                   "&:hover": {
-                    borderColor: "#3b82f6",
-                    backgroundColor: "rgba(59, 130, 246, 0.04)",
+                    borderColor: "#62A1BA",
+                    backgroundColor: "rgba(98, 161, 186, 0.04)",
                   },
                 }}
               >

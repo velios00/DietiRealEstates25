@@ -7,7 +7,6 @@ import { loginUser } from "../../../services/AuthService";
 import { LoginRequest } from "../../models/AuthRequest.model";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "../../models/JwtPayload.model";
-import { User } from "../../models/User.model";
 import { UserContext } from "../../context/UserContext";
 import { AuthUser } from "../../models/AuthUser.model";
 
