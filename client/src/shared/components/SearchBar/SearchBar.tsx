@@ -20,6 +20,7 @@ export function SearchBar() {
         fullWidth
         sx={{
           flex: 1,
+
           height: "100%",
           "& .MuiInput-root": {
             height: "100%",

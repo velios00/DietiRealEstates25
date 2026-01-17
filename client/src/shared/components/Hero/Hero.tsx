@@ -14,15 +14,15 @@ export default function Hero({ query, setQuery, onSearch }: HeroProps) {
       sx={{
         display: "flex",
         position: "relative",
-        height: { xs: "20vh", sm: "30vh", md: "40vh" },
+        height: { xs: "60vh", sm: "70vh", md: "30vh" },
         alignItems: "center",
         // py: 8,
         // px: 2,
         backgroundColor: "#f5f5f5",
         color: "white",
         overflow: "hidden",
-        minHeight: 400,
-        maxHeight: 700,
+        minHeight: 600,
+        maxHeight: 800,
       }}
     >
       <Box

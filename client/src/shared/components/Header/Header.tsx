@@ -15,9 +15,8 @@ export default function Header() {
   return (
     <>
       <AppBar
-        position="static"
+        position="fixed"
         sx={{
-          backgroundColor: "white",
           boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
           borderRadius: "0 0 32px 32px",
           paddingX: { xs: 2, md: 6 },
@@ -25,6 +24,9 @@ export default function Header() {
           height: { xs: "50px", md: "60px", lg: "75px" }, // ALTEZZA FISSA
           width: "100%",
           justifyContent: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.85)", // Semi-trasparente
+          backdropFilter: "blur(8px)", // Effetto blur per leggibilità
+          zIndex: 1200, // Assicura che stia sopra tutto
         }}
         elevation={0}
       >
