@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { SearchBar } from "../SearchBar/SearchBar";
 
 interface HeroProps {
@@ -94,7 +94,7 @@ export default function Hero({ query, setQuery, onSearch }: HeroProps) {
                 xl: "5rem",
               },
               textShadow: "0 2px 8px rgba(0,0,0,0.4)",
-              lineHeight: 1.2,
+              lineHeight: 1,
               letterSpacing: "-0.5px",
               maxWidth: 1100,
             }}

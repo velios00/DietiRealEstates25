@@ -1,4 +1,4 @@
-import { TextField, IconButton, Paper, Box } from "@mui/material";
+import { TextField, Box } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 export function SearchBar() {
@@ -20,7 +20,6 @@ export function SearchBar() {
         fullWidth
         sx={{
           flex: 1,
-
           height: "100%",
           "& .MuiInput-root": {
             height: "100%",
