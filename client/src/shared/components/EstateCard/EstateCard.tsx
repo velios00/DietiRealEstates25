@@ -29,7 +29,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
   return (
     <Card
       sx={{
-        width: 420,
+        width: 480,
         borderRadius: 6,
         overflow: "hidden",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",

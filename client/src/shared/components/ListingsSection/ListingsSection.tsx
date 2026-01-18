@@ -79,17 +79,6 @@ export default function ListingsSection() {
       image: "src/assets/hero2.jpg",
       type: "Casa indipendente",
     },
-    {
-      id: 6,
-      title: "Attico, Firenze",
-      address: "Piazza della Signoria 3",
-      price: 520000,
-      beds: 4,
-      baths: 3,
-      area: 160,
-      image: "https://source.unsplash.com/random/400x300?penthouse,florence",
-      type: "Attico",
-    },
   ];
 
   return (
@@ -107,7 +96,7 @@ export default function ListingsSection() {
         sx={{
           py: 2,
           width: "100%",
-          maxWidth: "1600px",
+
           border: "1px solid #62A1BA",
           borderRadius: 12,
           backgroundColor: "white",
@@ -116,7 +105,7 @@ export default function ListingsSection() {
         }}
       >
         {/* Titolo sezione */}
-        <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 4, pt: 2 }}>
           <Typography
             variant="h2"
             sx={{
@@ -129,7 +118,7 @@ export default function ListingsSection() {
             Nuovi Annunci
           </Typography>
         </Box>
-        <Box sx={{ position: "relative" }}>
+        <Box sx={{ position: "relative", pb: 4 }}>
           {/* Freccia sinistra */}
           <IconButton
             onClick={scrollLeft}
@@ -168,6 +157,12 @@ export default function ListingsSection() {
               scrollSnapType: "x mandatory",
               "& > *": {
                 scrollSnapAlign: "center",
+              },
+              "& > div:first-of-type": {
+                ml: { xs: 0, md: 6 },
+              },
+              "& > div:last-of-type": {
+                mr: { xs: 0, md: 6 },
               },
             }}
           >
