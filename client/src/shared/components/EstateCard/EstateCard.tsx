@@ -9,12 +9,28 @@ import {
 
 import { LocationOn, Bed, Bathroom, SquareFoot } from "@mui/icons-material";
 
-export default function EstateCard() {
+export interface Listing {
+  id: number;
+  title: string;
+  address: string;
+  price: number;
+  beds: number;
+  baths: number;
+  area: number;
+  image: string;
+  type: string;
+}
+
+interface ListingCardProps {
+  listing: Listing;
+}
+
+export default function EstateCard({ listing }: ListingCardProps) {
   return (
     <Card
       sx={{
-        width: 400,
-        borderRadius: 3,
+        width: 420,
+        borderRadius: 6,
         overflow: "hidden",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -31,7 +47,7 @@ export default function EstateCard() {
         <CardMedia
           component="img"
           height="200"
-          image={"/src/assets/hero2.jpg"}
+          image={listing.image}
           alt="Estate"
           sx={{
             objectFit: "cover",
@@ -39,7 +55,7 @@ export default function EstateCard() {
           }}
         />
         <Chip
-          label={"Affitto"}
+          label={listing.type}
           size="small"
           sx={{
             position: "absolute",
@@ -72,7 +88,7 @@ export default function EstateCard() {
               lineHeight: 1.3,
             }}
           >
-            {"Appartamento moderno"}
+            {listing.title}
           </Typography>
 
           <Box
@@ -84,7 +100,7 @@ export default function EstateCard() {
           >
             <LocationOn sx={{ fontSize: 16, mr: 0.5 }} />
             <Typography variant="body2" sx={{ fontSize: "0.85rem" }}>
-              {"Via Napoli 33, Italia"}
+              {listing.address}
             </Typography>
           </Box>
 
@@ -96,7 +112,7 @@ export default function EstateCard() {
               fontSize: "1.75rem",
             }}
           >
-            € {"250.000"}
+            € {listing.price.toLocaleString()}
           </Typography>
         </Box>
 
@@ -115,7 +131,7 @@ export default function EstateCard() {
               variant="body2"
               sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
             >
-              {"3"} letti
+              {listing.beds} letti
             </Typography>
           </Box>
 
@@ -125,7 +141,7 @@ export default function EstateCard() {
               variant="body2"
               sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
             >
-              {"2"} bagni
+              {listing.baths} bagni
             </Typography>
           </Box>
 
@@ -135,7 +151,7 @@ export default function EstateCard() {
               variant="body2"
               sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
             >
-              {"120"} m²
+              {listing.area} m²
             </Typography>
           </Box>
         </Box>
