@@ -6,6 +6,7 @@ import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import { registerUser } from "../../../services/AuthService";
 import { RegisterRequest } from "../../models/AuthRequest.model";
+import { Roles } from "../../enums/Roles.enum";
 export function RegisterForm() {
   const navigate = useNavigate();
   //const [showPassword, setShowPassword] = useState(false);
@@ -23,10 +24,10 @@ export function RegisterForm() {
       event.preventDefault();
 
       const emailError = registerData.email.validateCriteria?.(
-        registerData.email.value
+        registerData.email.value,
       );
       const passwordError = registerData.password.validateCriteria?.(
-        registerData.password.value
+        registerData.password.value,
       );
 
       if (emailError || passwordError) {
@@ -41,7 +42,7 @@ export function RegisterForm() {
         name: registerData.name.value,
         surname: registerData.surname.value,
         userAddress: registerData.userAddress.value,
-        role: "user",
+        role: Roles.USER,
       };
       registerUser(registerRequest)
         .then(() => {
@@ -50,29 +51,52 @@ export function RegisterForm() {
         })
         .catch((error) => {
           toast.error(
-            "Errore nella registrazione, prova ad usare credenziali diverse"
+            "Errore nella registrazione, prova ad usare credenziali diverse",
           );
           console.error("Errore nella registrazione: ", error);
         });
     },
-    [navigate, registerData]
+    [navigate, registerData],
   );
 
   return (
     <>
       <Grid container spacing={2} justifyContent="center">
         <Grid>
-          <Paper elevation={3} className="w-full max-w-md p-8 rounded-2x1">
-            <Typography variant="h4" align="center" className="mb-6">
+          <Paper
+            elevation={3}
+            className="w-full max-w-md p-8 rounded-2x1"
+            sx={{
+              p: { xs: 3, sm: 4, md: 5 },
+              borderRadius: 5,
+              width: "100%",
+            }}
+          >
+            <Typography
+              variant="h4"
+              align="center"
+              className="mb-6"
+              sx={{
+                fontFamily: '"Montserrat", sans-serif',
+                fontWeight: 600,
+                mb: 4,
+              }}
+            >
               Registrati
             </Typography>
             <Grid component="form" onSubmit={handleSubmit}>
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 <Grid size={{ xs: 12 }}>
                   <TextField
                     label="Email"
                     name="email"
                     fullWidth
+                    sx={{
+                      "&. MuiOutlinedInput-root": {
+                        borderRadius: 6,
+                        padding: "8px 14px",
+                      },
+                    }}
                     value={registerData.email.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -91,6 +115,12 @@ export function RegisterForm() {
                     name="password"
                     type="password"
                     fullWidth
+                    sx={{
+                      "&. MuiOutlinedInput-root": {
+                        borderRadius: 6,
+                        padding: "8px 14px",
+                      },
+                    }}
                     value={registerData.password.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -108,6 +138,12 @@ export function RegisterForm() {
                     label="Nome"
                     name="name"
                     fullWidth
+                    sx={{
+                      "&. MuiOutlinedInput-root": {
+                        borderRadius: 6,
+                        padding: "8px 14px",
+                      },
+                    }}
                     value={registerData.name.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -125,6 +161,12 @@ export function RegisterForm() {
                     label="Cognome"
                     name="surname"
                     fullWidth
+                    sx={{
+                      "&. MuiOutlinedInput-root": {
+                        borderRadius: 6,
+                        padding: "8px 14px",
+                      },
+                    }}
                     value={registerData.surname.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -142,6 +184,12 @@ export function RegisterForm() {
                     label="Indirizzo"
                     name="userAddress"
                     fullWidth
+                    sx={{
+                      "&. MuiOutlinedInput-root": {
+                        borderRadius: 6,
+                        padding: "8px 14px",
+                      },
+                    }}
                     value={registerData.userAddress.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -155,9 +203,39 @@ export function RegisterForm() {
                   ></TextField>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
-                  <Button type="submit" variant="contained" fullWidth>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    sx={{
+                      borderRadius: 4,
+                      padding: "10px 0",
+                      backgroundColor: "#62A1BA",
+                      "&:hover": {
+                        backgroundColor: "#4a8ba3",
+                      },
+                    }}
+                  >
                     Registrati
                   </Button>
+
+                  <Typography
+                    align="center"
+                    sx={{
+                      fontFamily: '"Montserrat", sans-serif',
+                      fontWeight: 500,
+                      mt: 2,
+                      cursor: "pointer",
+                      color: "#62A1BA",
+                      "&:hover": {
+                        color: "#4a8ba3",
+                      },
+                      textDecoration: "underline",
+                    }}
+                    onClick={() => navigate("/login")}
+                  >
+                    Hai già un account? Accedi
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
