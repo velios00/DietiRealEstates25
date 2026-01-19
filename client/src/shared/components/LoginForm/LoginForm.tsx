@@ -13,6 +13,7 @@ import { AuthUser } from "../../models/AuthUser.model";
 export function LoginForm() {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -57,56 +58,114 @@ export function LoginForm() {
           console.error("Errore nel login: ", error);
         });
     },
-    [navigate, loginData, userContext]
+    [navigate, loginData, userContext],
   );
 
   return (
-    <Grid container spacing={2} justifyContent="center">
-      <Grid>
-        <Paper elevation={3} className="w-full max-w-md p-8 rounded-2x1">
-          <Typography variant="h4" align="center" className="mb-6">
-            Login
-          </Typography>
-          <Grid component="form" onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  label="Email"
-                  name="email"
-                  fullWidth
-                  value={loginData.email}
-                  onChange={(e) =>
-                    setLoginData({
-                      ...loginData,
-                      email: e.target.value,
-                    })
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  fullWidth
-                  value={loginData.password}
-                  onChange={(e) =>
-                    setLoginData({
-                      ...loginData,
-                      password: e.target.value,
-                    })
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Button type="submit" variant="contained" fullWidth>
-                  Accedi
-                </Button>
-              </Grid>
-            </Grid>
+    <Paper
+      elevation={3}
+      sx={{
+        p: { xs: 3, sm: 4, md: 5 },
+        borderRadius: 5,
+        width: "100%",
+      }}
+    >
+      <Typography
+        variant="h4"
+        align="center"
+        sx={{
+          fontFamily: '"Montserrat", sans-serif',
+          fontWeight: 600,
+          mb: 4,
+        }}
+      >
+        Accedi
+      </Typography>
+
+      <Grid component="form" onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              label="Email"
+              name="email"
+              fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 6,
+                  padding: "8px 14px",
+                },
+              }}
+              value={loginData.email}
+              onChange={(e) =>
+                setLoginData({
+                  ...loginData,
+                  email: e.target.value,
+                })
+              }
+            />
           </Grid>
-        </Paper>
+
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 6,
+                  padding: "8px 14px",
+                },
+              }}
+              value={loginData.password}
+              onChange={(e) =>
+                setLoginData({
+                  ...loginData,
+                  password: e.target.value,
+                })
+              }
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                borderRadius: 4,
+                py: 1.5,
+                backgroundColor: "#62A1BA",
+                fontSize: "1rem",
+                fontWeight: 600,
+                "&:hover": {
+                  backgroundColor: "#4a8ba3",
+                },
+              }}
+            >
+              Accedi
+            </Button>
+
+            <Typography
+              align="center"
+              sx={{
+                fontFamily: '"Montserrat", sans-serif',
+                fontWeight: 500,
+                mt: 3,
+                cursor: "pointer",
+                color: "#62A1BA",
+                textDecoration: "underline",
+                "&:hover": {
+                  color: "#4a8ba3",
+                },
+              }}
+              onClick={() => navigate("/register")}
+            >
+              Non hai un account? Registrati
+            </Typography>
+          </Grid>
+        </Grid>
       </Grid>
-    </Grid>
+    </Paper>
   );
 }
