@@ -1,10 +1,32 @@
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import EstateCard, { Listing } from "../EstateCard/EstateCard";
+import { searchEstates } from "../../../services/EstateService";
+import { mapEstateToListing } from "../../../mappers/EstateToListing.mapper";
+import { Estate } from "../../models/Estate.model";
 
 export default function ListingsSection() {
+  const [listings, setListings] = useState<Listing[]>([]);
   const containerRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    searchEstates({
+      page: 1,
+      limit: 8,
+      orderBy: "createdAt",
+    })
+      .then((response) => {
+        console.log("Response from searchEstates:", response);
+        const estates: Estate[] = response.data.results;
+        const mapped = estates.map(mapEstateToListing);
+        setListings(mapped);
+      })
+      .catch((error) => {
+        console.error("Errore durante il recupero degli annunci:", error);
+      });
+  }, []);
+
   const scrollLeft = () => {
     if (containerRef.current) {
       containerRef.current.scrollBy({
@@ -22,64 +44,6 @@ export default function ListingsSection() {
       });
     }
   };
-
-  const MOCK_LISTINGS: Listing[] = [
-    {
-      id: 1,
-      title: "Appartamento, Napoli",
-      address: "Via dei cazzi 32",
-      price: 120000,
-      beds: 2,
-      baths: 2,
-      area: 85,
-      image: "src/assets/hero2.jpg",
-      type: "Appartamento",
-    },
-    {
-      id: 2,
-      title: "Villa con giardino, Roma",
-      address: "Via Roma 45",
-      price: 350000,
-      beds: 4,
-      baths: 3,
-      area: 180,
-      image: "src/assets/hero2.jpg",
-      type: "Villa",
-    },
-    {
-      id: 3,
-      title: "Loft moderno, Milano",
-      address: "Via Milano 12",
-      price: 280000,
-      beds: 3,
-      baths: 2,
-      area: 120,
-      image: "src/assets/hero2.jpg",
-      type: "Loft",
-    },
-    {
-      id: 4,
-      title: "Appartamento vista mare, Sorrento",
-      address: "Via del Mare 8",
-      price: 220000,
-      beds: 3,
-      baths: 2,
-      area: 95,
-      image: "src/assets/hero2.jpg",
-      type: "Appartamento",
-    },
-    {
-      id: 5,
-      title: "Cascina ristrutturata, Toscana",
-      address: "Strada dei Campi 22",
-      price: 450000,
-      beds: 5,
-      baths: 4,
-      area: 250,
-      image: "src/assets/hero2.jpg",
-      type: "Casa indipendente",
-    },
-  ];
 
   return (
     <Box
@@ -166,7 +130,7 @@ export default function ListingsSection() {
               },
             }}
           >
-            {MOCK_LISTINGS.map((listing) => (
+            {listings.map((listing) => (
               <Box
                 key={listing.id}
                 sx={{

@@ -16,8 +16,8 @@ export interface Listing {
   price: number;
   beds: number;
   baths: number;
-  area: number;
-  image: string;
+  size: number;
+  photos: string[];
   type: string;
 }
 
@@ -47,7 +47,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
         <CardMedia
           component="img"
           height="200"
-          image={listing.image}
+          image={listing.photos?.[0] || ""}
           alt="Estate"
           sx={{
             objectFit: "cover",
@@ -151,7 +151,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
               variant="body2"
               sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
             >
-              {listing.area} m²
+              {listing.size} m²
             </Typography>
           </Box>
         </Box>

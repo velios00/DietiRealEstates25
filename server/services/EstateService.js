@@ -9,7 +9,7 @@ export class EstateService {
     Place,
     userId,
     dto,
-    apiKey
+    apiKey,
   ) {
     let agencyId = null;
     let idManager = null;
@@ -33,7 +33,7 @@ export class EstateService {
     if (!agencyId) {
       throw new Error("User is neither a manager nor an agent");
     }
-
+    console.log("CreatedBy:", createdBy);
     const geo = await geoCodeAddress(dto.address, apiKey);
 
     let place = await Place.findOne({
@@ -54,9 +54,13 @@ export class EstateService {
 
     const newEstate = await RealEstate.create({
       description: dto.description,
-      photo: dto.photo,
+      photos: dto.photos,
       price: dto.price,
       size: dto.size,
+      nRooms: dto.nRooms,
+      nBathrooms: dto.nBathrooms,
+      energyClass: dto.energyClass,
+      floor: dto.floor,
       idAgent,
       idAgency: agencyId,
       createdBy,
@@ -123,7 +127,13 @@ export class EstateService {
     return await Estate.findByPk(idRealEstate);
   }
 
-  static async searchEstates(RealEstate, Place, filters, EstateMapper) {
+  static async searchEstates(
+    RealEstate,
+    Place,
+    filters,
+    pagination,
+    EstateMapper,
+  ) {
     const whereConditions = {};
 
     //refactorare in un altro file questa
@@ -136,7 +146,7 @@ export class EstateService {
         whereConditions.price[Op.lte] = filters.maxPrice;
       }
     }
-
+    //Forse cambiare !== con !=
     if (filters.nRooms !== null) {
       whereConditions.nRooms = filters.nRooms;
     }
@@ -163,7 +173,18 @@ export class EstateService {
       whereConditions.floor = filters.floor;
     }
 
-    const estates = await RealEstate.findAll({
+    if (filters.createdBy != null) {
+      whereConditions.createdBy = filters.createdBy;
+    }
+
+    if (filters.type != null) {
+      whereConditions.type = filters.type;
+    }
+
+    const { page = 1, limit = 10, orderBy = "price" } = pagination;
+    const offset = (page - 1) * limit;
+
+    const estates = await RealEstate.findAndCountAll({
       where: whereConditions,
       include: [
         {
@@ -176,9 +197,16 @@ export class EstateService {
           required: true, //inner join
         },
       ],
-      order: [["price", "ASC"]],
+      order: [[orderBy === "createdAt" ? "createdAt" : "price", "ASC"]],
+      limit: limit,
+      offset: offset,
     });
 
-    return estates.map((estate) => EstateMapper.estateToDTO(estate));
+    return {
+      data: estates.rows.map((estate) => EstateMapper.estateToDTO(estate)),
+      total: estates.count,
+      page,
+      totalPages: Math.ceil(estates.count / limit),
+    };
   }
 }

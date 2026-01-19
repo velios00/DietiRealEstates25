@@ -8,6 +8,7 @@ import {
 } from "../models/DietiRealEstatesDB.js";
 import { SearchFiltersDTO } from "../DTOs/SearchFiltersDTO.js";
 import { SearchFiltersMapper } from "../mappers/SearchFiltersMapper.js";
+import { parse } from "dotenv";
 
 export class EstateController {
   static async createEstate(req, res, next) {
@@ -15,7 +16,6 @@ export class EstateController {
       const userId = req.userId;
       const dto = EstateMapper.toCreateEstateDTO(req.body);
 
-      console.log("process.env.API_KEY_GEOAPIFY", process.env.API_KEY_GEOAPIFY);
       const created = await EstateService.createEstate(
         RealEstate,
         Agent,
@@ -23,7 +23,7 @@ export class EstateController {
         Place,
         userId,
         dto,
-        process.env.API_KEY_GEOAPIFY
+        process.env.API_KEY_GEOAPIFY,
       );
 
       const estateWithPlace = await RealEstate.findByPk(created.idRealEstate, {
@@ -50,7 +50,7 @@ export class EstateController {
         Agent,
         Manager,
         userId,
-        estateId
+        estateId,
       );
 
       res.status(200).json({ message: "Estate deleted successfully" });
@@ -69,7 +69,7 @@ export class EstateController {
 
       const estate = await EstateService.getEstateById(
         RealEstate,
-        req.params.id
+        req.params.id,
       );
 
       if (!estate) {
@@ -85,28 +85,36 @@ export class EstateController {
 
   static async searchEstates(req, res, next) {
     try {
-      if (!req.query.city) {
-        return res.status(400).json({
-          error: "City parameter is required",
-        });
-      }
+      // if (!req.query.city) {
+      //   return res.status(400).json({
+      //     error: "City parameter is required",
+      //   });
+      // }
 
       const filters = SearchFiltersMapper.fromQuery(req.query);
+
+      const pagination = {
+        page: parseInt(req.query.page) || 1,
+        limit: parseInt(req.query.limit) || 10,
+        orderBy: req.query.orderBy || "price",
+      };
 
       const estates = await EstateService.searchEstates(
         RealEstate,
         Place,
         filters,
-        EstateMapper
+        pagination,
+        EstateMapper,
       );
 
-      const results = estates.map((estate) => EstateMapper.estateToDTO(estate));
-
       res.status(200).json({
-        count: results.length,
+        count: estates.data.length,
+        totalResults: estates.total,
+        page: estates.page,
+        totalPages: estates.totalPages,
         city: filters.city,
         filters: SearchFiltersMapper.toResponse(filters),
-        results: results,
+        results: estates.data,
       });
     } catch (err) {
       next(err);

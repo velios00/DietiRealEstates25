@@ -4,7 +4,7 @@ export class EstateMapper {
   static toCreateEstateDTO(body) {
     return new createEstateDTO({
       description: body.description,
-      photo: body.photo,
+      photos: body.photos,
       price: body.price,
       size: body.size,
       address: body.address,
@@ -20,7 +20,7 @@ export class EstateMapper {
     return {
       idEstate: estate.idEstate,
       description: estate.description,
-      //photo: estate.photo,
+      photos: estate.photos,
       price: estate.price,
       size: estate.size,
       nRooms: estate.nRooms,
