@@ -3,6 +3,8 @@ import App from "./App";
 import Home from "./pages/Home/Home.page";
 import RegisterPage from "./pages/Register/Register.page";
 import LoginPage from "./pages/Login/Login.page";
+import Agency from "./pages/Agency/Agency.page";
+import SearchEstates from "./pages/SearchEstates/SearchEstates.page";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +22,14 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/agency/:id",
+        element: <Agency />,
+      },
+      {
+        path: "/search-estates",
+        element: <SearchEstates />,
       },
     ],
   },
