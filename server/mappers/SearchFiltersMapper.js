@@ -12,6 +12,8 @@ export class SearchFiltersMapper {
       maxSize: query.maxSize,
       energyClass: query.energyClass,
       floor: query.floor,
+      type: query.type,
+      idAgency: query.idAgency, //? parseInt(query.idAgency, 10) : null,
     });
   }
 
@@ -26,7 +28,8 @@ export class SearchFiltersMapper {
     if (dto.maxSize !== null) response.maxSize = dto.maxSize;
     if (dto.energyClass !== null) response.energyClass = dto.energyClass;
     if (dto.floor !== null) response.floor = dto.floor;
-
+    if (dto.type !== null) response.type = dto.type;
+    if (dto.idAgency !== null) response.idAgency = dto.idAgency;
     return response;
   }
 }

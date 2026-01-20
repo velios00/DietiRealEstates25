@@ -19,6 +19,11 @@ export class AgencyMapper {
     return new AgencyDTO({
       idAgency: agency.idAgency,
       agencyName: agency.agencyName,
+      address: agency.address,
+      description: agency.description,
+      profileImage: agency.profileImage,
+      phoneNumber: agency.phoneNumber,
+      url: agency.url,
       idManager: agency.idManager,
       managerName:
         agency.Manager && agency.Manager.User

@@ -6,7 +6,6 @@ export const validateEmail = (email: string) => {
   if (!email.trim()) {
     return "Email non puo' essere vuota";
   }
-
   return null;
 };
 
@@ -29,5 +28,6 @@ export const validatePassword = (password: string) => {
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
     return "La password deve contenere almeno un carattere speciale";
   }
+  console.log("SESS");
   return null;
 };

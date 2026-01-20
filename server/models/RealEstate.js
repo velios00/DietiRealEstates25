@@ -17,7 +17,7 @@ export function createModel(database) {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },
       price: {
-        type: DataTypes.DECIMAL(10, 2), //occhio qui
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       size: {

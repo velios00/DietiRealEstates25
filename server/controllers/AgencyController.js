@@ -11,7 +11,7 @@ export class AgencyController {
         Agency,
         User,
         Manager,
-        dto
+        dto,
       );
 
       res.status(201).json(result);
@@ -25,7 +25,7 @@ export class AgencyController {
       const agencies = await AgencyService.getAllAgencies(
         Agency,
         Manager,
-        User
+        User,
       );
       const result = AgencyMapper.agencyListToDTO(agencies);
       res.status(200).json(result);
@@ -34,16 +34,33 @@ export class AgencyController {
     }
   }
 
-  static async getRealEstatesByAgencyId(req, res, next) {
+  static async getAgencyById(req, res, next) {
     try {
       const idAgency = req.params.idAgency;
-      const realEstates = await AgencyService.getRealEstatesByAgencyId(
+      const agency = await AgencyService.getAgencyById(
         Agency,
-        idAgency
+        Manager,
+        User,
+        idAgency,
       );
-      res.status(200).json(realEstates);
+      console.log(agency);
+      const result = AgencyMapper.agencyToDTO(agency);
+      res.status(200).json(result);
     } catch (err) {
       next(err);
     }
   }
+
+  // static async getRealEstatesByAgencyId(req, res, next) {
+  //   try {
+  //     const idAgency = req.params.idAgency;
+  //     const realEstates = await AgencyService.getRealEstatesByAgencyId(
+  //       Agency,
+  //       idAgency,
+  //     );
+  //     res.status(200).json(realEstates);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 }

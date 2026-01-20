@@ -9,16 +9,14 @@ AgencyRouter.post(
   "/createAgency",
   enforceAuthentication,
   authorizeRoles("admin"),
-  AgencyController.createAgency
+  AgencyController.createAgency,
 );
 
 AgencyRouter.get("/", AgencyController.getAllAgencies);
 
-// getestatesbyagencyID
+AgencyRouter.get("/:idAgency", AgencyController.getAgencyById);
 
-AgencyRouter.get(
-  "/:idAgency/real-estates",
-  enforceAuthentication,
-  authorizeRoles("admin", "manager"),
-  AgencyController.getRealEstatesByAgencyId
-);
+// AgencyRouter.get(
+//   "/:idAgency/real-estates",
+//   AgencyController.getRealEstatesByAgencyId,
+// );

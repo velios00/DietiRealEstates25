@@ -24,11 +24,10 @@ export function LoginForm() {
       event.preventDefault();
 
       const emailError = validateEmail(loginData.email);
-      const passwordError = validatePassword(loginData.password);
+      console.log("Submitting login form with data:", loginData);
 
-      if (emailError || passwordError) {
+      if (emailError) {
         if (emailError) toast.error(emailError);
-        if (passwordError) toast.error(passwordError);
         return;
       }
 
@@ -36,18 +35,22 @@ export function LoginForm() {
         email: loginData.email,
         password: loginData.password,
       };
-
       loginUser(loginRequest)
         .then((response) => {
           const token = response.data.token;
           localStorage.setItem("token", token);
           const decodedToken = jwtDecode<JwtPayload>(token);
+
           const authUser: AuthUser = {
             idUser: decodedToken.user.idUser,
-            email: decodedToken.user.username,
+            email: decodedToken.user.email,
             role: decodedToken.user.role,
           };
-          userContext?.setUser(authUser);
+          // userContext?.setUser(authUser);
+          if (userContext?.setUser) {
+            userContext.setUser(authUser);
+            console.log("UserContext dopo setUser:", userContext?.user);
+          }
           window.dispatchEvent(new Event("storage"));
 
           toast.success("Login effettuato con successo");

@@ -35,6 +35,7 @@ export class AuthenticationController {
       const dto = new LoginUserDTO(req.body);
       const foundUser = await AuthenticationService.loginUser(User, dto);
       res.json(AuthenticationService.issueToken(foundUser));
+      console.log("Utente loggato", foundUser);
     } catch (err) {
       next(err);
     }

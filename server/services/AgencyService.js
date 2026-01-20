@@ -33,14 +33,14 @@ export class AgencyService {
         dto.manager.email,
         dto.manager.name,
         dto.agencyName,
-        temporaryPassword
+        temporaryPassword,
       );
       console.log("Email inviata con successo a:", dto.manager.email);
     } catch (emailError) {
       console.error(
         "Errore nell'invio dell'email a:",
         dto.manager.email,
-        emailError
+        emailError,
       );
     }
 
@@ -65,6 +65,25 @@ export class AgencyService {
       ],
     });
     return agencies;
+  }
+
+  static async getAgencyById(Agency, Manager, User, idAgency) {
+    const agency = await Agency.findByPk(idAgency, {
+      include: [
+        {
+          model: Manager,
+          include: [
+            {
+              model: User,
+            },
+          ],
+        },
+      ],
+    });
+    if (!agency) {
+      throw new Error("Agency not found");
+    }
+    return agency;
   }
 
   static async getRealEstatesByAgencyId(Agency, idAgency) {

@@ -151,6 +151,11 @@ export class EstateService {
       whereConditions.nRooms = filters.nRooms;
     }
 
+    // Aggiungi filtro per idAgency se presente
+    if (filters.idAgency != null) {
+      whereConditions.idAgency = filters.idAgency;
+    }
+
     if (filters.nBathrooms !== null) {
       whereConditions.nBathrooms = filters.nBathrooms;
     }

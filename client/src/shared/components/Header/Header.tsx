@@ -1,7 +1,6 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   Divider,
   Button,
   Container,
@@ -10,8 +9,10 @@ import {
 } from "@mui/material";
 
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate();
   return (
     <>
       <AppBar
@@ -142,6 +143,7 @@ export default function Header() {
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Button
                 variant="outlined"
+                onClick={() => navigate("/login")}
                 startIcon={
                   <Avatar
                     sx={{

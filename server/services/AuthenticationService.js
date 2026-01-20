@@ -63,12 +63,12 @@ export class AuthenticationService {
       {
         user: {
           idUser: user.idUser,
-          username: user.email, //da cambiare in email probabilmente
+          email: user.email, //da cambiare in email probabilmente
           role: user.role,
         },
       },
       process.env.TOKEN_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
 
     return { token };
