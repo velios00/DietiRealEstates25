@@ -1,0 +1,56 @@
+import { Box } from "@mui/material";
+import { SearchBar } from "../SearchBar/SearchBar";
+import { FiltersButton } from "../FiltersButton/FiltersButton";
+import MapView from "../MapView/MapView";
+
+export default function RightSidebar() {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "calc(100vh - 64px)",
+        backgroundColor: "white",
+        pt: 2,
+      }}
+    >
+      {/* Sezione superiore: SearchBar e FiltersButton affiancati */}
+      <Box
+        sx={{
+          p: 2,
+          borderBottom: "1px solid #e0e0e0",
+          backgroundColor: "#f8f9fa",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "95%",
+            display: "flex",
+            gap: 1.5,
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ flex: 1, maxWidth: "calc(100% - 140px)" }}>
+            <SearchBar />
+          </Box>
+          <Box sx={{ minWidth: "110px", maxWidth: "130px" }}>
+            <FiltersButton />
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Sezione inferiore: Mappa che occupa tutto lo spazio rimanente */}
+      <Box
+        sx={{
+          flex: 1,
+          p: 2,
+          overflow: "hidden",
+        }}
+      >
+        <MapView />
+      </Box>
+    </Box>
+  );
+}

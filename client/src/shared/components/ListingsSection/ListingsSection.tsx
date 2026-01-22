@@ -15,6 +15,7 @@ export default function ListingsSection() {
       page: 1,
       limit: 8,
       orderBy: "createdAt",
+      
     })
       .then((response) => {
         console.log("Response from searchEstates:", response);

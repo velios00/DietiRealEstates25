@@ -1,37 +1,48 @@
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../shared/components/Header/Header";
-import EstatesPageLayout from "../../shared/components/EstatesPageLayout/EstatesPageLayout";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { FiltersButton } from "../../shared/components/FiltersButton/FiltersButton";
-import { SearchBar } from "../../shared/components/SearchBar/SearchBar";
-import EstateCard from "../../shared/components/EstateCard/EstateCard";
+import SearchResults from "../../shared/components/SearchResults/SearchResults";
+import RightSidebar from "../../shared/components/RightSideBar.tsx/RightSideBar";
 
-export default function SearchEstatesPage() {
-  // TODO: stato ricerca / filtri / fetch
-  const estates = [1, 2, 3, 4, 5]; // mock
+export default function SearchEstate() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <EstatesPageLayout
-      topSection={
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <SearchBar />
-          <FiltersButton />
+    <>
+      <Box sx={{ height: "64px" }} /> {/* Spacer per l'header fisso */}
+      <Header />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          minHeight: "calc(100vh - 64px)",
+          backgroundColor: "#f8f9fa",
+        }}
+      >
+        {/* Colonna sinistra: Risultati della ricerca (ancora più ridotta) */}
+        <Box
+          sx={{
+            flex: { xs: 1, md: 0.6 },
+            overflowY: "auto",
+            maxHeight: { md: "calc(100vh - 64px)" },
+            pt: 2,
+          }}
+        >
+          <SearchResults />
         </Box>
-      }
-      listSection={
-        <>
-          <Typography fontWeight={600} mb={2}>
-            Immobili trovati ({estates.length})
-          </Typography>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {estates.map((id) => (
-              <EstateCard key={id} listing={undefined} />
-            ))}
-          </Box>
-        </>
-      }
-      mapSection={<MapView estates={estates} />}
-    />
+        {/* Colonna destra: Sidebar con searchbar/filtri + mappa (più ampia) */}
+        <Box
+          sx={{
+            flex: { xs: 1, md: 1.4 },
+            minWidth: { md: "640px" },
+            borderLeft: { md: "1px solid #e0e0e0" },
+            display: { xs: isMobile ? "block" : "none", md: "block" },
+          }}
+        >
+          <RightSidebar />
+        </Box>
+      </Box>
+    </>
   );
 }

@@ -12,6 +12,7 @@ export function SearchBar() {
         backgroundColor: "white",
         borderRadius: 28,
         overflow: "hidden",
+        border: "1px solid #62A1BA",
       }}
     >
       <TextField
