@@ -1,7 +1,6 @@
 import "leaflet/dist/leaflet.css";
 import { LatLngTuple } from "leaflet";
 import { MapContainer, TileLayer } from "react-leaflet";
-import FixMapSize from "./FixMapSize";
 import { Box } from "@mui/material";
 
 export default function MapView() {
@@ -29,7 +28,6 @@ export default function MapView() {
         }}
         scrollWheelZoom={true}
       >
-        <FixMapSize />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
