@@ -5,6 +5,7 @@ import RegisterPage from "./pages/Register/Register.page";
 import LoginPage from "./pages/Login/Login.page";
 import Agency from "./pages/Agency/Agency.page";
 import SearchEstates from "./pages/SearchEstates/SearchEstates.page";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.page";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "/search-estates",
         element: <SearchEstates />,
+      },
+      {
+        path: "/admin",
+        element: <AdminDashboard />,
       },
     ],
   },
