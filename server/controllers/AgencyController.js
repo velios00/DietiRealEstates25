@@ -51,6 +51,16 @@ export class AgencyController {
     }
   }
 
+  static async deleteAgency(req, res, next) {
+    try {
+      const { idAgency } = req.params;
+      await AgencyService.deleteAgency(Agency, idAgency);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  }
+
   // static async getRealEstatesByAgencyId(req, res, next) {
   //   try {
   //     const idAgency = req.params.idAgency;

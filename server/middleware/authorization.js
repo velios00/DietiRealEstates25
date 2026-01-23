@@ -3,17 +3,17 @@ import { AuthenticationController } from "../controllers/AuthenticationControlle
 export function enforceAuthentication(req, res, next) {
   //Estrae l'header di auth della richiesta e ne estrae il token
   const authHeader = req.headers["authorization"];
-  const token = authHeader?.split(" ")[1];
-  if (!token) {
+  const tokenString = authHeader?.split(" ")[1];
+  if (!tokenString) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  AuthenticationController.isTokenValid(token, (err, token) => {
-    if (err) {
+  AuthenticationController.isTokenValid(tokenString, (err, decoded) => {
+    if (err || !decoded || !decoded.user) {
       return res.status(401).json({ message: "Unauthorized" });
     } else {
-      req.userId = token.user.idUser;
-      req.username = token.user.username;
-      req.role = token.user.role;
+      req.userId = decoded.user.idUser;
+      req.username = decoded.user.username;
+      req.role = decoded.user.role;
       next();
     }
   });

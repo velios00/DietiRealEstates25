@@ -7,12 +7,18 @@ import { createModel as createManagerModel } from "./Manager.js";
 import { createModel as createOfferModel } from "./Offer.js";
 import { createModel as createUserModel } from "./User.js";
 import { createModel as createPlaceModel } from "./Place.js";
-
 import dotenv from "dotenv";
+
 dotenv.config();
 
 export const database = new Sequelize(process.env.DB_CONNECTION_URI, {
   dialect: process.env.DIALECT,
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
   //logging: false
 });
 
@@ -56,12 +62,16 @@ Admin.User = Admin.belongsTo(User, {
 });
 
 //Manager - Agency
-Manager.Agency = Manager.hasOne(Agency, {
-  foreignKey: { name: "idManager", allowNull: false },
+Agency.hasOne(Manager, {
+  foreignKey: { name: "idAgency", allowNull: false },
 });
-Agency.Manager = Agency.belongsTo(Manager, {
-  foreignKey: { name: "idManager", allowNull: false },
+Manager.belongsTo(Agency, {
+  foreignKey: { name: "idAgency", allowNull: false },
 });
+
+//Manager - User
+Manager.belongsTo(User, { foreignKey: "idManager" });
+User.hasOne(Manager, { foreignKey: "idManager" });
 
 //Manager - Agent
 Manager.Agent = Manager.hasMany(Agent, {
@@ -127,8 +137,7 @@ RealEstate.Place = RealEstate.belongsTo(Place, {
   foreignKey: { name: "idPlace", allowNull: false },
 });
 
-//Sincronizzazione database
-database
+/*database
   .sync()
   .then(async () => {
     await database.query(`
@@ -141,3 +150,4 @@ database
   .catch((err) => {
     console.log("Errore nella sincronizzazione: " + err.message);
   });
+ */

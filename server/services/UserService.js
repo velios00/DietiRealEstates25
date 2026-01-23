@@ -47,8 +47,6 @@ export class UserService {
   static async createAdmin(User, Admin, dto) {
     const temporaryPassword = randomatic("Aa0", 10);
 
-    console.log(dto);
-
     const newUser = await User.create({
       email: dto.email,
       password: temporaryPassword,
@@ -61,9 +59,15 @@ export class UserService {
       idAdmin: newUser.idUser,
     });
 
-    /*AGGIUNGERE INVIO MAIL*/
-    console.log(temporaryPassword);
+    return {
+      idUser: newUser.idUser,
+      email: newUser.email,
+      name: newUser.name,
+      surname: newUser.surname,
+      role: newUser.role,
+      temporaryPassword,
+    };
 
-    return newUser;
+    console.log(temporaryPassword);
   }
 }

@@ -12,9 +12,21 @@ AgencyRouter.post(
   AgencyController.createAgency,
 );
 
-AgencyRouter.get("/", AgencyController.getAllAgencies);
+AgencyRouter.get(
+  "/",
+  enforceAuthentication,
+  authorizeRoles("admin"),
+  AgencyController.getAllAgencies,
+);
 
 AgencyRouter.get("/:idAgency", AgencyController.getAgencyById);
+
+AgencyRouter.delete(
+  "/:idAgency",
+  enforceAuthentication,
+  authorizeRoles("admin"),
+  AgencyController.deleteAgency,
+);
 
 // AgencyRouter.get(
 //   "/:idAgency/real-estates",

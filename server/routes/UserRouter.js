@@ -9,27 +9,27 @@ export const UserRouter = express.Router();
 UserRouter.put(
   "/change",
   enforceAuthentication,
-  UserController.changePassword
+  UserController.changePassword,
   //authorizeroles per ora non implementato (ogni utente può cambiare la propria password)
 );
 
 UserRouter.get(
   "/",
   enforceAuthentication,
-  UserController.getAllUsers //,
+  UserController.getAllUsers, //,
   //authorizeRoles('admin') dovrebbe esserci ma per ora lo teniamo fuori
 );
 
 UserRouter.get(
   "/:idUser",
   enforceAuthentication,
+  authorizeRoles("admin", "manager", "agent"),
   UserController.getUserById,
-  authorizeRoles("admin", "manager", "agent")
 );
 
 UserRouter.post(
   "/admin/create",
   enforceAuthentication,
+  authorizeRoles("admin", "manager", "agent"),
   UserController.createAdmin,
-  authorizeRoles("admin")
 );
