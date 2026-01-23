@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import TuneIcon from "@mui/icons-material/Tune";
-
+import FiltersModal from "../FiltersModal/FiltersModal";
 export function FiltersButton() {
   const [open, setOpen] = useState(false);
 
@@ -21,7 +21,7 @@ export function FiltersButton() {
         Filtri
       </Button>
 
-      {/* <FiltersModal open={open} onClose={() => setOpen(false)} /> */}
+      <FiltersModal open={open} onClose={() => setOpen(false)} />
     </>
   );
 }
