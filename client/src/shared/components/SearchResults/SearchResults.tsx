@@ -1,33 +1,34 @@
-import { Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, CircularProgress, Pagination, Typography } from "@mui/material";
 import EstateCard, {
   Listing,
 } from "../../../shared/components/EstateCard/EstateCard";
-import { searchEstates } from "../../../services/EstateService";
-import { mapEstateToListing } from "../../../mappers/EstateToListing.mapper";
-import { Estate } from "../../models/Estate.model";
 
-export default function SearchResults() {
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [totalResults, setTotalResults] = useState<number>(0);
 
-  useEffect(() => {
-    searchEstates({
-      page: 1,
-      limit: 12,
-      orderBy: "createdAt",
-    })
-      .then((response) => {
-        console.log("Response from searchEstates:", response);
-        const estates: Estate[] = response.data.results;
-        const mapped = estates.map(mapEstateToListing);
-        setListings(mapped);
-        setTotalResults(response.data.total || estates.length);
-      })
-      .catch((error) => {
-        console.error("Errore durante il recupero degli annunci:", error);
-      });
-  }, []);
+interface SearchResultsProps {
+  listings: Listing[];
+  totalResults: number;
+  loading: boolean;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}
+
+export default function SearchResults(props: SearchResultsProps) {
+  const totalPages = Math.ceil(props.totalResults / 12);
+
+  if (props.loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "400px",
+        }}
+      >
+        <CircularProgress sx={{ color: "#62A1BA" }} />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: 3 }}>
@@ -50,23 +51,44 @@ export default function SearchResults() {
             fontSize: "1.1rem",
           }}
         >
-          {totalResults} risultati
+          {props.totalResults} risultati
         </Typography>
       </Box>
 
       {/* Lista verticale di annunci */}
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-        {listings.map((listing) => (
-          <Box key={listing.id} sx={{ width: "100%" }}>
-            <EstateCard listing={listing} />
-          </Box>
-        ))}
-      </Box>
+      {props.listings.length === 0 ? (
+        <Typography>Nessun risultato trovato</Typography>
+      ) : (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {props.listings.map((listing) => (
+            <Box key={listing.id} sx={{ width: "100%" }}>
+              <EstateCard listing={listing} />
+            </Box>
+          ))}
+        </Box>
+      )}
 
-      {/* Paginazione (da implementare) */}
-      <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
-        {/* Qui puoi aggiungere la paginazione in seguito */}
-      </Box>
+      {totalPages > 1 && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+          <Pagination
+            count={totalPages}
+            page={props.currentPage}
+            onChange={(_, page) => props.onPageChange(page)}
+            color="primary"
+            sx={{
+              "& .MuiPaginationItem-root": {
+                "&.Mui-selected": {
+                  backgroundColor: "#62A1BA",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#4299b5",
+                  },
+                },
+              },
+            }}
+          />
+        </Box>
+      )}
     </Box>
   );
 }
