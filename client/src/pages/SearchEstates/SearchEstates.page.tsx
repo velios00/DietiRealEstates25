@@ -14,6 +14,7 @@ export default function SearchEstate() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [filters, setFilters] = useState<EstateFilters>({});
+  const [estates, setEstates] = useState<Estate[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [totalResults, setTotalResults] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,11 +33,12 @@ export default function SearchEstate() {
         orderBy: "createdAt",
       });
       console.log("Response from searchEstates:", response);
-      const estates: Estate[] = response.data.results;
-      const mapped = estates.map(mapEstateToListing);
+      const estatesData: Estate[] = response.data.results;
+      const mapped = estatesData.map(mapEstateToListing);
 
+      setEstates(estatesData);
       setListings(mapped);
-      setTotalResults(response.data.totalResults || estates.length);
+      setTotalResults(response.data.totalResults || estatesData.length);
     } catch (error) {
       console.error("Errore durante il recupero degli immobili:", error);
       setListings([]);
@@ -97,6 +99,8 @@ export default function SearchEstate() {
           <RightSidebar
             onFiltersChange={handleFiltersChange}
             filters={filters}
+            estates={estates}
+            isLoading={loading}
           />
         </Box>
       </Box>

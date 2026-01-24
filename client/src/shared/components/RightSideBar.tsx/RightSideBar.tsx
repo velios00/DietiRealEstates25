@@ -3,15 +3,20 @@ import { SearchBar } from "../SearchBar/SearchBar";
 import { FiltersButton } from "../FiltersButton/FiltersButton";
 import MapView from "../MapView/MapView";
 import { EstateFilters } from "../../models/EstateFilters";
+import { Estate } from "../../models/Estate.model";
 
 interface RightSideBarProps {
   onFiltersChange: (filters: EstateFilters) => void;
   filters: EstateFilters;
+  estates: Estate[];
+  isLoading?: boolean;
 }
 
 export default function RightSidebar({
   onFiltersChange,
   filters,
+  estates,
+  isLoading,
 }: RightSideBarProps) {
   const handleSearchChange = (searchQuery: string) => {
     onFiltersChange({
@@ -68,7 +73,13 @@ export default function RightSidebar({
           overflow: "hidden",
         }}
       >
-        <MapView />
+        <MapView
+          estates={estates}
+          isLoading={isLoading}
+          center={
+            filters.city ? undefined : [40.8522, 14.2441] // Napoli se nessuna città specificata
+          }
+        />
       </Box>
     </Box>
   );

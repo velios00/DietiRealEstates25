@@ -19,6 +19,7 @@ export class EstateMapper {
   static estateToDTO(estate) {
     return {
       idEstate: estate.idEstate,
+      title: estate.description?.substring(0, 50) || "Estate senza titolo", // o un campo title se esiste
       description: estate.description,
       photos: estate.photos,
       price: estate.price,
@@ -27,6 +28,7 @@ export class EstateMapper {
       nBathrooms: estate.nBathrooms,
       energyClass: estate.energyClass,
       floor: estate.floor,
+      type: estate.type,
       idPlace: estate.idPlace,
       place: estate.Place
         ? {
@@ -34,6 +36,7 @@ export class EstateMapper {
             pois: estate.Place.pois ? JSON.parse(estate.Place.pois) : [],
           }
         : null,
+      creationDate: estate.createdAt,
       //idAgency: estate.idAgency
     };
   }
