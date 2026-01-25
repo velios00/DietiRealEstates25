@@ -22,9 +22,13 @@ export class AgencyService {
       url: dto.url,
     });
 
-    await Manager.create({
+    const newManager = await Manager.create({
       idManager: newUser.idUser,
       idAgency: newAgency.idAgency,
+    });
+
+    await newAgency.update({
+      idManager: newUser.idUser,
     });
 
     //Invio Email

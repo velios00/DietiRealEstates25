@@ -21,7 +21,7 @@ import {
   Language as LanguageIcon,
   Description as DescriptionIcon,
 } from "@mui/icons-material";
-import { CreateAgencyDTO } from "../../../types/agency/agency.types";
+import { CreateAgencyDTO } from "../../models/Agency.model";
 
 interface CreateAgencyModalProps {
   open: boolean;
