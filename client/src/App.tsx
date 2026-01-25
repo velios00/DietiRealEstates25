@@ -10,6 +10,7 @@ import { Roles } from "./shared/enums/Roles.enum";
 import { createTheme, ThemeProvider } from "@mui/material";
 import "@fontsource/montserrat/400.css";
 import "@fontsource/montserrat/700.css";
+import { Toaster } from "react-hot-toast";
 const theme = createTheme({
   typography: {
     fontFamily: '"Montserrat", sans-serif',
@@ -42,22 +43,6 @@ function App() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     const decodedToken = jwtDecode<JwtPayload>(token);
-  //     const currentTime = Date.now() / 1000; // Convert to seconds
-  //     if (decodedToken.exp && decodedToken.exp < currentTime) {
-  //       localStorage.removeItem("token");
-  //       navigate("/login");
-  //     } else {
-  //       getUserData(decodedToken.user.id).then(({ data: user }) => {
-  //         setUserData(user);
-  //       });
-  //     }
-  //   }
-  // }, []);
-
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -69,6 +54,7 @@ function App() {
             setRole: setUserRole,
           }}
         >
+          <Toaster />
           <Outlet />
         </UserContext.Provider>
       </ThemeProvider>

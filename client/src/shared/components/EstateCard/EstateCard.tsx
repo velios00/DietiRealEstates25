@@ -43,15 +43,22 @@ export default function EstateCard({ listing }: ListingCardProps) {
       }}
     >
       {/* Immagine in alto */}
-      <Box sx={{ position: "relative" }}>
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "16 / 9",
+          overflow: "hidden",
+        }}
+      >
         <CardMedia
           component="img"
-          height="200"
           image={listing.photos?.[0] || ""}
           alt="Estate"
           sx={{
             objectFit: "cover",
             width: "100%",
+            height: "100%",
           }}
         />
         <Chip

@@ -3,7 +3,7 @@ import { RegisterData } from "../../models/RegisterData.model";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState, FormEvent } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { registerUser } from "../../../services/AuthService";
 import { RegisterRequest } from "../../models/AuthRequest.model";
 import { Roles } from "../../enums/Roles.enum";
