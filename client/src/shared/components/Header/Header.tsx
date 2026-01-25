@@ -4,15 +4,12 @@ import {
   Divider,
   Button,
   Container,
-  Avatar,
   Box,
 } from "@mui/material";
 
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { useNavigate } from "react-router-dom";
+import AccountButton from "../AccountButton/AccountButton";
 
 export default function Header() {
-  const navigate = useNavigate();
   return (
     <>
       <AppBar
@@ -139,46 +136,8 @@ export default function Header() {
                 </Button>
               </Box>
             </Box>
-            {/* Login Button */}
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/login")}
-                startIcon={
-                  <Avatar
-                    sx={{
-                      backgroundColor: "#62A1BA",
-                      width: 40,
-                      height: 40,
-                      marginRight: 0.5,
-                      "&:hover": {
-                        backgroundColor: "#62A1BA",
-                      },
-                    }}
-                  >
-                    <PersonOutlineIcon
-                      sx={{ color: "white", fontSize: 40, px: 0.2 }}
-                    />
-                  </Avatar>
-                }
-                sx={{
-                  color: "#62A1BA",
-                  borderColor: "#62A1BA",
-                  borderRadius: 28,
-                  px: 3,
-                  py: 1,
-                  fontWeight: 800,
-                  fontSize: "1.3rem",
-                  textTransform: "lowercase",
-                  "&:hover": {
-                    borderColor: "#62A1BA",
-                    backgroundColor: "rgba(98, 161, 186, 0.04)",
-                  },
-                }}
-              >
-                login
-              </Button>
-            </Box>
+            {/* Login/Account Button */}
+            <AccountButton />
           </Toolbar>
         </Container>
       </AppBar>

@@ -2,8 +2,17 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 import TuneIcon from "@mui/icons-material/Tune";
 import FiltersModal from "../FiltersModal/FiltersModal";
-export function FiltersButton() {
+import { EstateFilters } from "../../models/EstateFilters";
+
+interface FiltersButtonProps {
+  onFiltersChange: (filters: EstateFilters) => void;
+  filters: EstateFilters;
+}
+
+export function FiltersButton(props: FiltersButtonProps) {
   const [open, setOpen] = useState(false);
+
+  console.log("FiltersButton props:", props.filters);
 
   return (
     <>
@@ -21,7 +30,12 @@ export function FiltersButton() {
         Filtri
       </Button>
 
-      <FiltersModal open={open} onClose={() => setOpen(false)} />
+      <FiltersModal
+        open={open}
+        onClose={() => setOpen(false)}
+        filters={props.filters}
+        onApply={props.onFiltersChange}
+      />
     </>
   );
 }

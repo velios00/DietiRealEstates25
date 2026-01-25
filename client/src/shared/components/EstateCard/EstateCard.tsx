@@ -5,9 +5,18 @@ import {
   Chip,
   CardContent,
   Typography,
+  IconButton,
 } from "@mui/material";
 
-import { LocationOn, Bed, Bathroom, SquareFoot } from "@mui/icons-material";
+import {
+  LocationOn,
+  Bed,
+  Bathroom,
+  SquareFoot,
+  ChevronLeft,
+  ChevronRight,
+} from "@mui/icons-material";
+import { useState } from "react";
 
 export interface Listing {
   id: number;
@@ -26,6 +35,25 @@ interface ListingCardProps {
 }
 
 export default function EstateCard({ listing }: ListingCardProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const hasMultiplePhotos = listing.photos && listing.photos.length > 1;
+
+  const handlePrevious = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? listing.photos.length - 1 : prev - 1,
+    );
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) =>
+      prev === listing.photos.length - 1 ? 0 : prev + 1,
+    );
+  };
+
   return (
     <Card
       sx={{
@@ -43,15 +71,25 @@ export default function EstateCard({ listing }: ListingCardProps) {
       }}
     >
       {/* Immagine in alto */}
-      <Box sx={{ position: "relative" }}>
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "16 / 9",
+          overflow: "hidden",
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <CardMedia
           component="img"
-          height="200"
-          image={listing.photos?.[0] || ""}
+          image={listing.photos?.[currentImageIndex] || ""}
           alt="Estate"
           sx={{
             objectFit: "cover",
             width: "100%",
+            height: "100%",
+            transition: "opacity 0.3s ease",
           }}
         />
         <Chip
@@ -66,6 +104,44 @@ export default function EstateCard({ listing }: ListingCardProps) {
             fontSize: "0.75rem",
           }}
         />
+        {/* Frecce di navigazione */}
+        {hasMultiplePhotos && isHovered && (
+          <>
+            <IconButton
+              onClick={handlePrevious}
+              sx={{
+                position: "absolute",
+                left: 8,
+                top: "50%",
+                transform: "translateY(-50%)",
+                backgroundColor: "rgba(255,255,255,0.9)",
+                "&:hover": {
+                  backgroundColor: "rgba(255,255,255,1)",
+                },
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              }}
+            >
+              <ChevronLeft />
+            </IconButton>
+
+            <IconButton
+              onClick={handleNext}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: "50%",
+                transform: "translateY(-50%)",
+                backgroundColor: "rgba(255,255,255,0.9)",
+                "&:hover": {
+                  backgroundColor: "rgba(255,255,255,1)",
+                },
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              }}
+            >
+              <ChevronRight />
+            </IconButton>
+          </>
+        )}
       </Box>
 
       {/* Contenuto diviso in due colonne */}

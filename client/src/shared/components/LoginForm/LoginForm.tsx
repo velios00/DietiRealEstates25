@@ -2,7 +2,7 @@ import { validateEmail, validatePassword } from "../../utils/validation";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState, FormEvent, useContext } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { loginUser } from "../../../services/AuthService";
 import { LoginRequest } from "../../models/AuthRequest.model";
 import { jwtDecode } from "jwt-decode";

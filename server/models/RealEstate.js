@@ -9,10 +9,15 @@ export function createModel(database) {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
+      },
+      title: {
+        type: DataTypes.STRING,
       },
       description: {
         type: DataTypes.STRING,
       },
+
       photos: {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },

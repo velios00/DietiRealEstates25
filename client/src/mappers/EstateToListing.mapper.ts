@@ -10,7 +10,7 @@ export function mapEstateToListing(estate: Estate): Listing {
     beds: estate.nBeds,
     baths: estate.nBathrooms,
     size: estate.size,
-    photos: estate.photos ? [estate.photos[0]] : [""],
+    photos: estate.photos && estate.photos.length > 0 ? estate.photos : [""],
     type: estate.type ?? "Vendita",
   };
 }

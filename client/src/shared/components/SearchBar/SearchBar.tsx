@@ -1,9 +1,42 @@
-import { TextField, Box } from "@mui/material";
+import { FormEvent, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { TextField, Box, IconButton } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
-export function SearchBar() {
+type SearchBarProps = {
+  value?: string;
+  onChange?: (value: string) => void;
+  onSearch?: (value: string) => void;
+  placeholder?: string;
+};
+
+export function SearchBar({
+  value,
+  onChange,
+  onSearch,
+  placeholder,
+}: SearchBarProps) {
+  const navigate = useNavigate();
+  const [localValue, setLocalValue] = useState("");
+
+  const currentValue = useMemo(() => value ?? localValue, [value, localValue]);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmed = currentValue.trim();
+
+    if (onSearch) {
+      onSearch(trimmed);
+      return;
+    }
+
+    navigate("/search-estates", { state: { query: trimmed } });
+  };
+
   return (
     <Box
+      component="form"
+      onSubmit={handleSubmit}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -16,7 +49,7 @@ export function SearchBar() {
       }}
     >
       <TextField
-        placeholder="Cerca un indirizzo, un comune..."
+        placeholder={placeholder ?? "Cerca un comune..."}
         variant="standard"
         fullWidth
         sx={{
@@ -38,9 +71,18 @@ export function SearchBar() {
             },
           },
         }}
+        value={currentValue}
+        onChange={(event) => {
+          onChange?.(event.target.value);
+          if (!onChange) {
+            setLocalValue(event.target.value);
+          }
+        }}
         InputProps={{ disableUnderline: true }}
       />
-      <SearchOutlinedIcon sx={{ fontSize: 30, mr: 2, color: "#666" }} />
+      <IconButton type="submit" sx={{ mr: 1.5, color: "#666" }}>
+        <SearchOutlinedIcon sx={{ fontSize: 30 }} />
+      </IconButton>
     </Box>
   );
 }

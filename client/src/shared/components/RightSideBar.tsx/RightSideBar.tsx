@@ -2,8 +2,29 @@ import { Box } from "@mui/material";
 import { SearchBar } from "../SearchBar/SearchBar";
 import { FiltersButton } from "../FiltersButton/FiltersButton";
 import MapView from "../MapView/MapView";
+import { EstateFilters } from "../../models/EstateFilters";
+import { Estate } from "../../models/Estate.model";
 
-export default function RightSidebar() {
+interface RightSideBarProps {
+  onFiltersChange: (filters: EstateFilters) => void;
+  filters: EstateFilters;
+  estates: Estate[];
+  isLoading?: boolean;
+}
+
+export default function RightSidebar({
+  onFiltersChange,
+  filters,
+  estates,
+  isLoading,
+}: RightSideBarProps) {
+  const handleSearchChange = (searchQuery: string) => {
+    onFiltersChange({
+      ...filters,
+      city: searchQuery.trim() || undefined,
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -33,10 +54,13 @@ export default function RightSidebar() {
           }}
         >
           <Box sx={{ flex: 1, maxWidth: "calc(100% - 140px)" }}>
-            <SearchBar />
+            <SearchBar onSearch={handleSearchChange} />
           </Box>
           <Box sx={{ minWidth: "110px", maxWidth: "130px" }}>
-            <FiltersButton />
+            <FiltersButton
+              onFiltersChange={onFiltersChange}
+              filters={filters}
+            />
           </Box>
         </Box>
       </Box>
@@ -49,7 +73,13 @@ export default function RightSidebar() {
           overflow: "hidden",
         }}
       >
-        <MapView />
+        <MapView
+          estates={estates}
+          isLoading={isLoading}
+          center={
+            filters.city ? undefined : [40.8522, 14.2441] // Napoli se nessuna città specificata
+          }
+        />
       </Box>
     </Box>
   );
