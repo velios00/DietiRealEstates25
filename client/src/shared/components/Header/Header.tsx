@@ -8,8 +8,10 @@ import {
 } from "@mui/material";
 
 import AccountButton from "../AccountButton/AccountButton";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate();
   return (
     <>
       <AppBar
@@ -42,7 +44,9 @@ export default function Header() {
                 display: "flex",
                 alignItems: "center",
                 gap: { xs: 2, md: 6 }, // Spazio tra logo e menu
+                cursor: "pointer",
               }}
+              onClick={() => navigate("/")}
             >
               {/*Logo*/}
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

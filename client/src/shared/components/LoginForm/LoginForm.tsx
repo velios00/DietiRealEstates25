@@ -1,4 +1,4 @@
-import { validateEmail, validatePassword } from "../../utils/validation";
+import { validateEmail } from "../../utils/validation";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState, FormEvent, useContext } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
