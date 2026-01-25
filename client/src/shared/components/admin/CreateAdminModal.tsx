@@ -91,6 +91,10 @@ const CreateAdminModal: React.FC<CreateAdminModalProps> = ({
   };
 
   const handleSubmit = async () => {
+    console.log("FormData prima del submit:", formData);
+    console.log("Email:", formData.email, "Type:", typeof formData.email);
+    console.log("Name:", formData.name, "Type:", typeof formData.name);
+    console.log("Surname:", formData.surname, "Type:", typeof formData.surname);
     if (!validateForm()) {
       return;
     }
@@ -124,6 +128,14 @@ const CreateAdminModal: React.FC<CreateAdminModalProps> = ({
           borderRadius: 4,
           boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)",
         },
+      }}
+      sx={{
+        "& .MuiDialog-paper": {
+          alignItems: "center",
+        },
+        pt: 5,
+        pb: 3,
+        px: 3,
       }}
     >
       <DialogTitle

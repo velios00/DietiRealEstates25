@@ -8,16 +8,18 @@ export const API = axios.create({
 
 //standardizzazione errori
 API.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     const formattedError = {
-      status: error.response?.status,
-      message: error.response?.data.description,
+      status: error.response?.status || 500,
+      // Se non c'è una descrizione dal server, usa il messaggio di errore di axios o uno generico
+      message:
+        error.response?.data?.description ||
+        error.message ||
+        "Errore di connessione al server",
     };
     return Promise.reject(formattedError);
-  }
+  },
 );
 
 //Interceptor per aggiungere il token alle richieste
@@ -41,6 +43,6 @@ export function logOutInterceptor(navigateFn: (path: string) => void) {
         navigateFn("/login");
       }
       return Promise.reject(error);
-    }
+    },
   );
 }

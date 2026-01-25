@@ -33,8 +33,12 @@ import {
   PersonAdd as PersonAddIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import AgencyService from "../../services/AgencyService";
-import UserService from "../../services/UserService";
+import {
+  createAgency,
+  getAllAgencies,
+  deleteAgency,
+} from "../../services/AgencyService";
+import { createAdmin } from "../../services/UserService";
 import Header from "../../shared/components/Header/Header";
 import { AgencyResponseDTO } from "../../types/agency/agency.types";
 import { CreateAdminDTO } from "../../types/user/user.types";
@@ -59,11 +63,6 @@ const AdminDashboard: React.FC = () => {
 
   // Add state for Create Admin modal
   const [isCreateAdminModalOpen, setIsCreateAdminModalOpen] = useState(false);
-  const [adminFormData, setAdminFormData] = useState({
-    email: "",
-    name: "",
-    surname: "",
-  });
   const [adminLoading, setAdminLoading] = useState(false);
 
   // Stats
@@ -81,7 +80,7 @@ const AdminDashboard: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await AgencyService.getAllAgencies();
+      const data = await getAllAgencies();
       setAgencies(data);
       updateStats(data);
     } catch (err: any) {
@@ -102,11 +101,11 @@ const AdminDashboard: React.FC = () => {
 
   const handleCreateAgency = async (agencyData: any) => {
     try {
-      const response = await AgencyService.createAgency(agencyData);
-      setAgencies((prev) => [...prev, response.agency]);
-      setSuccess(
-        `Agenzia "${response.agency.agencyName}" creata con successo!`,
-      );
+      const response = await createAgency(agencyData);
+
+      await fetchAgencies();
+      setSuccess(`Agenzia ${response.agency.agencyName} creata con successo!`);
+
       updateStats([...agencies, response.agency]);
       setIsCreateModalOpen(false);
     } catch (err: any) {
@@ -114,6 +113,8 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  {
+    /*
   const handleEditAgency = async (idAgency: string, updateData: any) => {
     try {
       const updatedAgency = await AgencyService.updateAgency(
@@ -132,6 +133,8 @@ const AdminDashboard: React.FC = () => {
       setError(err.message || "Errore nell'aggiornamento dell'agenzia");
     }
   };
+  */
+  }
 
   const handleDeleteAgency = async (idAgency: string, agencyName: string) => {
     if (
@@ -143,7 +146,7 @@ const AdminDashboard: React.FC = () => {
     }
 
     try {
-      await AgencyService.deleteAgency(idAgency);
+      await deleteAgency(idAgency);
       setAgencies((prev) =>
         prev.filter((agency) => agency.idAgency !== idAgency),
       );
@@ -159,9 +162,18 @@ const AdminDashboard: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleCreateAdmin = async () => {
-    // Validate form
-    if (!adminFormData.email || !adminFormData.name || !adminFormData.surname) {
+  const handleCreateAdmin = async (adminData: CreateAdminDTO) => {
+    console.log("handleCreateAdmin RICEVE:", adminData);
+    console.log("Email:", adminData.email);
+    console.log("Name:", adminData.name, "Type:", typeof adminData.name);
+    console.log(
+      "Surname:",
+      adminData.surname,
+      "Type:",
+      typeof adminData.surname,
+    );
+    // Rimuovi il vecchio controllo su adminFormData e usa adminData
+    if (!adminData.email || !adminData.name || !adminData.surname) {
       setError("Per favore, compila tutti i campi obbligatori");
       return;
     }
@@ -170,49 +182,21 @@ const AdminDashboard: React.FC = () => {
     setError(null);
 
     try {
-      // Create admin DTO
-      const createAdminDto: CreateAdminDTO = {
-        email: adminFormData.email,
-        name: adminFormData.name,
-        surname: adminFormData.surname,
-      };
-
-      // Call the UserService to create admin
-      const newAdmin = await UserService.createAdmin(createAdminDto);
+      // Usa direttamente adminData passato dalla modale
+      const response = await createAdmin(adminData);
 
       setSuccess(
-        `Amministratore "${adminFormData.name} ${adminFormData.surname}" creato con successo!`,
+        `Amministratore "${adminData.name} ${adminData.surname}" creato!`,
       );
       setIsCreateAdminModalOpen(false);
 
-      // Reset form
-      setAdminFormData({
-        email: "",
-        name: "",
-        surname: "",
-      });
-
-      // Log the temporary password (as shown in your backend)
-      console.log(
-        "Temporary password generated for admin:",
-        newAdmin.temporaryPassword,
-      );
-      // In a real application, you would send this via email
+      // I dati della password sono in response.data (non in response.data.data)
+      console.log("Password temporanea:", response.data.temporaryPassword);
     } catch (err: any) {
       setError(err.message || "Errore nella creazione dell'amministratore");
-      console.error("Error creating admin:", err);
     } finally {
       setAdminLoading(false);
     }
-  };
-
-  // Add handler for form changes
-  const handleAdminFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAdminFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   const StatCard = ({ title, value, icon: Icon, color }: any) => (
@@ -239,7 +223,9 @@ const AdminDashboard: React.FC = () => {
         py: 4,
       }}
     >
-      <Header />
+      <Box sx={{ mb: 12 }}>
+        <Header />
+      </Box>
       <Container sx={{ mt: 4, mb: 4 }}>
         {/* Header with Create Admin button */}
         <Box sx={{ mb: 4 }}>
