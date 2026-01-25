@@ -3,6 +3,7 @@ import { createEstateDTO } from "../DTOs/EstateDTO.js";
 export class EstateMapper {
   static toCreateEstateDTO(body) {
     return new createEstateDTO({
+      title: body.title,
       description: body.description,
       photos: body.photos,
       price: body.price,
@@ -19,7 +20,10 @@ export class EstateMapper {
   static estateToDTO(estate) {
     return {
       idEstate: estate.idEstate,
-      title: estate.description?.substring(0, 50) || "Estate senza titolo", // o un campo title se esiste
+      title:
+        estate.title ||
+        estate.description?.substring(0, 50) ||
+        "Estate senza titolo",
       description: estate.description,
       photos: estate.photos,
       price: estate.price,

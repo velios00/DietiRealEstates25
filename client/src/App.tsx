@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import "./App.css";
 import { User } from "./shared/models/User.model";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "./shared/models/JwtPayload.model";
 import { getUserById } from "./services/UserService";

@@ -1,5 +1,6 @@
 export class createEstateDTO {
   constructor({
+    title,
     /*idRealEstate,*/ description,
     photos,
     price,
@@ -12,6 +13,7 @@ export class createEstateDTO {
     createdBy,
     creatorId,
   }) {
+    this.title = title;
     //this.idRealEstate = idRealEstate;
     this.description = description;
     this.photos = photos;

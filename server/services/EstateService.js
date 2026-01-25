@@ -53,6 +53,7 @@ export class EstateService {
     }
 
     const newEstate = await RealEstate.create({
+      title: dto.title,
       description: dto.description,
       photos: dto.photos,
       price: dto.price,
