@@ -7,44 +7,25 @@ import EstateInfoCard from "../../shared/components/EstateInfoCard/EstateInfoCar
 import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { useEffect } from "react";
+import { getEstateById } from "../../services/EstateService";
 
 export default function EstateView() {
   const { id } = useParams<{ id: string }>();
   const [estate, setEstate] = useState<Estate | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Mock data - sostituire con vera API call
-  const mockEstate: Estate = {
-    idEstate: 1,
-    title: "Appartamento del cuore a Napoli",
-    photos: [
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200",
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600",
-      "https://images.unsplash.com/photo-1630957389211-ea4881eb00f5?w=600",
-      "https://images.unsplash.com/photo-1616394335336-cbf50dd94188?w=600",
-      "https://images.unsplash.com/photo-1596178065887-ba8ecb13b577?w=600",
-      "https://images.unsplash.com/photo-1576941089067-2de3dd663007?w=600",
-    ],
-    description: `L'appartamento del cuore e' l'appartamento dei sogni ti giuro localizzato nel quartiere piu' malfamato di Napoli. Un ampio locale con 2 bagni. Al centro di Napoli, dove il sole non sorge. Poi ci sono pure 4 spiriti maledetti capi, non puoi mai saperlo`,
-    price: 320000,
-    size: 94,
-    nRooms: 4,
-    nBathrooms: 2,
-    energyClass: "B",
-    floor: 3,
-    type: "Appartamento",
-    place: {
-      city: "Napoli",
-      street: "Via Leone di Lernia 32",
-      lat: "40.8518",
-      lon: "14.2681",
-    },
-    creationDate: "2024-01-15",
-  };
-
   useEffect(() => {
-    setLoading(false);
-    setEstate(mockEstate);
+    if (!id) return;
+
+    getEstateById(id)
+      .then(({ data }) => {
+        setEstate(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Errore nel caricamento dell'immobile:", error);
+        setLoading(false);
+      });
   }, [id]);
 
   if (loading || !estate) {

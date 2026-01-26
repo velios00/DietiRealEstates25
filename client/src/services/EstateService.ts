@@ -28,3 +28,7 @@ export function getEstatesByAgency(
     },
   });
 }
+
+export function getEstateById(id: string | number) {
+  return API.get(`/real-estates/${id}`);
+}
