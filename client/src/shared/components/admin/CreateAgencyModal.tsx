@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, ChangeEvent } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -10,6 +10,8 @@ import {
   Alert,
   IconButton,
   InputAdornment,
+  Avatar,
+  CircularProgress,
 } from "@mui/material";
 import {
   Close as CloseIcon,
@@ -20,6 +22,8 @@ import {
   LocationOn as LocationIcon,
   Language as LanguageIcon,
   Description as DescriptionIcon,
+  AddPhotoAlternate as AddPhotoIcon,
+  Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { CreateAgencyDTO } from "../../models/Agency.model";
 
@@ -51,6 +55,21 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Allowed file types for logo
+  const allowedFileTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/svg+xml",
+  ];
+  const maxFileSize = 5 * 1024 * 1024; // 5MB
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -70,12 +89,84 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleLogoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!allowedFileTypes.includes(file.type)) {
+      setSubmitError(
+        "Formato file non supportato. Usa JPEG, PNG, GIF, WebP o SVG.",
+      );
+      return;
+    }
+
+    // Validate file size
+    if (file.size > maxFileSize) {
+      setSubmitError("File troppo grande. Dimensione massima: 5MB.");
+      return;
+    }
+
+    setUploadingLogo(true);
+    setSubmitError(null);
+
+    try {
+      // In a real application, you would upload to a server here
+      // For now, we'll create a base64 string for preview and storage
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+
+        // Set preview
+        setLogoPreview(base64String);
+
+        // Store file data
+        setLogoFile(file);
+
+        // Update form data with base64 string
+        setFormData((prev) => ({
+          ...prev,
+          profileImage: base64String,
+        }));
+
+        setUploadingLogo(false);
+      };
+
+      reader.onerror = () => {
+        setSubmitError("Errore nella lettura del file");
+        setUploadingLogo(false);
+      };
+
+      reader.readAsDataURL(file);
+    } catch (err: any) {
+      setSubmitError("Errore nell'upload del logo: " + err.message);
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoPreview(null);
+    setLogoFile(null);
+    setFormData((prev) => ({
+      ...prev,
+      profileImage: "",
+    }));
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setSubmitting(true);
     try {
+      // In a real application, you would upload the file first
+      // and then submit the form with the URL
       await onSubmit(formData);
       handleClose();
     } catch (err: any) {
@@ -88,6 +179,11 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
   const handleClose = () => {
     setErrors({});
     setSubmitError(null);
+    setLogoPreview(null);
+    setLogoFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     onClose();
   };
 
@@ -137,6 +233,95 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
           )}
 
           <Box display="flex" flexDirection="column" gap={2}>
+            {/* Logo Upload Section */}
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" gutterBottom>
+                Logo Agenzia
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                }}
+              >
+                {logoPreview ? (
+                  <Box sx={{ position: "relative" }}>
+                    <Avatar
+                      src={logoPreview}
+                      alt="Logo preview"
+                      sx={{
+                        width: 100,
+                        height: 100,
+                        border: "2px dashed #ddd",
+                      }}
+                    />
+                    <IconButton
+                      size="small"
+                      onClick={handleRemoveLogo}
+                      sx={{
+                        position: "absolute",
+                        top: -8,
+                        right: -8,
+                        backgroundColor: "white",
+                        boxShadow: 1,
+                        "&:hover": {
+                          backgroundColor: "grey.100",
+                        },
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ) : (
+                  <Avatar
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      border: "2px dashed #ddd",
+                      backgroundColor: "grey.100",
+                    }}
+                  >
+                    <AddPhotoIcon sx={{ fontSize: 40, color: "grey.400" }} />
+                  </Avatar>
+                )}
+
+                <Box>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    style={{ display: "none" }}
+                    id="logo-upload"
+                  />
+                  <label htmlFor="logo-upload">
+                    <Button
+                      variant="outlined"
+                      component="span"
+                      startIcon={
+                        uploadingLogo ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <AddPhotoIcon />
+                        )
+                      }
+                      disabled={uploadingLogo}
+                    >
+                      {uploadingLogo ? "Caricamento..." : "Carica Logo"}
+                    </Button>
+                  </label>
+                  <Typography
+                    variant="caption"
+                    color="textSecondary"
+                    sx={{ display: "block", mt: 1 }}
+                  >
+                    JPEG, PNG, GIF, WebP o SVG. Max 5MB
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
             <TextField
               label="Nome Agenzia"
               name="agencyName"
@@ -144,12 +329,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               onChange={handleChange}
               error={!!errors.agencyName}
               helperText={errors.agencyName}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <BusinessIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -160,12 +347,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               onChange={handleChange}
               error={!!errors.phoneNumber}
               helperText={errors.phoneNumber}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PhoneIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -176,12 +365,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               onChange={handleChange}
               error={!!errors.address}
               helperText={errors.address}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LocationIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -190,12 +381,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               name="url"
               value={formData.url}
               onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LanguageIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -206,12 +399,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               rows={3}
               value={formData.description}
               onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <DescriptionIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -224,12 +419,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               name="manager.name"
               value={formData.manager.name}
               onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -238,12 +435,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               name="manager.surname"
               value={formData.manager.surname}
               onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -253,12 +452,14 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
               type="email"
               value={formData.manager.email}
               onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
 

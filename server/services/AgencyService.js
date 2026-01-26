@@ -4,6 +4,7 @@ import { EmailTemplates } from "../utils/mailer.js";
 export class AgencyService {
   static async createAgency(Agency, User, Manager, dto) {
     const transaction = await Agency.sequelize.transaction();
+    const temporaryPassword = randomatic("Aa0", 10);
 
     const newUser = await User.create({
       email: dto.manager.email,
@@ -33,8 +34,6 @@ export class AgencyService {
 
     //Invio Email
     try {
-      const temporaryPassword = randomatic("Aa0", 10);
-
       const newUser = await User.create(
         {
           email: dto.manager.email,
@@ -159,7 +158,7 @@ export class AgencyService {
     }
   }
 
-  // static async getRealEstatesByAgencyId(Agency, idAgency) {
+  // static async getEstatesByAgency(Agency, idAgency) {
   //   const agency = await Agency.findByPk(idAgency, {
   //     include: ["RealEstates"],
   //   });

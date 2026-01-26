@@ -39,6 +39,13 @@ export class UserService {
     });
   }
 
+  static async getAllAdmins(Admin) {
+    return await User.findAll({
+      where: { role: "admin" },
+      attributes: { exclude: ["password"] }, // Exclude password from the result
+    });
+  }
+
   static async getUserById(User, idUser) {
     return await User.findByPk(idUser, {
       attributes: { exclude: ["password"] }, // Don't return password

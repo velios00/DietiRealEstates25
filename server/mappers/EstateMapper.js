@@ -19,7 +19,7 @@ export class EstateMapper {
 
   static estateToDTO(estate) {
     return {
-      idEstate: estate.idEstate,
+      idRealEstate: estate.idRealEstate,
       title:
         estate.title ||
         estate.description?.substring(0, 50) ||

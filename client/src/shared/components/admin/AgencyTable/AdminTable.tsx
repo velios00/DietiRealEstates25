@@ -16,6 +16,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import {
+  Edit as EditIcon,
   Delete as DeleteIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
@@ -164,19 +165,7 @@ export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
                 </Typography>
               </TableCell>
               <TableCell align="center">
-                <Box display="flex" justifyContent="center" gap={1}>
-                  <Tooltip title="Elimina">
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() =>
-                        onDelete(agency.idAgency, agency.agencyName)
-                      }
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
+                <Box display="flex" justifyContent="center" gap={1}></Box>
               </TableCell>
             </TableRow>
           ))}

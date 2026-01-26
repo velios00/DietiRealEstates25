@@ -11,3 +11,20 @@ export function searchEstates(params?: SearchParams) {
     },
   });
 }
+
+export function getEstatesByAgency(
+  agencyId: number,
+  params?: {
+    page?: number;
+    limit?: number;
+    orderBy?: string;
+  },
+) {
+  return API.get(`/real-estates/agency/${agencyId}`, {
+    params: {
+      page: params?.page,
+      limit: params?.limit,
+      orderBy: params?.orderBy,
+    },
+  });
+}

@@ -120,4 +120,39 @@ export class EstateController {
       next(err);
     }
   }
+
+  static async getEstatesByAgency(req, res, next) {
+    try {
+      const agencyId = parseInt(req.params.idAgency);
+
+      if (isNaN(agencyId)) {
+        return res.status(400).json({ error: "Invalid agency ID" });
+      }
+
+      const pagination = {
+        page: parseInt(req.query.page) || 1,
+        limit: parseInt(req.query.limit) || 10,
+        orderBy: req.query.orderBy || "price",
+      };
+
+      const estates = await EstateService.getEstatesByAgency(
+        RealEstate,
+        Place,
+        agencyId,
+        pagination,
+        EstateMapper,
+      );
+
+      res.status(200).json({
+        count: estates.data.length,
+        totalResults: estates.total,
+        page: estates.page,
+        totalPages: estates.totalPages,
+        agencyId: agencyId,
+        results: estates.data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }

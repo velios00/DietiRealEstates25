@@ -27,6 +27,13 @@ UserRouter.get(
   UserController.getUserById,
 );
 
+UserRouter.get(
+  "/admin/all",
+  enforceAuthentication,
+  authorizeRoles("admin"),
+  UserController.getAllAdmins,
+);
+
 UserRouter.post(
   "/admin/create",
   enforceAuthentication,

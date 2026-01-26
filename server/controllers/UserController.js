@@ -50,4 +50,14 @@ export class UserController {
       next(err);
     }
   }
+
+  static async getAllAdmins(req, res, next) {
+    try {
+      const admins = await UserService.getAllAdmins(Admin);
+      const result = UserMapper.toUserDTOList(admins);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
 }

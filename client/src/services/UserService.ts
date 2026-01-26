@@ -16,3 +16,7 @@ export function changePassword(dto: ChangePasswordDTO) {
 export function getAllUsers() {
   return API.get("/user");
 }
+
+export function getAllAdmins() {
+  return API.get("/user/admin/all");
+}
