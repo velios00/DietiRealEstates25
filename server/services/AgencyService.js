@@ -5,6 +5,33 @@ export class AgencyService {
   static async createAgency(Agency, User, Manager, dto) {
     const transaction = await Agency.sequelize.transaction();
 
+    const newUser = await User.create({
+      email: dto.manager.email,
+      password: temporaryPassword,
+      name: dto.manager.name,
+      surname: dto.manager.surname,
+      role: "manager",
+    });
+
+    const newAgency = await Agency.create({
+      agencyName: dto.agencyName,
+      address: dto.address,
+      description: dto.description,
+      profileImage: dto.profileImage,
+      phoneNumber: dto.phoneNumber,
+      url: dto.url,
+    });
+
+    const newManager = await Manager.create({
+      idManager: newUser.idUser,
+      idAgency: newAgency.idAgency,
+    });
+
+    await newAgency.update({
+      idManager: newUser.idUser,
+    });
+
+    //Invio Email
     try {
       const temporaryPassword = randomatic("Aa0", 10);
 

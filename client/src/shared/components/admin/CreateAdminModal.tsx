@@ -13,7 +13,7 @@ import {
   Alert,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { CreateAdminDTO } from "../../../types/user/user.types";
+import { CreateAdminDTO } from "../../../shared/models/User.model.ts";
 
 interface CreateAdminModalProps {
   open: boolean;

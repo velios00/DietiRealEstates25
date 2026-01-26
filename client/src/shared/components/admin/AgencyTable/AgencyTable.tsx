@@ -1,5 +1,4 @@
 // src/components/admin/AgencyTable.tsx
-import React from "react";
 import {
   Table,
   TableBody,
@@ -14,7 +13,6 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Button,
   Tooltip,
 } from "@mui/material";
 import {
@@ -25,21 +23,14 @@ import {
   LocationOn as LocationIcon,
   Business as BusinessIcon,
 } from "@mui/icons-material";
-import { AgencyResponseDTO } from "../../../../types/agency/agency.types";
+import { AgencyResponse } from "../../../models/Agency.model";
 
 interface AgencyTableProps {
-  agencies: AgencyResponseDTO[];
+  agencies: AgencyResponse[];
   loading: boolean;
-  onDelete: (idAgency: string, agencyName: string) => void;
-  onEdit: (agency: AgencyResponseDTO) => void;
 }
 
-const AgencyTable: React.FC<AgencyTableProps> = ({
-  agencies,
-  loading,
-  onDelete,
-  onEdit,
-}) => {
+export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
   if (loading) {
     return (
       <Box
@@ -79,9 +70,6 @@ const AgencyTable: React.FC<AgencyTableProps> = ({
             <TableCell>Agenzia</TableCell>
             <TableCell>Manager</TableCell>
             <TableCell>Contatti</TableCell>
-            <TableCell>Stato</TableCell>
-            <TableCell>Data Creazione</TableCell>
-            <TableCell align="center">Azioni</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -206,6 +194,4 @@ const AgencyTable: React.FC<AgencyTableProps> = ({
       </Table>
     </TableContainer>
   );
-};
-
-export default AgencyTable;
+}

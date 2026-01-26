@@ -1,5 +1,5 @@
 import { API } from "../shared/axios/Interceptors";
-import { CreateAdminDTO } from "../types/user/user.types";
+import { CreateAdminDTO, ChangePasswordDTO } from "../shared/models/User.model";
 
 export function getUserById(idUser: string) {
   return API.get(`/user/${idUser}`);
@@ -9,10 +9,7 @@ export function createAdmin(dto: CreateAdminDTO) {
   return API.post("/user/admin/create", dto);
 }
 
-export function changePassword(dto: {
-  oldPassword: string;
-  newPassword: string;
-}) {
+export function changePassword(dto: ChangePasswordDTO) {
   return API.put("/user/change", dto);
 }
 
