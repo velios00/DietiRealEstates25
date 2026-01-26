@@ -15,8 +15,3 @@ AgencyRouter.post(
 AgencyRouter.get("/", AgencyController.getAllAgencies);
 
 AgencyRouter.get("/:idAgency", AgencyController.getAgencyById);
-
-// AgencyRouter.get(
-//   "/:idAgency/real-estates",
-//   AgencyController.getRealEstatesByAgencyId,
-// );
