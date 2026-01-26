@@ -6,6 +6,7 @@ import LoginPage from "./pages/Login/Login.page";
 import Agency from "./pages/Agency/Agency.page";
 import SearchEstates from "./pages/SearchEstates/SearchEstates.page";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.page";
+import EstateView from "./pages/EstateView/EstateView.Page";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminDashboard />,
+      },
+      {
+        path: "/estate/:id",
+        element: <EstateView />,
       },
     ],
   },

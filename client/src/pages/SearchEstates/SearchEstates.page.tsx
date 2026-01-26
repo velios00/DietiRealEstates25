@@ -60,7 +60,7 @@ export default function SearchEstate() {
   return (
     <>
       <Box sx={{ height: "64px" }} /> {/* Spacer per l'header fisso */}
-      <Header />
+      {/* <Header /> */}
       <Box
         sx={{
           display: "flex",

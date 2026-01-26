@@ -85,12 +85,6 @@ export class EstateController {
 
   static async searchEstates(req, res, next) {
     try {
-      // if (!req.query.city) {
-      //   return res.status(400).json({
-      //     error: "City parameter is required",
-      //   });
-      // }
-
       const filters = SearchFiltersMapper.fromQuery(req.query);
 
       const pagination = {

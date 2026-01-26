@@ -20,6 +20,8 @@ AgencyRouter.get(
 );
 
 AgencyRouter.get("/:idAgency", AgencyController.getAgencyById);
+<<<<<<< HEAD
+=======
 
 AgencyRouter.delete(
   "/:idAgency",
@@ -32,3 +34,4 @@ AgencyRouter.delete(
 //   "/:idAgency/real-estates",
 //   AgencyController.getRealEstatesByAgencyId,
 // );
+>>>>>>> 9545c78637ba0360c015819725e5700753d389b6
