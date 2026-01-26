@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import "./App.css";
 import { User } from "./shared/models/User.model";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "./shared/models/JwtPayload.model";
 import { getUserById } from "./services/UserService";
@@ -11,6 +11,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import "@fontsource/montserrat/400.css";
 import "@fontsource/montserrat/700.css";
 import { Toaster } from "react-hot-toast";
+import Header from "./shared/components/Header/Header";
 const theme = createTheme({
   typography: {
     fontFamily: '"Montserrat", sans-serif',
@@ -19,8 +20,11 @@ const theme = createTheme({
 
 function App() {
   // const navigate = useNavigate();
+  const location = useLocation();
   const [userData, setUserData] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<Roles | null>(null);
+  const hideHeader =
+    location.pathname === "/login" || location.pathname === "/register";
 
   const changeUserDataContext = useCallback((user: User | null) => {
     setUserData(user);
@@ -54,6 +58,7 @@ function App() {
             setRole: setUserRole,
           }}
         >
+          {!hideHeader && <Header />}
           <Toaster />
           <Outlet />
         </UserContext.Provider>

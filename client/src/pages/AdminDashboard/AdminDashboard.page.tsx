@@ -19,7 +19,7 @@ import { CreateAdminDTO } from "../../shared/models/User.model";
 import AgencyTable from "../../shared/components/admin/AgencyTable/AgencyTable";
 import CreateAgencyModal from "../../shared/components/admin/CreateAgencyModal";
 import CreateAdminModal from "../../shared/components/admin/CreateAdminModal";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import {
   AgencyResponse,
   CreateAgencyDTO,

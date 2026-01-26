@@ -3,7 +3,7 @@ import { EmailTemplates } from "../utils/mailer.js";
 
 export class AgencyService {
   static async createAgency(Agency, User, Manager, dto) {
-    const temporaryPassword = randomatic("Aa0", 10);
+    const transaction = await Agency.sequelize.transaction();
 
     const newUser = await User.create({
       email: dto.manager.email,
@@ -33,29 +33,57 @@ export class AgencyService {
 
     //Invio Email
     try {
-      await EmailTemplates.sendManagerWelcome(
+      const temporaryPassword = randomatic("Aa0", 10);
+
+      const newUser = await User.create(
+        {
+          email: dto.manager.email,
+          password: temporaryPassword,
+          name: dto.manager.name,
+          surname: dto.manager.surname,
+          role: "manager",
+        },
+        { transaction },
+      );
+
+      const newAgency = await Agency.create(
+        {
+          agencyName: dto.agencyName,
+          address: dto.address,
+          description: dto.description,
+          profileImage: dto.profileImage,
+          phoneNumber: dto.phoneNumber,
+          url: dto.url,
+        },
+        { transaction },
+      );
+
+      await Manager.create(
+        {
+          idManager: newUser.idUser,
+          idAgency: newAgency.idAgency,
+        },
+        { transaction },
+      );
+
+      await transaction.commit();
+
+      // email fuori dalla transazione
+      EmailTemplates.sendManagerWelcome(
         dto.manager.email,
         dto.manager.name,
         dto.agencyName,
         temporaryPassword,
       );
-      console.log("Email inviata con successo a:", dto.manager.email);
-    } catch (emailError) {
-      console.error(
-        "Errore nell'invio dell'email a:",
-        dto.manager.email,
-        emailError,
-      );
-    }
 
-    return {
-      agency: newAgency,
-      manager: newUser,
-    };
+      return { agency: newAgency, manager: newUser };
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
   static async getAllAgencies(Agency, Manager, User) {
-    //manager e' null, aggiustare
     const agencies = await Agency.findAll({
       include: [
         {
@@ -63,12 +91,35 @@ export class AgencyService {
           include: [
             {
               model: User,
+              attributes: ["idUser", "email", "name", "surname", "role"],
+              as: "User", // Add alias if defined in associations
             },
           ],
+          as: "Manager", // Add alias if defined
         },
       ],
+      attributes: [
+        "idAgency",
+        "agencyName",
+        "address",
+        "description",
+        "profileImage",
+        "phoneNumber",
+        "url",
+        "createdAt",
+      ],
     });
-    return agencies;
+
+    // Debug: Logga la struttura dati grezza
+    console.log("Raw agencies data:", JSON.stringify(agencies, null, 2));
+
+    return agencies.map((agency) => {
+      const agencyData = agency.get({ plain: true });
+      return {
+        ...agencyData,
+        manager: agencyData.Manager?.User || null,
+      };
+    });
   }
 
   static async getAgencyById(Agency, Manager, User, idAgency) {
@@ -88,6 +139,24 @@ export class AgencyService {
       throw new Error("Agency not found");
     }
     return agency;
+  }
+
+  static async deleteAgency(Agency, Manager, User, idAgency) {
+    const transaction = await Agency.sequelize.transaction();
+
+    try {
+      const manager = await Manager.findOne({ where: { idAgency } });
+      if (!manager) throw new Error("Manager not found");
+
+      await Agency.destroy({ where: { idAgency }, transaction });
+      await Manager.destroy({ where: { idAgency }, transaction });
+      await User.destroy({ where: { idUser: manager.idManager }, transaction });
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
   // static async getRealEstatesByAgencyId(Agency, idAgency) {

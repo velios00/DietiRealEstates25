@@ -58,7 +58,7 @@ export class EmailTemplates {
             
             Password temporanea: ${temporaryPassword}
             
-            Importante: E' consigliato cambiare la password al piu' presto.
+            Importante: E' consigliato cambiare la password al più presto.
             
             Saluti,
             Team DietiRealEstates
@@ -100,7 +100,49 @@ export class EmailTemplates {
             
             Password temporanea: ${temporaryPassword}
             
-            Importante: E' consigliato cambiare la password al piu' presto.
+            Importante: E' consigliato cambiare la password al più presto.
+            
+            Saluti,
+            Team DietiRealEstates
+        `;
+
+    return await sendMail({
+      to: email,
+      subject: subject,
+      text: text,
+      html: html,
+    });
+  }
+
+  static async sendAdminWelcome(email, name, temporaryPassword) {
+    const subject = "Welcome to DietiRealEstates!";
+
+    const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #007bff;">Benvenuto in DietiRealEstates</h2>
+                <p>Ciao <strong>${name}</strong>,</p>
+                <p>Il tuo account da Amministratore è stato creato con successo.</p>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0;">
+                    <p style="margin: 0;"><strong>Password temporanea:</strong></p>
+                    <p style="margin: 10px 0; font-size: 18px; font-weight: bold;">${temporaryPassword}</p>
+                </div>
+                
+                <p><strong>Importante:</strong> Cambia la password al primo accesso.</p>
+                <p>Saluti,<br>Il Team DietiRealEstates</p>
+            </div>
+        `;
+
+    const text = `
+            Benvenuto in DietiRealEstates
+            
+            Ciao ${name},
+            
+            Il tuo account da amministratore è stato creato.
+            
+            Password temporanea: ${temporaryPassword}
+            
+            Importante: E' consigliato cambiare la password al più presto.
             
             Saluti,
             Team DietiRealEstates

@@ -110,7 +110,12 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
       open={open}
       onClose={handleClose}
       fullWidth
-      maxWidth="xs"
+      maxWidth="sm"
+      sx={{
+        "& .MuiDialog-paper": {
+          alignItems: "center",
+        },
+      }}
       PaperProps={{ sx: { borderRadius: 4 } }}
     >
       <DialogTitle sx={{ textAlign: "center", fontWeight: 600 }}>

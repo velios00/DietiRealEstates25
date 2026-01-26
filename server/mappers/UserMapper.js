@@ -1,7 +1,7 @@
 import { UserDTO } from "../DTOs/UserDTO.js";
 
 export class UserMapper {
-  static toUserDTO(user) {
+  static toUserDTO(user, tempPassword = null) {
     return new UserDTO({
       idUser: user.idUser,
       email: user.email,
@@ -9,6 +9,7 @@ export class UserMapper {
       surname: user.surname,
       role: user.role,
       userAddress: user.userAddress,
+      temporaryPassword: tempPassword,
     });
   }
 

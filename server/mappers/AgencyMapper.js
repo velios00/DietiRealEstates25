@@ -24,7 +24,9 @@ export class AgencyMapper {
       profileImage: agency.profileImage,
       phoneNumber: agency.phoneNumber,
       url: agency.url,
-      idManager: agency.idManager,
+
+      idManager: agency.Manager ? agency.Manager.idManager : null,
+
       managerName:
         agency.Manager && agency.Manager.User
           ? `${agency.Manager.User.name} ${agency.Manager.User.surname}`

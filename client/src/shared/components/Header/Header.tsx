@@ -12,6 +12,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const navigate = useNavigate();
+
+  const goHome = () => {
+    navigate("/");
+  };
+
   return (
     <>
       <AppBar
@@ -54,6 +59,7 @@ export default function Header() {
                   component="img"
                   src={"/src/assets/Dieticolorato.png"}
                   alt="DIETI Logo"
+                  onClick={goHome}
                   sx={{
                     height: { xs: 40, md: 170 },
                     width: { xs: "auto", md: "auto" }, // Larghezza automatica

@@ -1,4 +1,5 @@
 import { createHash } from "crypto";
+import { EmailTemplates } from "../utils/mailer.js";
 import randomatic from "randomatic";
 
 export class UserService {
@@ -45,9 +46,25 @@ export class UserService {
   }
 
   static async createAdmin(User, Admin, dto) {
-    const temporaryPassword = randomatic("Aa0", 10);
+    console.log("=== CREATING ADMIN - INPUT DATA ===");
+    console.log("DTO completo:", JSON.stringify(dto, null, 2));
+    console.log("Email:", dto.email, "Type:", typeof dto.email);
+    console.log("Name:", dto.name, "Type:", typeof dto.name);
+    console.log("Surname:", dto.surname, "Type:", typeof dto.surname);
 
-    console.log(dto);
+    // Controlla se l'email esiste già
+    const existingUser = await User.findOne({
+      where: { email: dto.email },
+    });
+
+    if (existingUser) {
+      console.log("Email già esistente:", dto.email);
+      throw new Error(
+        `L'email ${dto.email} è già utilizzata da un altro utente`,
+      );
+    }
+
+    const temporaryPassword = randomatic("Aa0", 10);
 
     const newUser = await User.create({
       email: dto.email,
@@ -61,9 +78,21 @@ export class UserService {
       idAdmin: newUser.idUser,
     });
 
-    /*AGGIUNGERE INVIO MAIL*/
-    console.log(temporaryPassword);
+    await EmailTemplates.sendAdminWelcome(
+      dto.email,
+      dto.name,
+      temporaryPassword,
+    );
 
-    return newUser;
+    return {
+      idUser: newUser.idUser,
+      email: newUser.email,
+      name: newUser.name,
+      surname: newUser.surname,
+      role: newUser.role,
+      temporaryPassword,
+    };
+
+    //console.log(temporaryPassword);
   }
 }
