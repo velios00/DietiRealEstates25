@@ -1,4 +1,5 @@
 export interface Estate {
+  address: string;
   idEstate: number;
   title: string;
   photos: string[];

@@ -152,29 +152,22 @@ export default function Agency() {
             ) : (
               <Grid container spacing={4}>
                 {estates.map((estate) => (
-                  <Grid container spacing={3}>
-                    {estates.map((estate) => (
-                      <Grid
-                        key={estate.idEstate}
-                        size={{ xs: 12, sm: 6, md: 6 }}
-                      >
-                        <EstateCard
-                          listing={{
-                            id: estate.idEstate,
-                            title: estate.title || "No title",
-                            address: estate.place
-                              ? `${estate.place.street || ""}, ${estate.place.city || ""}`
-                              : estate.address || "Address not available",
-                            price: estate.price || 0,
-                            beds: estate.nRooms || 0,
-                            baths: estate.nBathrooms || 0,
-                            size: estate.size || 0,
-                            photos: estate.photos || [],
-                            type: estate.type || "Property",
-                          }}
-                        />
-                      </Grid>
-                    ))}
+                  <Grid key={estate.idEstate} size={{ xs: 12, sm: 6, md: 6 }}>
+                    <EstateCard
+                      listing={{
+                        id: estate.idEstate,
+                        title: estate.title || "No title",
+                        address: estate.place
+                          ? `${estate.place.street || ""}, ${estate.place.city || ""}`
+                          : estate.address || "Address not available",
+                        price: estate.price || 0,
+                        beds: estate.nRooms || 0,
+                        baths: estate.nBathrooms || 0,
+                        size: estate.size || 0,
+                        photos: estate.photos || [],
+                        type: estate.type || "Property",
+                      }}
+                    />
                   </Grid>
                 ))}
               </Grid>
