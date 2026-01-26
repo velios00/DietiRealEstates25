@@ -27,7 +27,9 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
   return (
     <>
       {/* Gallery Layout */}
-      <Box sx={{ display: "flex", gap: 2 }}>
+      <Box
+        sx={{ display: "flex", gap: 2, height: "500px", overflow: "hidden" }}
+      >
         {/* Grande immagine sinistra */}
         <Box
           onClick={() => {
@@ -38,6 +40,7 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
             position: "relative",
             flex: 1,
             aspectRatio: "3 / 2",
+
             borderRadius: 3,
             overflow: "hidden",
             boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
@@ -48,6 +51,7 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
               transform: "scale(1.02)",
               boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
             },
+            height: "100%",
           }}
         >
           <CardMedia
@@ -64,7 +68,13 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
 
         {/* Piccole immagini destra - stesso height della grande */}
         <Box
-          sx={{ display: "flex", flexDirection: "column", gap: 1.5, flex: 0.5 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.5,
+            flex: 0.5,
+            height: "100%",
+          }}
         >
           {/* Seconda immagine */}
           {photos.length > 1 && (
@@ -111,7 +121,7 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
                 flex: 1,
                 borderRadius: 2,
                 overflow: "hidden",
-                bgImage: `url(${photos[2]})`,
+                backgroundImage: `url(${photos[2]})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 display: "flex",
@@ -123,17 +133,17 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
                 textAlign: "center",
                 cursor: "pointer",
                 transition: "all 0.3s",
-                border: "3px solid #62A1BA",
+                border: "1px solid #62A1BA",
                 position: "relative",
                 "&:before": {
                   content: '""',
                   position: "absolute",
                   inset: 0,
-                  bgcolor: "rgba(0,0,0,0.5)",
+                  bgcolor: "rgba(98, 161, 186, 0.6)",
                   transition: "background-color 0.3s",
                 },
                 "&:hover:before": {
-                  bgcolor: "rgba(0,0,0,0.7)",
+                  bgcolor: "rgba(98, 161, 186, 0.8)",
                 },
                 "&:hover": {
                   transform: "scale(1.02)",
@@ -141,7 +151,16 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
                 p: 1,
               }}
             >
-              <Box sx={{ position: "relative", zIndex: 1 }}>
+              <Box
+                sx={{
+                  position: "relative",
+                  zIndex: 1,
+                  textAlign: "center",
+                  alignItems: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <Image sx={{ display: "block", mb: 0.5, fontSize: "2rem" }} />
                 Vedi le altre {photos.length - 2} foto
               </Box>

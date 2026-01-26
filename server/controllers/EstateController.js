@@ -69,6 +69,7 @@ export class EstateController {
 
       const estate = await EstateService.getEstateById(
         RealEstate,
+        Place,
         req.params.id,
       );
 
