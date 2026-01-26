@@ -57,7 +57,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
   return (
     <Card
       sx={{
-        width: 480,
+        width: "100%", //se non funziona rimettere a 480
         borderRadius: 6,
         overflow: "hidden",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",

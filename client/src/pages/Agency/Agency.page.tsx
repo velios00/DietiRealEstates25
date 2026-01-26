@@ -156,7 +156,7 @@ export default function Agency() {
                     {estates.map((estate) => (
                       <Grid
                         key={estate.idEstate}
-                        size={{ xs: 12, sm: 6, md: 4 }}
+                        size={{ xs: 12, sm: 6, md: 6 }}
                       >
                         <EstateCard
                           listing={{
