@@ -19,12 +19,6 @@ EstateRouter.delete(
   EstateController.deleteEstate,
 );
 
-EstateRouter.get(
-  "/agency/:idAgency",
-  enforceAuthentication,
-  EstateController.getEstatesByAgency,
-);
-
 EstateRouter.get("/search", EstateController.searchEstates);
 
 EstateRouter.get("/:id", EstateController.getEstateById);

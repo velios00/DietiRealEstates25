@@ -27,7 +27,3 @@ AgencyRouter.delete(
   authorizeRoles("admin"),
   AgencyController.deleteAgency,
 );
-AgencyRouter.get(
-  "/:idAgency/real-estates",
-  AgencyController.getRealEstatesByAgencyId,
-);

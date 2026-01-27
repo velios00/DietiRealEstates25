@@ -187,6 +187,10 @@ export class EstateService {
       whereConditions.type = filters.type;
     }
 
+    if (filters.idAgency != null) {
+      whereConditions.idAgency = filters.idAgency;
+    }
+
     const { page = 1, limit = 10, orderBy = "price" } = pagination;
     const offset = (page - 1) * limit;
 
@@ -201,39 +205,6 @@ export class EstateService {
             },
           },
           required: true, //inner join
-        },
-      ],
-      order: [[orderBy === "createdAt" ? "createdAt" : "price", "ASC"]],
-      limit: limit,
-      offset: offset,
-    });
-
-    return {
-      data: estates.rows.map((estate) => EstateMapper.estateToDTO(estate)),
-      total: estates.count,
-      page,
-      totalPages: Math.ceil(estates.count / limit),
-    };
-  }
-
-  static async getEstatesByAgency(
-    RealEstate,
-    Place,
-    agencyId,
-    pagination = {},
-    EstateMapper,
-  ) {
-    const { page = 1, limit = 10, orderBy = "price" } = pagination;
-    const offset = (page - 1) * limit;
-
-    const estates = await RealEstate.findAndCountAll({
-      where: {
-        idAgency: agencyId,
-      },
-      include: [
-        {
-          model: Place,
-          required: false, // left join
         },
       ],
       order: [[orderBy === "createdAt" ? "createdAt" : "price", "ASC"]],

@@ -10,7 +10,10 @@ import {
 } from "@mui/material";
 import { Estate } from "../../shared/models/Estate.model";
 import Header from "../../shared/components/Header/Header";
-import { getEstatesByAgency } from "../../services/EstateService";
+import {
+  getEstatesByAgency,
+  searchEstates,
+} from "../../services/EstateService";
 import { getAgencyById } from "../../services/AgencyService";
 import AgencyCard from "../../shared/components/AgencyCard/AgencyCard";
 import EstateCard from "../../shared/components/EstateCard/EstateCard";
@@ -25,6 +28,7 @@ export default function Agency() {
   const [error, setError] = useState<string | null>(null);
   const [estatesLoading, setEstatesLoading] = useState(false);
   const [agencyLoading, setAgencyLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const fetchAgencyData = async () => {
     if (!id) return;
@@ -43,7 +47,14 @@ export default function Agency() {
     if (!id) return;
     setEstatesLoading(true);
     try {
-      const response = await getEstatesByAgency(parseInt(id));
+      const response = await searchEstates({
+        filters: {
+          agencyId: parseInt(id),
+        },
+        page: currentPage,
+        limit: 10,
+        orderBy: "createdAt",
+      });
       setEstates(response.data?.results || response.data || []);
     } catch (err: any) {
       setError(err.message || "Failed to load estates");
@@ -122,13 +133,7 @@ export default function Agency() {
           {/* SEZIONE INFERIORE: Proprietà */}
           <Box sx={{ p: 4, position: "relative", minHeight: "200px" }}>
             {estatesLoading && (
-              <Box
-                sx={
-                  {
-                    /* ... styles esistenti per il loader ... */
-                  }
-                }
-              >
+              <Box>
                 <CircularProgress sx={{ color: "#62A1BA" }} />
               </Box>
             )}

@@ -17,18 +17,17 @@ export function getEstatesByAgency(
   params?: {
     page?: number;
     limit?: number;
-    orderBy?: string;
+    orderBy?: "createdAt" | "price";
   },
 ) {
-  return API.get(`/real-estates/agency/${agencyId}`, {
-    params: {
-      page: params?.page,
-      limit: params?.limit,
-      orderBy: params?.orderBy,
-    },
+  // Use searchEstates with idAgency filter
+  return searchEstates({
+    filters: { agencyId: agencyId },
+    page: params?.page,
+    limit: params?.limit,
+    orderBy: params?.orderBy,
   });
 }
-
 export function getEstateById(id: string | number) {
   return API.get(`/real-estates/${id}`);
 }
