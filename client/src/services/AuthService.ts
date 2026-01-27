@@ -14,13 +14,5 @@ export function registerUser(registerRequest: RegisterRequest) {
 }
 
 export function googleLoginUser(authRequest: GoogleAuthRequest) {
-  return API.post(
-    `/googleLogin`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${authRequest.firebaseToken}`,
-      },
-    }
-  );
+  return API.post(`/googleLogin`, { idToken: authRequest.firebaseToken });
 }

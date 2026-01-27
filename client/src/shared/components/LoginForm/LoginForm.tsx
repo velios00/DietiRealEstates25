@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useCallback, useState, FormEvent, useContext } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import toast from "react-hot-toast";
-import { loginUser } from "../../../services/AuthService";
+import { loginUser, googleLoginUser } from "../../../services/AuthService";
 import { LoginRequest } from "../../models/AuthRequest.model";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "../../models/JwtPayload.model";
 import { UserContext } from "../../context/UserContext";
 import { AuthUser } from "../../models/AuthUser.model";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../../../config/FirebaseConfig";
+import GoogleIcon from "@mui/icons-material/Google";
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -63,6 +66,36 @@ export function LoginForm() {
     },
     [navigate, loginData, userContext],
   );
+
+  const handleGoogleLogin = useCallback(async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const firebaseToken = await result.user.getIdToken();
+
+      const response = await googleLoginUser({ firebaseToken });
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      const decodedToken = jwtDecode<JwtPayload>(token);
+
+      const authUser: AuthUser = {
+        idUser: decodedToken.user.idUser,
+        email: decodedToken.user.email,
+        role: decodedToken.user.role,
+      };
+
+      if (userContext?.setUser) {
+        userContext.setUser(authUser);
+        console.log("UserContext dopo setUser:", userContext?.user);
+      }
+      window.dispatchEvent(new Event("storage"));
+
+      toast.success("Login con Google effettuato con successo");
+      navigate("/");
+    } catch (error) {
+      toast.error("Errore nel login con Google");
+      console.error("Errore nel login con Google: ", error);
+    }
+  }, [navigate, userContext]);
 
   return (
     <Paper
@@ -147,6 +180,28 @@ export function LoginForm() {
               }}
             >
               Accedi
+            </Button>
+
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<GoogleIcon />}
+              onClick={handleGoogleLogin}
+              sx={{
+                borderRadius: 4,
+                py: 1.5,
+                mt: 2,
+                fontSize: "1rem",
+                fontWeight: 600,
+                borderColor: "#62A1BA",
+                color: "#62A1BA",
+                "&:hover": {
+                  borderColor: "#4a8ba3",
+                  backgroundColor: "rgba(98, 161, 186, 0.08)",
+                },
+              }}
+            >
+              Accedi con Google
             </Button>
 
             <Typography
