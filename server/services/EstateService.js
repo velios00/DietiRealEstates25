@@ -1,4 +1,5 @@
 import { geoCodeAddress, getPOIs } from "../utils/geoapify.js";
+import { ImageService } from "./ImageService.js";
 import { Op } from "sequelize";
 
 export class EstateService {
@@ -10,7 +11,24 @@ export class EstateService {
     userId,
     dto,
     apiKey,
+    files,
   ) {
+    // Handle image uploads and fallback to body photos
+    const uploadedPhotos = files?.length
+      ? await Promise.all(files.map((file) => ImageService.uploadImage(file)))
+      : [];
+
+    const fallbackPhotos = Array.isArray(dto.photos)
+      ? dto.photos
+      : typeof dto.photos === "string"
+        ? dto.photos
+            .split(",")
+            .map((p) => p.trim())
+            .filter(Boolean)
+        : [];
+
+    dto.photos = uploadedPhotos.length ? uploadedPhotos : fallbackPhotos;
+
     let agencyId = null;
     let idManager = null;
     let idAgent = null;

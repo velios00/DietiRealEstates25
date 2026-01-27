@@ -2,6 +2,7 @@ import express from "express";
 import { AgencyController } from "../controllers/AgencyController.js";
 import { enforceAuthentication } from "../middleware/authorization.js";
 import { authorizeRoles } from "../middleware/authorization.js";
+import { upload } from "../middleware/multer.js";
 
 export const AgencyRouter = express.Router();
 
@@ -9,6 +10,7 @@ AgencyRouter.post(
   "/createAgency",
   enforceAuthentication,
   authorizeRoles("admin"),
+  upload.single("profileImage"),
   AgencyController.createAgency,
 );
 
@@ -20,13 +22,6 @@ AgencyRouter.get(
 );
 
 AgencyRouter.get("/:idAgency", AgencyController.getAgencyById);
-
-// AgencyRouter.delete(
-//   "/:idAgency",
-//   enforceAuthentication,
-//   authorizeRoles("admin"),
-//   AgencyController.deleteAgency,
-// );
 
 AgencyRouter.get(
   "/:idAgency/real-estates",

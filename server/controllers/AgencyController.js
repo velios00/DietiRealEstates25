@@ -12,6 +12,7 @@ export class AgencyController {
         User,
         Manager,
         dto,
+        req.file,
       );
 
       res.status(201).json(result);

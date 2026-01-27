@@ -1,10 +1,18 @@
 import randomatic from "randomatic";
 import { EmailTemplates } from "../utils/mailer.js";
+import { ImageService } from "./ImageService.js";
 
 export class AgencyService {
-  static async createAgency(Agency, User, Manager, dto) {
+  static async createAgency(Agency, User, Manager, dto, file) {
     const transaction = await Agency.sequelize.transaction();
     const temporaryPassword = randomatic("Aa0", 10);
+
+    // Handle image upload and fallback
+    let profileImage = dto.profileImage;
+    if (file) {
+      profileImage = await ImageService.uploadImage(file);
+    }
+    dto.profileImage = profileImage;
 
     try {
       // Create User WITHIN transaction

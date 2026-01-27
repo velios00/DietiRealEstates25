@@ -1,5 +1,4 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import Header from "../../shared/components/Header/Header";
 import SearchResults from "../../shared/components/SearchResults/SearchResults";
 import RightSidebar from "../../shared/components/RightSideBar.tsx/RightSideBar";
 import { EstateFilters } from "../../shared/models/EstateFilters";

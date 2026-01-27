@@ -24,6 +24,7 @@ export class EstateController {
         userId,
         dto,
         process.env.API_KEY_GEOAPIFY,
+        req.files,
       );
 
       const estateWithPlace = await RealEstate.findByPk(created.idRealEstate, {
