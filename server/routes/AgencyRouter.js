@@ -21,9 +21,14 @@ AgencyRouter.get(
 
 AgencyRouter.get("/:idAgency", AgencyController.getAgencyById);
 
-AgencyRouter.delete(
-  "/:idAgency",
-  enforceAuthentication,
-  authorizeRoles("admin"),
-  AgencyController.deleteAgency,
+// AgencyRouter.delete(
+//   "/:idAgency",
+//   enforceAuthentication,
+//   authorizeRoles("admin"),
+//   AgencyController.deleteAgency,
+// );
+
+AgencyRouter.get(
+  "/:idAgency/real-estates",
+  AgencyController.getRealEstatesByAgencyId,
 );

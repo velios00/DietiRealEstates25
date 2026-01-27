@@ -123,7 +123,7 @@ export class EstateService {
 
     return { message: "Estate deleted successfully" };
   }
-  //W.I.P.
+
   static async getEstateById(Estate, Place, idRealEstate) {
     return await Estate.findByPk(idRealEstate, { include: [Place] });
   }

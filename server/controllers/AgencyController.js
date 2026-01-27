@@ -61,16 +61,16 @@ export class AgencyController {
     }
   }
 
-  // static async getRealEstatesByAgencyId(req, res, next) {
-  //   try {
-  //     const idAgency = req.params.idAgency;
-  //     const realEstates = await AgencyService.getRealEstatesByAgencyId(
-  //       Agency,
-  //       idAgency,
-  //     );
-  //     res.status(200).json(realEstates);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
+  static async getRealEstatesByAgencyId(req, res, next) {
+    try {
+      const idAgency = req.params.idAgency;
+      const realEstates = await AgencyService.getRealEstatesByAgencyId(
+        Agency,
+        idAgency,
+      );
+      res.status(200).json(realEstates);
+    } catch (err) {
+      next(err);
+    }
+  }
 }

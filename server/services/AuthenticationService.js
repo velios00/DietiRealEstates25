@@ -43,7 +43,9 @@ export class AuthenticationService {
     if (!decodedToken.email) {
       throw new Error("Invalid token: email not found");
     }
-    const user = await userModel.findOne({ where: decodedToken.email });
+    let user = await userModel.findOne({
+      where: { email: decodedToken.email },
+    });
 
     if (!user) {
       user = await userModel.create({
