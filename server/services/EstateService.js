@@ -82,7 +82,6 @@ export class EstateService {
     let userAgencyId = null;
     let userRole = null;
 
-    // Check if user is manager or agent and get their agency
     const manager = await Manager.findByPk(userId);
     if (manager) {
       userAgencyId = manager.idAgency;
@@ -99,19 +98,14 @@ export class EstateService {
       throw new Error("User is neither a manager nor an agent");
     }
 
-    //IF this is a "generic" remove function these checks need to be deleted i guess.
-
-    // Check if the estate belongs to the user's agency
     if (estate.idAgency !== userAgencyId) {
       throw new Error("You can only delete estates from your own agency");
     }
 
-    //If user is an agent, they can only delete estates they created
     if (userRole === "agent" && estate.idAgent !== userId) {
       throw new Error("Agents can only delete estates they created");
     }
 
-    //If user is a manager, they can only delete estates they created or estates from their agency
     if (
       userRole === "manager" &&
       estate.createdBy === "manager" &&
@@ -128,6 +122,54 @@ export class EstateService {
     return await Estate.findByPk(idRealEstate, { include: [Place] });
   }
 
+  static addRangeFilter(whereConditions, field, min, max) {
+    if (min !== null || max !== null) {
+      whereConditions[field] = {};
+      if (min !== null) {
+        whereConditions[field][Op.gte] = min;
+      }
+      if (max !== null) {
+        whereConditions[field][Op.lte] = max;
+      }
+    }
+  }
+
+  static buildWhereConditions(filters) {
+    const whereConditions = {};
+
+    // Range filters
+    this.addRangeFilter(
+      whereConditions,
+      "price",
+      filters.minPrice,
+      filters.maxPrice,
+    );
+    this.addRangeFilter(
+      whereConditions,
+      "size",
+      filters.minSize,
+      filters.maxSize,
+    );
+
+    const simpleFilters = [
+      "nRooms",
+      "nBathrooms",
+      "energyClass",
+      "floor",
+      "createdBy",
+      "type",
+      "idAgency",
+    ];
+
+    simpleFilters.forEach((key) => {
+      if (filters[key] != null) {
+        whereConditions[key] = filters[key];
+      }
+    });
+
+    return whereConditions;
+  }
+
   static async searchEstates(
     RealEstate,
     Place,
@@ -135,61 +177,7 @@ export class EstateService {
     pagination,
     EstateMapper,
   ) {
-    const whereConditions = {};
-
-    //refactorare in un altro file questa
-    if (filters.minPrice !== null || filters.maxPrice !== null) {
-      whereConditions.price = {};
-      if (filters.minPrice !== null) {
-        whereConditions.price[Op.gte] = filters.minPrice;
-      }
-      if (filters.maxPrice !== null) {
-        whereConditions.price[Op.lte] = filters.maxPrice;
-      }
-    }
-    //Forse cambiare !== con !=
-    if (filters.nRooms !== null) {
-      whereConditions.nRooms = filters.nRooms;
-    }
-
-    // Aggiungi filtro per idAgency se presente
-    if (filters.idAgency != null) {
-      whereConditions.idAgency = filters.idAgency;
-    }
-
-    if (filters.nBathrooms !== null) {
-      whereConditions.nBathrooms = filters.nBathrooms;
-    }
-
-    if (filters.minSize !== null || filters.maxSize !== null) {
-      whereConditions.size = {};
-      if (filters.minSize !== null) {
-        whereConditions.size[Op.gte] = filters.minSize;
-      }
-      if (filters.maxSize !== null) {
-        whereConditions.size[Op.lte] = filters.maxSize;
-      }
-    }
-
-    if (filters.energyClass !== null) {
-      whereConditions.energyClass = filters.energyClass;
-    }
-
-    if (filters.floor !== null) {
-      whereConditions.floor = filters.floor;
-    }
-
-    if (filters.createdBy != null) {
-      whereConditions.createdBy = filters.createdBy;
-    }
-
-    if (filters.type != null) {
-      whereConditions.type = filters.type;
-    }
-
-    if (filters.idAgency != null) {
-      whereConditions.idAgency = filters.idAgency;
-    }
+    const whereConditions = this.buildWhereConditions(filters);
 
     const { page = 1, limit = 10, orderBy = "price" } = pagination;
     const offset = (page - 1) * limit;
