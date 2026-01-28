@@ -10,7 +10,7 @@ export class OfferController {
         Offer,
         RealEstate,
         dto,
-        req.userId
+        req.userId,
       );
       res.status(201).json(createdOffer);
     } catch (err) {
@@ -28,7 +28,8 @@ export class OfferController {
       const idRealEstate = req.params.idRealEstate;
       const offers = await OfferService.getOffersByRealEstateId(
         Offer,
-        idRealEstate
+        idRealEstate,
+        User,
       );
       res.status(200).json(offers);
     } catch (err) {

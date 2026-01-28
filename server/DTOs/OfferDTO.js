@@ -5,3 +5,12 @@ export class CreateOfferDTO {
     this.idRealEstate = idRealEstate;
   }
 }
+
+export class OfferDTO {
+  constructor({ id, amount, userName, userSurname }) {
+    this.id = id;
+    this.amount = amount;
+    this.userName = userName;
+    this.userSurname = userSurname;
+  }
+}

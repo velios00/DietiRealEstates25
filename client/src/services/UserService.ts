@@ -1,5 +1,10 @@
 import { API } from "../shared/axios/Interceptors";
-import { CreateAdminDTO, ChangePasswordDTO } from "../shared/models/User.model";
+import {
+  CreateAdminDTO,
+  ChangePasswordDTO,
+  User,
+} from "../shared/models/User.model";
+import { AuthUser } from "../shared/models/AuthUser.model";
 
 export function getUserById(idUser: string) {
   return API.get(`/user/${idUser}`);
@@ -19,4 +24,18 @@ export function getAllUsers() {
 
 export function getAllAdmins() {
   return API.get("/user/admin/all");
+}
+
+export function formatFullName(user: User): string {
+  return `${user.name} ${user.surname}`;
+}
+
+export function hasRole(user: User | null, role: string): boolean {
+  return user?.role === role;
+}
+
+export function canMakeOffer(user: AuthUser | null): boolean {
+  if (!user) return false;
+  if (user.role !== "user" && user.role !== "admin") return false;
+  return true;
 }
