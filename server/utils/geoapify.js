@@ -8,7 +8,7 @@ export async function geoCodeAddress(address, apiKey) {
         text: address,
         apiKey,
       },
-    }
+    },
   );
 
   const result = response.data.features[0];
@@ -30,7 +30,7 @@ export async function geoCodeAddress(address, apiKey) {
 export async function getPOIs(lat, lon, apiKey) {
   const response = await axios.get("https://api.geoapify.com/v2/places", {
     params: {
-      categories: "commercial,healthcare,public_transport",
+      categories: "education, leisure.park, public_transport",
       filter: `circle:${lon},${lat},1000`,
       apiKey,
     },
