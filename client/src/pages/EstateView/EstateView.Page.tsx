@@ -4,6 +4,7 @@ import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import MapView from "../../shared/components/MapView/MapView";
 import ImageGallery from "../../shared/components/ImageGallery/ImageGallery";
 import EstateInfoCard from "../../shared/components/EstateInfoCard/EstateInfoCard";
+import OfferModal from "../../shared/components/OfferModal/OfferModal";
 import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { useEffect } from "react";
@@ -13,6 +14,7 @@ export default function EstateView() {
   const { id } = useParams<{ id: string }>();
   const [estate, setEstate] = useState<Estate | null>(null);
   const [loading, setLoading] = useState(true);
+  const [openOfferModal, setOpenOfferModal] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -93,11 +95,26 @@ export default function EstateView() {
               sx={{ display: "flex", flexDirection: "column" }}
             >
               {/* Card Info - inizia qui, allineata alle foto piccole */}
-              <EstateInfoCard estate={estate} />
+              <EstateInfoCard
+                estate={estate}
+                onOfferClick={() => setOpenOfferModal(true)}
+              />
             </Grid>
           </Grid>
         </Container>
       </Box>
+
+      <OfferModal
+        open={openOfferModal}
+        onClose={() => setOpenOfferModal(false)}
+        estatePrice={estate.price}
+        estateId={id || ""}
+        onSubmit={(offerPrice) => {
+          console.log("Offerta proposta:", offerPrice);
+          setOpenOfferModal(false);
+          // Qui andrà la logica per inviare l'offerta al server
+        }}
+      />
     </>
   );
 }

@@ -21,9 +21,10 @@ export class OfferService {
     return newOffer;
   }
 
-  static async getOffersByRealEstateId(Offer, idRealEstate) {
+  static async getOffersByRealEstateId(Offer, idRealEstate, User) {
     const offers = await Offer.findAll({
       where: { idRealEstate },
+      include: [{ model: User, attributes: ["name", "surname"] }],
     });
     return offers;
   }
