@@ -1,3 +1,5 @@
+import { Poi } from "./Poi.model";
+
 export interface Estate {
   id: number;
   address: string;
@@ -19,7 +21,7 @@ export interface Estate {
     street?: string;
     lat?: string;
     lon?: string;
-    pois?: string[];
+    pois?: Poi[];
   };
   creationDate: string;
 }
