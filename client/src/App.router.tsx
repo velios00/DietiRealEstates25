@@ -7,6 +7,8 @@ import Agency from "./pages/Agency/Agency.page";
 import SearchEstates from "./pages/SearchEstates/SearchEstates.page";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.page";
 import EstateView from "./pages/EstateView/EstateView.Page";
+import { AuthGuard } from "./shared/components/AuthGuard/AuthGuard";
+import { Roles } from "./shared/enums/Roles.enum";
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +37,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <AdminDashboard />,
+        element: (
+          <AuthGuard allowedRoles={[Roles.ADMIN]}>
+            <AdminDashboard />
+          </AuthGuard>
+        ),
       },
       {
         path: "/estate/:id",

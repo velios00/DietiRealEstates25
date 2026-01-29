@@ -4,8 +4,7 @@ import { Box, Container, Grid, Paper, Typography, Button } from "@mui/material";
 import MapView from "../../shared/components/MapView/MapView";
 import ImageGallery from "../../shared/components/ImageGallery/ImageGallery";
 import EstateInfoCard from "../../shared/components/EstateInfoCard/EstateInfoCard";
-import OfferHistoryModal from "../../shared/components/Offer/OfferHistoryModal/OfferHistoryModal";
-// import MakeOfferModal from "../../shared/components//Offer/MakeOfferModal/MakeOfferModal";
+import OfferModal from "../../shared/components/OfferModal/OfferModal";
 import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { getEstateById } from "../../services/EstateService";
@@ -27,26 +26,7 @@ export default function EstateView() {
   const { user } = useUser();
   const [estate, setEstate] = useState<Estate | null>(null);
   const [loading, setLoading] = useState(true);
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [loadingOffers, setLoadingOffers] = useState(true);
-  const [currentUserFullName, setCurrentUserFullName] = useState<string | null>(
-    null,
-  );
-
-  // Stato per i modali
-  const [offerHistoryOpen, setOfferHistoryOpen] = useState(false);
-  //  const [makeOfferOpen, setMakeOfferOpen] = useState(false);
-  //  const [submittingOffer, setSubmittingOffer] = useState(false);
-
-  const isAuthenticated = !!user;
-  const userRole = user?.role;
-  const idUser = user?.idUser;
-
-  const startingPrice = estate?.price || 320000;
-  const highestOffer = calculateHighestOffer(offers, startingPrice);
-
-  // Determina se l'utente può fare offerte
-  const canMakeOffer = userCanMakeOffer(user);
+  const [openOfferModal, setOpenOfferModal] = useState(false);
 
   useEffect(() => {
     if (!idEstate) return;
@@ -181,94 +161,26 @@ export default function EstateView() {
               size={{ xs: 12, md: 4 }}
               sx={{ display: "flex", flexDirection: "column" }}
             >
-              <EstateInfoCard estate={estate} />
-
-              {/* Sezione Offerte */}
-              <Paper
-                sx={{
-                  p: 3,
-                  mt: 3,
-                  borderRadius: 3,
-                  boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-                }}
-              >
-                <Typography variant="h6" fontWeight={600} mb={2}>
-                  Offerte
-                </Typography>
-
-                <Box mb={3}>
-                  <Typography variant="body2" color="#5d6d7e" mb={1}>
-                    Prezzo di partenza
-                  </Typography>
-                  <Typography variant="h5" fontWeight={700} color="#2c3e50">
-                    ${startingPrice.toLocaleString()}
-                  </Typography>
-                </Box>
-
-                {loadingOffers ? (
-                  <Box display="flex" justifyContent="center" py={2}>
-                    <Typography>Caricamento offerte...</Typography>
-                  </Box>
-                ) : (
-                  <Box display="flex" flexDirection="column" gap={2}>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      onClick={() => setOfferHistoryOpen(true)}
-                      disabled={offers.length === 0}
-                      sx={{
-                        backgroundColor: "#f0f7fa",
-                        color: "#62A1BA",
-                        fontWeight: 600,
-                        "&:hover": {
-                          backgroundColor: "#e0f0f7",
-                        },
-                        "&.Mui-disabled": {
-                          backgroundColor: "#f5f5f5",
-                          color: "#999",
-                        },
-                      }}
-                    >
-                      {offers.length === 0
-                        ? "Nessuna offerta disponibile"
-                        : `Visualizza Storico (${offers.length})`}
-                    </Button>
-
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      // onClick={() => setMakeOfferOpen(true)}
-                      disabled={!canMakeOffer}
-                      sx={{
-                        backgroundColor: canMakeOffer ? "#62A1BA" : "#cccccc",
-                        fontWeight: 600,
-                        "&:hover": {
-                          backgroundColor: canMakeOffer ? "#4a8ba3" : "#cccccc",
-                        },
-                      }}
-                    >
-                      {!isAuthenticated
-                        ? "Accedi per fare un'offerta"
-                        : userRole !== "user"
-                          ? "Solo utenti possono fare offerte"
-                          : "Proponi Offerta"}
-                    </Button>
-                  </Box>
-                )}
-              </Paper>
+              {/* Card Info - inizia qui, allineata alle foto piccole */}
+              <EstateInfoCard
+                estate={estate}
+                onOfferClick={() => setOpenOfferModal(true)}
+              />
             </Grid>
           </Grid>
         </Container>
       </Box>
 
-      {/* Modali */}
-      <OfferHistoryModal
-        open={offerHistoryOpen}
-        onClose={() => setOfferHistoryOpen(false)}
-        offers={offers}
-        startingPrice={startingPrice}
-        currentUserRole={userRole}
-        currentUserFullName={user ? currentUserFullName : null}
+      <OfferModal
+        open={openOfferModal}
+        onClose={() => setOpenOfferModal(false)}
+        estatePrice={estate.price}
+        estateId={id || ""}
+        onSubmit={(offerPrice) => {
+          console.log("Offerta proposta:", offerPrice);
+          setOpenOfferModal(false);
+          // Qui andrà la logica per inviare l'offerta al server
+        }}
       />
     </>
   );

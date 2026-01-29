@@ -9,14 +9,3 @@ export interface Offer {
   userName?: string;
   userSurname?: string;
 }
-
-export interface CreateOfferDTO {
-  idRealEstate: number;
-  amount: number;
-  inSistem: boolean;
-}
-
-export interface UpdateOfferStatusDTO {
-  status: "accepted" | "rejected" | "countered";
-  counterAmount?: number;
-}

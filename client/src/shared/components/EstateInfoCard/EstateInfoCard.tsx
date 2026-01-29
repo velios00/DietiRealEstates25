@@ -4,9 +4,13 @@ import { Estate } from "../../models/Estate.model";
 
 interface EstateInfoCardProps {
   estate: Estate;
+  onOfferClick?: () => void;
 }
 
-export default function EstateInfoCard({ estate }: EstateInfoCardProps) {
+export default function EstateInfoCard({
+  estate,
+  onOfferClick,
+}: EstateInfoCardProps) {
   return (
     <Card
       sx={{
@@ -101,6 +105,7 @@ export default function EstateInfoCard({ estate }: EstateInfoCardProps) {
         <Button
           variant="contained"
           fullWidth
+          onClick={onOfferClick}
           sx={{
             bgcolor: "#62A1BA",
             color: "white",

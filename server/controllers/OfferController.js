@@ -1,4 +1,4 @@
-import { Offer, RealEstate } from "../models/DietiRealEstatesDB.js";
+import { Offer, RealEstate, User } from "../models/DietiRealEstatesDB.js";
 import { OfferMapper } from "../mappers/OfferMapper.js";
 import { OfferService } from "../services/OfferService.js";
 
