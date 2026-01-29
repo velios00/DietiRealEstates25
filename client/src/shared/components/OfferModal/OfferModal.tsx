@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -19,10 +19,12 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { getOffersByRealEstateId } from "../../../services/OfferService";
+import { Offer } from "../../models/Offer.model";
 
 interface OfferModalProps {
   open: boolean;
   onClose: () => void;
+  estateId: number;
   estatePrice: number;
   onSubmit: (offerPrice: number) => void;
 }
@@ -30,11 +32,12 @@ interface OfferModalProps {
 export default function OfferModal({
   open,
   onClose,
+  estateId,
   estatePrice,
   onSubmit,
 }: OfferModalProps) {
   const [offerPrice, setOfferPrice] = useState<string>("");
-  const [offers, setOffers] = useState([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = () => {
@@ -45,8 +48,10 @@ export default function OfferModal({
   };
 
   const fetchOffers = useCallback(() => {
+    if (!estateId) return;
+
     setLoading(true);
-    getOffersByRealEstateId(7)
+    getOffersByRealEstateId(estateId)
       .then((response) => {
         setOffers(response.data);
       })
@@ -56,13 +61,13 @@ export default function OfferModal({
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [estateId]);
 
   useEffect(() => {
-    if (open) {
+    if (open && estateId) {
       fetchOffers();
     }
-  }, [open, fetchOffers]);
+  }, [open, estateId, fetchOffers]);
 
   const handleClose = () => {
     setOfferPrice("");
@@ -171,7 +176,7 @@ export default function OfferModal({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {offers.map((offer: any) => (
+                  {offers.map((offer) => (
                     <TableRow key={offer.idOffer}>
                       <TableCell sx={{ fontSize: "0.9rem" }}>
                         {offer.userName} {offer.userSurname}
