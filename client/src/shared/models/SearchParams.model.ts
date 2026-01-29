@@ -1,4 +1,4 @@
-import { EstateFilters } from "./EstateFilters";
+import { EstateFilters } from "./EstateFilters.model";
 
 export interface SearchParams {
   filters?: EstateFilters;

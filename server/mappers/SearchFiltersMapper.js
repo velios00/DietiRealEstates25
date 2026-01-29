@@ -13,7 +13,10 @@ export class SearchFiltersMapper {
       energyClass: query.energyClass,
       floor: query.floor,
       type: query.type,
-      idAgency: query.idAgency, //? parseInt(query.idAgency, 10) : null,
+      idAgency: query.idAgency,
+      lat: query.lat ? parseFloat(query.lat) : undefined,
+      lon: query.lon ? parseFloat(query.lon) : undefined,
+      radius: query.radius ? parseFloat(query.radius) : undefined,
     });
   }
 
@@ -30,6 +33,10 @@ export class SearchFiltersMapper {
     if (dto.floor !== null) response.floor = dto.floor;
     if (dto.type !== null) response.type = dto.type;
     if (dto.idAgency !== null) response.idAgency = dto.idAgency;
+    if (dto.lat !== null && dto.lat !== undefined) response.lat = dto.lat;
+    if (dto.lon !== null && dto.lon !== undefined) response.lon = dto.lon;
+    if (dto.radius !== null && dto.radius !== undefined)
+      response.radius = dto.radius;
     return response;
   }
 }

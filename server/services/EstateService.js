@@ -80,6 +80,7 @@ export class EstateService {
       nBathrooms: dto.nBathrooms,
       energyClass: dto.energyClass,
       floor: dto.floor,
+      type: dto.type,
       idAgent,
       idAgency: agencyId,
       createdBy,
@@ -188,6 +189,21 @@ export class EstateService {
     return whereConditions;
   }
 
+  // Calcola la distanza in km tra due coordinate usando la formula Haversine
+  static calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Raggio della Terra in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
   static async searchEstates(
     RealEstate,
     Place,
@@ -195,22 +211,98 @@ export class EstateService {
     pagination,
     EstateMapper,
   ) {
-    const whereConditions = this.buildWhereConditions(filters);
+    console.log("🔍 searchEstates chiamato con filters:", filters);
+    console.log("📋 pagination:", pagination);
 
+    const whereConditions = this.buildWhereConditions(filters);
+    console.log("🎯 WHERE conditions costruite:", whereConditions);
     const { page = 1, limit = 10, orderBy = "price" } = pagination;
     const offset = (page - 1) * limit;
 
+    // 🔍 Se l'utente seleziona una location con autocomplete → ricerca geografica per raggio
+    if (filters.lat && filters.lon && filters.radius) {
+      console.log(
+        `🌍 Ricerca geografica: lat=${filters.lat}, lon=${filters.lon}, radius=${filters.radius}km`,
+      );
+
+      // Ottieni TUTTI gli immobili con i filtri (prezzo, stanze, ecc.)
+      const allEstates = await RealEstate.findAll({
+        where: whereConditions,
+        include: [
+          {
+            model: Place,
+            required: true,
+          },
+        ],
+      });
+
+      console.log(
+        `📍 Totale immobili trovati con filtri (non geografici): ${allEstates.length}`,
+      );
+
+      if (allEstates.length > 0) {
+        console.log(`🏷️ Tipo primo immobile: "${allEstates[0].type}"`);
+      }
+      console.log(`🔍 Filtro type richiesto: "${filters.type}"`);
+
+      // Filtra manualmente per distanza usando Haversine
+      const estatesInRadius = allEstates.filter((estate) => {
+        const distance = this.calculateDistance(
+          filters.lat,
+          filters.lon,
+          parseFloat(estate.Place.lat),
+          parseFloat(estate.Place.lon),
+        );
+        console.log(
+          `  - Immobile: ${estate.title}, lat=${estate.Place.lat}, lon=${estate.Place.lon}, distanza=${distance.toFixed(2)}km`,
+        );
+        return distance <= filters.radius;
+      });
+
+      console.log(`✅ Immobili nel raggio: ${estatesInRadius.length}`);
+
+      // Ordina i risultati
+      estatesInRadius.sort((a, b) => {
+        if (orderBy === "createdAt") {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        return a.price - b.price;
+      });
+
+      console.log(`🔢 Dopo ordinamento: ${estatesInRadius.length} immobili`);
+      console.log(`📄 Paginazione: offset=${offset}, limit=${limit}`);
+
+      // Applica paginazione
+      const paginatedEstates = estatesInRadius.slice(offset, offset + limit);
+
+      console.log(`✂️ Dopo slice: ${paginatedEstates.length} immobili`);
+
+      const result = {
+        data: paginatedEstates.map((estate) =>
+          EstateMapper.estateToDTO(estate),
+        ),
+        total: estatesInRadius.length,
+        page,
+        totalPages: Math.ceil(estatesInRadius.length / limit),
+      };
+
+      console.log("📦 Risultato da restituire:", {
+        dataLength: result.data.length,
+        total: result.total,
+        page: result.page,
+        totalPages: result.totalPages,
+      });
+
+      return result;
+    }
+
+    // ❌ Altrimenti: ricerca senza filtro geografico (solo filtri come prezzo, stanze, ecc. oppure niente)
     const estates = await RealEstate.findAndCountAll({
       where: whereConditions,
       include: [
         {
           model: Place,
-          where: {
-            city: {
-              [Op.like]: `%${filters.city || ""}%`,
-            },
-          },
-          required: true, //inner join
+          required: true,
         },
       ],
       order: [[orderBy === "createdAt" ? "createdAt" : "price", "ASC"]],

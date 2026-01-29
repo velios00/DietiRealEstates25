@@ -11,4 +11,7 @@ export interface EstateFilters {
   floor?: number;
   energyClass?: string;
   agencyId?: number;
+  lat?: number;
+  lon?: number;
+  radius?: number;
 }

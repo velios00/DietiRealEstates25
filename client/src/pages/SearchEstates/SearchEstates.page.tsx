@@ -1,7 +1,7 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import SearchResults from "../../shared/components/SearchResults/SearchResults";
 import RightSidebar from "../../shared/components/RightSideBar.tsx/RightSideBar";
-import { EstateFilters } from "../../shared/models/EstateFilters";
+import { EstateFilters } from "../../shared/models/EstateFilters.model";
 import { useCallback, useEffect, useState } from "react";
 import { searchEstates } from "../../services/EstateService";
 import { Listing } from "../../shared/components/EstateCard/EstateCard";
@@ -18,9 +18,9 @@ export default function SearchEstate() {
   const [totalResults, setTotalResults] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [radius, setRadius] = useState<number>(5);
 
   const fetchEstates = useCallback(async () => {
-    console.log("🔍 Fetching estates with filters:", filters); // Dovrebbe mostrare city + altri filtri
     setLoading(true);
     try {
       const response = await searchEstates({

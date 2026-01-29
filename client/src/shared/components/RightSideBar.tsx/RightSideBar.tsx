@@ -2,8 +2,9 @@ import { Box } from "@mui/material";
 import { SearchBar } from "../SearchBar/SearchBar";
 import { FiltersButton } from "../FiltersButton/FiltersButton";
 import MapView from "../MapView/MapView";
-import { EstateFilters } from "../../models/EstateFilters";
+import { EstateFilters } from "../../models/EstateFilters.model";
 import { Estate } from "../../models/Estate.model";
+import { Location } from "../../models/Location.model";
 
 interface RightSideBarProps {
   onFiltersChange: (filters: EstateFilters) => void;
@@ -22,6 +23,16 @@ export default function RightSidebar({
     onFiltersChange({
       ...filters,
       city: searchQuery.trim() || undefined,
+    });
+  };
+
+  const handleLocationSelect = (location: Location) => {
+    console.log("Location selected:", location);
+    onFiltersChange({
+      ...filters,
+      lat: location.lat,
+      lon: location.lon,
+      radius: filters.radius || 10, // Default 10 km se non specificato
     });
   };
 
@@ -54,7 +65,10 @@ export default function RightSidebar({
           }}
         >
           <Box sx={{ flex: 1, maxWidth: "calc(100% - 140px)" }}>
-            <SearchBar onSearch={handleSearchChange} />
+            <SearchBar
+              onSearch={handleSearchChange}
+              onLocationSelect={handleLocationSelect}
+            />
           </Box>
           <Box sx={{ minWidth: "110px", maxWidth: "130px" }}>
             <FiltersButton

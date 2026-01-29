@@ -9,6 +9,11 @@ export class SearchFiltersDTO {
     maxSize,
     energyClass,
     floor,
+    type,
+    idAgency,
+    lat,
+    lon,
+    radius,
   }) {
     this.city = city;
     this.minPrice = minPrice ? parseFloat(minPrice) : null;
@@ -19,5 +24,10 @@ export class SearchFiltersDTO {
     this.maxSize = maxSize ? parseInt(maxSize) : null;
     this.energyClass = energyClass || null;
     this.floor = floor ? parseInt(floor) : null;
+    this.type = type || null;
+    this.idAgency = idAgency ? parseInt(idAgency) : null;
+    this.lat = lat ? parseFloat(lat) : undefined;
+    this.lon = lon ? parseFloat(lon) : undefined;
+    this.radius = radius ? parseFloat(radius) : undefined;
   }
 }

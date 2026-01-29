@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 import TuneIcon from "@mui/icons-material/Tune";
 import FiltersModal from "../FiltersModal/FiltersModal";
-import { EstateFilters } from "../../models/EstateFilters";
+import { EstateFilters } from "../../models/EstateFilters.model";
 
 interface FiltersButtonProps {
   onFiltersChange: (filters: EstateFilters) => void;
@@ -11,8 +11,6 @@ interface FiltersButtonProps {
 
 export function FiltersButton(props: FiltersButtonProps) {
   const [open, setOpen] = useState(false);
-
-  console.log("FiltersButton props:", props.filters);
 
   return (
     <>
