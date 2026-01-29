@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/estate/:id",
+        path: "/estate/:idEstate",
         element: <EstateView />,
       },
     ],

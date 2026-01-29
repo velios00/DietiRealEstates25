@@ -10,15 +10,13 @@ import {
 } from "@mui/material";
 import { Estate } from "../../shared/models/Estate.model";
 import Header from "../../shared/components/Header/Header";
-import {
-  getEstatesByAgency,
-  searchEstates,
-} from "../../services/EstateService";
+import { searchEstates } from "../../services/EstateService";
 import { getAgencyById } from "../../services/AgencyService";
 import AgencyCard from "../../shared/components/AgencyCard/AgencyCard";
 import EstateCard from "../../shared/components/EstateCard/EstateCard";
 import { useParams } from "react-router-dom";
 import { AgencyResponse } from "../../shared/models/Agency.model";
+import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
 
 export default function Agency() {
   const { id } = useParams<{ id: string }>();
@@ -34,10 +32,10 @@ export default function Agency() {
     if (!id) return;
     setAgencyLoading(true);
     try {
-      const agencyData = await getAgencyById(id);
-      setAgency(agencyData);
-    } catch (err: any) {
-      setError(err.message || "Failed to load agency information");
+      const data = await getAgencyById(id);
+      setAgency(data);
+    } catch (err) {
+      setError("Errore nel caricamento dei dati dell'agenzia");
     } finally {
       setAgencyLoading(false);
     }
@@ -49,7 +47,7 @@ export default function Agency() {
     try {
       const response = await searchEstates({
         filters: {
-          agencyId: parseInt(id),
+          idAgency: parseInt(id),
         },
         page: currentPage,
         limit: 10,
@@ -158,21 +156,7 @@ export default function Agency() {
               <Grid container spacing={4}>
                 {estates.map((estate) => (
                   <Grid key={estate.idEstate} size={{ xs: 12, sm: 6, md: 6 }}>
-                    <EstateCard
-                      listing={{
-                        id: estate.idEstate,
-                        title: estate.title || "No title",
-                        address: estate.place
-                          ? `${estate.place.street || ""}, ${estate.place.city || ""}`
-                          : estate.address || "Address not available",
-                        price: estate.price || 0,
-                        beds: estate.nRooms || 0,
-                        baths: estate.nBathrooms || 0,
-                        size: estate.size || 0,
-                        photos: estate.photos || [],
-                        type: estate.type || "Property",
-                      }}
-                    />
+                    <EstateCard listing={mapEstateToListing(estate)} />
                   </Grid>
                 ))}
               </Grid>

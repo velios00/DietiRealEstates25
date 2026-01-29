@@ -13,7 +13,7 @@ export function searchEstates(params?: SearchParams) {
 }
 
 export function getEstatesByAgency(
-  agencyId: number,
+  idAgency: number,
   params?: {
     page?: number;
     limit?: number;
@@ -22,7 +22,7 @@ export function getEstatesByAgency(
 ) {
   // Use searchEstates with idAgency filter
   return searchEstates({
-    filters: { agencyId: agencyId },
+    filters: { idAgency: idAgency },
     page: params?.page,
     limit: params?.limit,
     orderBy: params?.orderBy,

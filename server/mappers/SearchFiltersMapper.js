@@ -13,7 +13,7 @@ export class SearchFiltersMapper {
       energyClass: query.energyClass,
       floor: query.floor,
       type: query.type,
-      idAgency: query.idAgency, //? parseInt(query.idAgency, 10) : null,
+      idAgency: query.idAgency ? parseInt(query.idAgency, 10) : null,
     });
   }
 

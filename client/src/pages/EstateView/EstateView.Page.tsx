@@ -13,8 +13,6 @@ import { Offer } from "../../shared/models/Offer.model";
 import {
   getOffersByRealEstateId,
   createOffer,
-  formatDisplayName,
-  calculateHighestOffer,
 } from "../../services/OfferService";
 import {
   getUserById,
@@ -24,90 +22,56 @@ import {
 export default function EstateView() {
   const { idEstate } = useParams<{ idEstate: string }>();
   const { user } = useUser();
+
   const [estate, setEstate] = useState<Estate | null>(null);
   const [loading, setLoading] = useState(true);
   const [openOfferModal, setOpenOfferModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  // Consolidated data fetching
   useEffect(() => {
     if (!idEstate) return;
 
+    setLoading(true);
     getEstateById(idEstate)
       .then(({ data }) => {
         setEstate(data);
-        setLoading(false);
-        fetchOffers(data.idRealEstate);
+        setError(null);
       })
-      .catch((error) => {
-        console.error("Errore nel caricamento dell'immobile:", error);
-        setLoading(false);
-      });
+      .catch((err) => {
+        console.error("Errore nel caricamento:", err);
+        setError("Impossibile caricare l'immobile");
+      })
+      .finally(() => setLoading(false));
   }, [idEstate]);
 
-  const fetchOffers = async (estateId: number) => {
-    try {
-      setLoadingOffers(true);
-      const { data } = await getOffersByRealEstateId(estateId);
-      setOffers(data);
-    } catch (error) {
-      console.error("Errore nel caricamento delle offerte:", error);
-      setOffers([]);
-    } finally {
-      setLoadingOffers(false);
-    }
-  };
-
-  if (user) {
-    const fetchCurrentUserDetails = async () => {
-      try {
-        const response = await getUserById(idUser);
-        const fullName = response.data.name + " " + response.data.surname;
-        setCurrentUserFullName(fullName);
-      } catch (error) {
-        console.error("Errore nel caricamento dei dettagli utente:", error);
-      }
-    };
-
-    const fullName = fetchCurrentUserDetails();
-  }
-
-  /*const handleSubmitOffer = async (offerAmount: number) => {
+  const handleSubmitOffer = async (offerAmount: number) => {
     if (!estate || !user) return;
 
-    setSubmittingOffer(true);
     try {
-      const { data: newOffer } = await createOffer({
-        idRealEstate: estate.idEstate,
+      // Cleaned up the non-existent variables (userRole, formatDisplayName)
+      await createOffer({
+        idRealEstate: estate.idRealEstate, // Using correct ID property
         amount: offerAmount,
         inSistem: true,
       });
 
-      // Formatta la nuova offerta per la visualizzazione
-      const formattedOffer = {
-        ...newOffer,
-        displayName: formatDisplayName(newOffer, userRole),
-      };
-
-      // Aggiungi la nuova offerta alla lista
-      setOffers([formattedOffer, ...offers]);
-
-      // Chiudi il modal dopo il successo
-      setMakeOfferOpen(false);
+      setOpenOfferModal(false);
+      // Optional: Re-fetch or update local state here if needed
     } catch (error) {
       console.error("Errore nell'invio dell'offerta:", error);
-      throw error;
-    } finally {
-      setSubmittingOffer(false);
+      alert("Si è verificato un errore durante l'invio dell'offerta.");
     }
   };
-*/
 
-  if (loading || !estate) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <Box sx={{ p: 4 }}>Caricamento in corso...</Box>;
+  if (error || !estate)
+    return <Box sx={{ p: 4 }}>{error || "Immobile non trovato."}</Box>;
 
+  // Safe check for place coordinates
   const mapCenter: LatLngTuple = [
-    parseFloat(estate.place.lat || "40.8518"),
-    parseFloat(estate.place.lon || "14.2681"),
+    parseFloat(estate.place?.lat || "40.8518"),
+    parseFloat(estate.place?.lon || "14.2681"),
   ];
 
   return (
@@ -176,11 +140,7 @@ export default function EstateView() {
         onClose={() => setOpenOfferModal(false)}
         estateId={estate.idRealEstate}
         estatePrice={estate.price}
-        onSubmit={(offerPrice) => {
-          console.log("Offerta proposta:", offerPrice);
-          setOpenOfferModal(false);
-          // Qui andrà la logica per inviare l'offerta al server
-        }}
+        onSubmit={handleSubmitOffer}
       />
     </>
   );

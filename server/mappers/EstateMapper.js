@@ -41,7 +41,7 @@ export class EstateMapper {
           }
         : null,
       creationDate: estate.createdAt,
-      //idAgency: estate.idAgency
+      idAgency: estate.idAgency,
     };
   }
 }

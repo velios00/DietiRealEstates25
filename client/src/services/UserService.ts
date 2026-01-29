@@ -26,10 +26,6 @@ export function getAllAdmins() {
   return API.get("/user/admin/all");
 }
 
-export function formatFullName(user: User): string {
-  return `${user.name} ${user.surname}`;
-}
-
 export function hasRole(user: User | null, role: string): boolean {
   return user?.role === role;
 }

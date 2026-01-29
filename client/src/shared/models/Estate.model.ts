@@ -9,7 +9,6 @@ export interface Estate {
   price: number;
   size: number;
   nRooms: number;
-  nBeds: number;
   nBathrooms: number;
   energyClass?: string;
   floor?: number;
