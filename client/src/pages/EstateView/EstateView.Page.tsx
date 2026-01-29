@@ -107,8 +107,8 @@ export default function EstateView() {
       <OfferModal
         open={openOfferModal}
         onClose={() => setOpenOfferModal(false)}
+        estateId={estate.idRealEstate}
         estatePrice={estate.price}
-        estateId={id || ""}
         onSubmit={(offerPrice) => {
           console.log("Offerta proposta:", offerPrice);
           setOpenOfferModal(false);
