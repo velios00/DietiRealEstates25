@@ -6,6 +6,7 @@ export class createEstateDTO {
     price,
     size,
     address,
+    type,
     /*idAgency,*/ nRooms,
     nBathrooms,
     energyClass,
@@ -21,6 +22,7 @@ export class createEstateDTO {
     this.size = size;
     //this.idAgency = idAgency;
     this.address = address;
+    this.type = type;
     this.nRooms = nRooms;
     this.nBathrooms = nBathrooms;
     this.energyClass = energyClass;

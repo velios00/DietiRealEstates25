@@ -137,7 +137,7 @@ RealEstate.Place = RealEstate.belongsTo(Place, {
   foreignKey: { name: "idPlace", allowNull: false },
 });
 
-/*database
+database
   .sync()
   .then(async () => {
     await database.query(`
@@ -150,4 +150,3 @@ RealEstate.Place = RealEstate.belongsTo(Place, {
   .catch((err) => {
     console.log("Errore nella sincronizzazione: " + err.message);
   });
- */

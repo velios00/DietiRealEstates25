@@ -5,6 +5,7 @@ import MapView from "../../shared/components/MapView/MapView";
 import ImageGallery from "../../shared/components/ImageGallery/ImageGallery";
 import EstateInfoCard from "../../shared/components/EstateInfoCard/EstateInfoCard";
 import OfferModal from "../../shared/components/OfferModal/OfferModal";
+import Pois from "../../shared/components/Pois/Pois";
 import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { getEstateById } from "../../services/EstateService";
@@ -80,9 +81,21 @@ export default function EstateView() {
 
       <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
         <Container maxWidth="lg">
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 4 }}>
-            {estate.title}
-          </Typography>
+          {/* Titolo e POI */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 4,
+              gap: 2,
+            }}
+          >
+            <Typography variant="h4" sx={{ fontWeight: 700 }}>
+              {estate.title}
+            </Typography>
+            <Pois pois={estate.place?.pois} />
+          </Box>
 
           <Grid container spacing={3}>
             <ImageGallery photos={estate.photos} title={estate.title} />

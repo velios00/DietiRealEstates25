@@ -40,3 +40,9 @@ UserRouter.post(
   authorizeRoles("admin", "manager", "agent"),
   UserController.createAdmin,
 );
+
+UserRouter.get(
+  "/:idUser/agency",
+  enforceAuthentication,
+  UserController.getUserAgencyId,
+);

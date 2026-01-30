@@ -99,7 +99,48 @@ export class UserService {
       role: newUser.role,
       temporaryPassword,
     };
+  }
+  static async getUserAgencyId(User, Agent, Manager, idUser) {
+    const user = await User.findByPk(idUser);
 
-    //console.log(temporaryPassword);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    console.log(`Looking for agency for user ${idUser} with role ${user.role}`);
+
+    let agencyId = null;
+
+    if (user.role === "agent") {
+      // Cerca Agent usando idUser come idAgent (foreign key condivisa)
+      const agent = await Agent.findByPk(idUser);
+
+      if (!agent) {
+        console.error(`Agent not found with idAgent = ${idUser}`);
+        throw new Error("Agent record not found for this user");
+      }
+
+      agencyId = agent.idAgency;
+      console.log(`Found agent with agency ID: ${agencyId}`);
+    } else if (user.role === "manager") {
+      // Cerca Manager usando idUser come idManager (foreign key condivisa)
+      const manager = await Manager.findByPk(idUser);
+
+      if (!manager) {
+        console.error(`Manager not found with idManager = ${idUser}`);
+        throw new Error("Manager record not found for this user");
+      }
+
+      agencyId = manager.idAgency;
+      console.log(`Found manager with agency ID: ${agencyId}`);
+    } else {
+      throw new Error(`User role '${user.role}' is not an agent or manager`);
+    }
+
+    if (!agencyId) {
+      throw new Error("Agency ID not found");
+    }
+
+    return agencyId;
   }
 }

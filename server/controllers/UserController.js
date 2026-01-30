@@ -1,7 +1,7 @@
 import { UserService } from "../services/UserService.js";
 import { UserMapper } from "../mappers/UserMapper.js";
 import { ChangePasswordDTO } from "../DTOs/UserDTO.js";
-import { User, Admin } from "../models/DietiRealEstatesDB.js";
+import { User, Admin, Agent, Manager } from "../models/DietiRealEstatesDB.js";
 
 export class UserController {
   static async changePassword(req, res, next) {
@@ -56,6 +56,23 @@ export class UserController {
       const admins = await UserService.getAllAdmins(Admin);
       const result = UserMapper.toUserDTOList(admins);
       res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getUserAgencyId(req, res, next) {
+    try {
+      const { idUser } = req.params;
+
+      const agencyId = await UserService.getUserAgencyId(
+        User,
+        Agent,
+        Manager,
+        parseInt(idUser),
+      );
+
+      res.status(200).json({ idAgency: agencyId });
     } catch (err) {
       next(err);
     }

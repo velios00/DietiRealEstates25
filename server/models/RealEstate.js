@@ -21,6 +21,9 @@ export function createModel(database) {
       photos: {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },
+      type: {
+        type: DataTypes.STRING,
+      },
       price: {
         type: DataTypes.INTEGER,
         allowNull: false,

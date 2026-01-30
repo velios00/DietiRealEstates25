@@ -2,6 +2,7 @@ import {
   Button,
   Avatar,
   Box,
+  Divider,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -10,16 +11,22 @@ import {
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
+import BusinessIcon from "@mui/icons-material/Business";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext";
+import { getUserAgencyId } from "../../../services/UserService";
 import toast from "react-hot-toast";
 
 export default function AccountButton() {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
+  const userRole = userContext?.user?.role;
+  const userId = userContext?.user?.idUser;
   const isLoggedIn = Boolean(userContext?.user);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isLoadingAgency, setIsLoadingAgency] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -40,6 +47,87 @@ export default function AccountButton() {
     handleClose();
     toast.success("Logout effettuato con successo");
     navigate("/");
+  };
+
+  const handleAgencyClick = async () => {
+    if (!userId) {
+      toast.error("Errore: utente non identificato");
+      handleClose();
+      return;
+    }
+    setIsLoadingAgency(true);
+
+    try {
+      const response = await getUserAgencyId(parseInt(userId));
+      const agencyId = response.data.idAgency;
+
+      handleClose();
+      navigate(`/agency/${agencyId}`);
+    } catch (error) {
+      console.error("Errore nel recupero dell'agenzia:", error);
+      toast.error("Impossibile accedere all'agenzia");
+      handleClose();
+    } finally {
+      setIsLoadingAgency(false);
+    }
+  };
+
+  const handleDashboardClick = () => {
+    handleClose();
+    navigate("/admin");
+  };
+
+  const renderRoleBasedMenuItem = () => {
+    if (userRole === "agent" || userRole === "manager") {
+      return (
+        <MenuItem
+          onClick={handleAgencyClick}
+          disabled={isLoadingAgency}
+          sx={{
+            color: "#62A1BA",
+            fontWeight: 600,
+            py: 1.5,
+            "&:hover": {
+              backgroundColor: "rgba(98, 161, 186, 0.08)",
+            },
+            "&.Mui-disabled": {
+              opacity: 0.6,
+            },
+          }}
+        >
+          <ListItemIcon>
+            <BusinessIcon sx={{ color: "#62A1BA" }} />
+          </ListItemIcon>
+          <ListItemText>
+            {isLoadingAgency ? "Caricamento..." : "La mia agenzia"}
+          </ListItemText>
+        </MenuItem>
+      );
+    }
+
+    if (userRole === "admin") {
+      return (
+        <MenuItem
+          onClick={handleDashboardClick}
+          sx={{
+            color: "#62A1BA",
+            fontWeight: 600,
+            py: 1.5,
+            "&:hover": {
+              backgroundColor: "rgba(98, 161, 186, 0.08)",
+            },
+          }}
+        >
+          <ListItemIcon>
+            <DashboardIcon sx={{ color: "#62A1BA" }} />
+          </ListItemIcon>
+          <ListItemText>Dashboard</ListItemText>
+        </MenuItem>
+      );
+    }
+
+    // Per user, non mostrare nulla
+    return null;
   };
 
   return (
@@ -102,6 +190,11 @@ export default function AccountButton() {
             },
           }}
         >
+          {renderRoleBasedMenuItem()}
+
+          {/* Divider solo se c'è una voce di menu precedente */}
+          {renderRoleBasedMenuItem() && <Divider sx={{ my: 0.5 }} />}
+
           <MenuItem
             onClick={handleLogout}
             sx={{

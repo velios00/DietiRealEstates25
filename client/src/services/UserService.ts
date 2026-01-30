@@ -35,3 +35,7 @@ export function canMakeOffer(user: AuthUser | null): boolean {
   if (user.role !== "user" && user.role !== "admin") return false;
   return true;
 }
+
+export function getUserAgencyId(idUser: number) {
+  return API.get(`/user/${idUser}/agency`);
+}
