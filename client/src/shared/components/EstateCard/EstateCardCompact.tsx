@@ -8,14 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 
-import {
-  LocationOn,
-  MeetingRoom,
-  Bathroom,
-  SquareFoot,
-  ChevronLeft,
-  ChevronRight,
-} from "@mui/icons-material";
+import { LocationOn, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -24,9 +17,6 @@ export interface Listing {
   title: string;
   address: string;
   price: number;
-  rooms: number;
-  baths: number;
-  size: number;
   photos: string[];
   type: string;
 }
@@ -35,7 +25,7 @@ interface ListingCardProps {
   listing: Listing;
 }
 
-export default function EstateCard({ listing }: ListingCardProps) {
+export default function EstateCardCompact({ listing }: ListingCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
@@ -59,27 +49,23 @@ export default function EstateCard({ listing }: ListingCardProps) {
   return (
     <Card
       sx={{
-        width: 480,
-        borderRadius: 6,
+        width: "100%",
+        maxWidth: 400,
+        borderRadius: 12,
         overflow: "hidden",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-        "&:hover": {
-          transform: "translateY(-5px)",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
-        },
+        boxShadow: "none",
         display: "flex",
         flexDirection: "column",
         cursor: "pointer",
       }}
-      onClick={() => navigate(`/estate/${listing.idEstate}`)}
+      onClick={() => navigate(`/estate/${listing.id}`)}
     >
       {/* Immagine in alto */}
       <Box
         sx={{
           position: "relative",
           width: "100%",
-          aspectRatio: "16 / 9",
+          aspectRatio: "4 / 3",
           overflow: "hidden",
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -148,93 +134,62 @@ export default function EstateCard({ listing }: ListingCardProps) {
         )}
       </Box>
 
-      {/* Contenuto diviso in due colonne */}
+      {/* Contenuto semplificato */}
       <CardContent
         sx={{
           display: "flex",
-          flexDirection: "row",
-          p: 2.5,
-          gap: 2,
+          flexDirection: "column",
+          p: 0.6,
+          pb: "6px !important",
+          gap: 0,
         }}
       >
-        {/* Colonna sinistra: Titolo, Prezzo, Indirizzo */}
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 700,
-              fontSize: "1.1rem",
-              color: "#2c3e50",
-              lineHeight: 1.3,
-            }}
-          >
-            {listing.title}
-          </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            fontSize: "0.95rem",
+            color: "#2c3e50",
+            lineHeight: 1,
+          }}
+        >
+          {listing.title}
+        </Typography>
 
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              color: "#7f8c8d",
-            }}
-          >
-            <LocationOn sx={{ fontSize: 16, mr: 0.5 }} />
-            <Typography variant="body2" sx={{ fontSize: "0.85rem" }}>
-              {listing.address}
-            </Typography>
-          </Box>
-
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#62A1BA",
-              fontWeight: 600,
-              fontSize: "1.75rem",
-            }}
-          >
-            € {listing.price.toLocaleString()}
-          </Typography>
-        </Box>
-
-        {/* Colonna destra: Caratteristiche */}
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: 1.5,
+            alignItems: "center",
+            color: "#7f8c8d",
+            minHeight: "14px",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <MeetingRoom sx={{ color: "#62A1BA", fontSize: 20 }} />
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
-            >
-              {listing.rooms} stanze
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Bathroom sx={{ color: "#62A1BA", fontSize: 20 }} />
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
-            >
-              {listing.baths} bagni
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <SquareFoot sx={{ color: "#62A1BA", fontSize: 20 }} />
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
-            >
-              {listing.size} m²
-            </Typography>
-          </Box>
+          <LocationOn sx={{ fontSize: 13, mr: 0.3, flexShrink: 0 }} />
+          <Typography
+            variant="body2"
+            sx={{
+              fontSize: "0.8rem",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {listing.address}
+          </Typography>
         </Box>
+
+        <Typography
+          variant="body2"
+          sx={{
+            color: "#62A1BA",
+            fontWeight: 700,
+            fontSize: "1.3rem",
+            textAlign: "center",
+            mt: 0,
+          }}
+        >
+          € {listing.price.toLocaleString()}
+        </Typography>
       </CardContent>
     </Card>
   );
