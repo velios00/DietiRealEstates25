@@ -1,24 +1,16 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Container, Grid, Paper, Typography, Button } from "@mui/material";
+import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import MapView from "../../shared/components/MapView/MapView";
-import ImageGallery from "../../shared/components/ImageGallery/ImageGallery";
-import EstateInfoCard from "../../shared/components/EstateInfoCard/EstateInfoCard";
-import OfferModal from "../../shared/components/OfferModal/OfferModal";
-import Pois from "../../shared/components/Pois/Pois";
+import ImageGallery from "../../shared/components/EstateViewComps/ImageGallery/ImageGallery";
+import EstateInfoCard from "../../shared/components/EstateViewComps/EstateInfoCard/EstateInfoCard";
+import OfferModal from "../../shared/components/EstateViewComps/OfferModal/OfferModal";
+import Pois from "../../shared/components/EstateViewComps/Pois/Pois";
 import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { getEstateById } from "../../services/EstateService";
 import { useUser } from "../../shared/hooks/useUser";
-import { Offer } from "../../shared/models/Offer.model";
-import {
-  getOffersByRealEstateId,
-  createOffer,
-} from "../../services/OfferService";
-import {
-  getUserById,
-  canMakeOffer as userCanMakeOffer,
-} from "../../services/UserService";
+import { createOffer } from "../../services/OfferService";
 
 export default function EstateView() {
   const { idEstate } = useParams<{ idEstate: string }>();

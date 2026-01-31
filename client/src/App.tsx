@@ -1,6 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import "./App.css";
-import { User } from "./shared/models/User.model";
 import { Outlet, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "./shared/models/JwtPayload.model";
@@ -12,6 +11,7 @@ import "@fontsource/montserrat/400.css";
 import "@fontsource/montserrat/700.css";
 import { Toaster } from "react-hot-toast";
 import Header from "./shared/components/Header/Header";
+import { AuthUser } from "./shared/models/AuthUser.model";
 const theme = createTheme({
   typography: {
     fontFamily: '"Montserrat", sans-serif',
@@ -21,12 +21,12 @@ const theme = createTheme({
 function App() {
   // const navigate = useNavigate();
   const location = useLocation();
-  const [userData, setUserData] = useState<User | null>(null);
+  const [userData, setUserData] = useState<AuthUser | null>(null);
   const [userRole, setUserRole] = useState<Roles | null>(null);
   const hideHeader =
     location.pathname === "/login" || location.pathname === "/register";
 
-  const changeUserDataContext = useCallback((user: User | null) => {
+  const changeUserDataContext = useCallback((user: AuthUser | null) => {
     setUserData(user);
   }, []);
 
@@ -40,12 +40,22 @@ function App() {
         console.log("token scaduto, mettere logout");
       } else {
         getUserById(decodedToken.user.idUser).then(({ data: user }) => {
-          setUserData(user);
+          // Converti User in AuthUser
+          const authUser: AuthUser = {
+            idUser: user.idUser,
+            email: user.email,
+            role: user.role,
+          };
+          setUserData(authUser);
           setUserRole(decodedToken.user.role);
         });
       }
     }
   }, []);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
   return (
     <>

@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
-import { SearchBar } from "../SearchBar/SearchBar";
+import { SearchBar } from "../../SearchBar/SearchBar";
 import { FiltersButton } from "../FiltersButton/FiltersButton";
-import MapView from "../MapView/MapView";
-import { EstateFilters } from "../../models/EstateFilters.model";
-import { Estate } from "../../models/Estate.model";
-import { Location } from "../../models/Location.model";
+import MapView from "../../MapView/MapView";
+import { EstateFilters } from "../../../models/EstateFilters.model";
+import { Estate } from "../../../models/Estate.model";
+import { Location } from "../../../models/Location.model";
 
 interface RightSideBarProps {
   onFiltersChange: (filters: EstateFilters) => void;
@@ -79,7 +79,7 @@ export default function RightSidebar({
         </Box>
       </Box>
 
-      {/* Sezione inferiore: Mappa che occupa tutto lo spazio rimanente */}
+      {/* Sezione inferiore: Mappa  */}
       <Box
         sx={{
           flex: 1,

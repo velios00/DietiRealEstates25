@@ -1,8 +1,5 @@
 import { Box, CircularProgress, Pagination, Typography } from "@mui/material";
-import EstateCard, {
-  Listing,
-} from "../../../shared/components/EstateCard/EstateCard";
-
+import EstateCard, { Listing } from "../../EstateCard/EstateCard";
 
 interface SearchResultsProps {
   listings: Listing[];

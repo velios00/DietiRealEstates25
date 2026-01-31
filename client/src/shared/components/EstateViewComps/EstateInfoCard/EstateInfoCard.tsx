@@ -1,6 +1,6 @@
 import { Card, CardContent, Box, Typography, Button } from "@mui/material";
 import { SquareFoot, Bed, Bathroom } from "@mui/icons-material";
-import { Estate } from "../../models/Estate.model";
+import { Estate } from "../../../models/Estate.model";
 
 interface EstateInfoCardProps {
   estate: Estate;
