@@ -5,11 +5,9 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Alert,
   Grid,
 } from "@mui/material";
 import { Estate } from "../../shared/models/Estate.model";
-import Header from "../../shared/components/Header/Header";
 import { searchEstates } from "../../services/EstateService";
 import { getAgencyById } from "../../services/AgencyService";
 import AgencyCard from "../../shared/components/AgencyCard/AgencyCard";
@@ -17,6 +15,8 @@ import EstateCard from "../../shared/components/EstateCard/EstateCard";
 import { useParams } from "react-router-dom";
 import { AgencyResponse } from "../../shared/models/Agency.model";
 import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
+import { useUser } from "../../shared/hooks/useUser";
+import CreateEstateModal from "../../shared/components/CreateEstateModal/CreateEstateModal";
 
 export default function Agency() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +26,10 @@ export default function Agency() {
   const [estatesLoading, setEstatesLoading] = useState(false);
   const [agencyLoading, setAgencyLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const { user, role } = useUser();
+
+  const canShowCreateButton = role === "agent" || role === "manager";
 
   const fetchAgencyData = async () => {
     if (!id) return;
@@ -90,6 +94,18 @@ export default function Agency() {
     loadData();
   }, [id, currentPage]);
 
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleEstateCreated = () => {
+    fetchEstates();
+  };
+
   const isLoading = loading || agencyLoading || estatesLoading;
 
   if (isLoading && !agency && estates.length === 0) {
@@ -127,6 +143,7 @@ export default function Agency() {
                   "Unknown Manager"
                 }
                 idAgency={Number(id) || 0}
+                onAddEstate={handleOpenModal}
               />
             </Box>
           )}
@@ -167,6 +184,12 @@ export default function Agency() {
           </Box>
         </Paper>
       </Container>
+      <CreateEstateModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        idAgency={Number(id) || 0}
+        onEstateCreated={handleEstateCreated}
+      />
     </Box>
   );
 }

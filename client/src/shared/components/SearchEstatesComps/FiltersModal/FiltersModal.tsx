@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
-import { EstateFilters } from "../../models/EstateFilters.model";
+import { EstateFilters } from "../../../models/EstateFilters.model";
 import ContractTypeSection from "./FiltersSections/ContractTypeSection";
 import PriceRangeSection from "./FiltersSections/PriceRangeSection";
 import RoomsBathsSection from "./FiltersSections/RoomsBathsSection";

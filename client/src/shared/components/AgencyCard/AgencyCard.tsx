@@ -4,6 +4,7 @@ import { UserContext } from "../../context/UserContext";
 import { Roles } from "../../enums/Roles.enum";
 import { getUserAgencyId } from "../../../services/UserService";
 import AddIcon from "@mui/icons-material/Add";
+import { useUser } from "../../hooks/useUser";
 
 interface AgencyCardProps {
   name: string;
@@ -11,6 +12,7 @@ interface AgencyCardProps {
   description: string;
   manager: string;
   idAgency: number;
+  onAddEstate?: () => void;
 }
 
 export default function AgencyCard({
@@ -19,8 +21,9 @@ export default function AgencyCard({
   description,
   manager,
   idAgency,
+  onAddEstate,
 }: AgencyCardProps) {
-  const userContext = useContext(UserContext);
+  const userContext = useUser();
   const [isUserOfAgency, setIsUserOfAgency] = useState(false);
   const user = userContext?.user;
 
@@ -97,6 +100,7 @@ export default function AgencyCard({
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
+                onClick={onAddEstate}
                 sx={{
                   backgroundColor: "#62A1BA",
                   color: "white",
