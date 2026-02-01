@@ -9,7 +9,7 @@ export interface User {
   role: Roles;
 }
 
-export interface CreateAdminDTO {
+export interface CreateAdmin {
   email: string;
   name: string;
   surname: string;

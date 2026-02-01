@@ -1,48 +1,43 @@
-import React, { useState, useRef, ChangeEvent } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
   Box,
   Button,
-  TextField,
   Typography,
-  Alert,
   IconButton,
-  InputAdornment,
-  Avatar,
+  Divider,
+  Alert,
   CircularProgress,
 } from "@mui/material";
-import {
-  Close as CloseIcon,
-  Business as BusinessIcon,
-  Person as PersonIcon,
-  Email as EmailIcon,
-  Phone as PhoneIcon,
-  LocationOn as LocationIcon,
-  Language as LanguageIcon,
-  Description as DescriptionIcon,
-  AddPhotoAlternate as AddPhotoIcon,
-  Delete as DeleteIcon,
-} from "@mui/icons-material";
-import { CreateAgencyDTO } from "../../models/Agency.model";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { createAgency } from "../../../services/AgencyService";
+import BasicInfoSection from "./AgencyModalSections/BasicInfoSection";
+import DescriptionSection from "./AgencyModalSections/DescriptionSection";
+import LogoUploadSection from "./AgencyModalSections/LogoUploadSection";
+import ManagerInfoSection from "./AgencyModalSections/ManagerInfoSection";
 
 interface CreateAgencyModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (agencyData: CreateAgencyDTO) => void;
+  onSubmit: () => void;
 }
 
-const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
+export default function CreateAgencyModal({
   open,
   onClose,
   onSubmit,
-}) => {
-  const [formData, setFormData] = useState<CreateAgencyDTO>({
+}: CreateAgencyModalProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [formData, setFormData] = useState({
     agencyName: "",
     address: "",
     description: "",
-    profileImage: "",
     phoneNumber: "",
     url: "",
     manager: {
@@ -52,154 +47,149 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
     },
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [uploadingLogo, setUploadingLogo] = useState(false);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Allowed file types for logo
-  const allowedFileTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-    "image/svg+xml",
-  ];
-  const maxFileSize = 5 * 1024 * 1024; // 5MB
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.agencyName.trim()) newErrors.agencyName = "Nome obbligatorio";
-    if (!formData.address.trim()) newErrors.address = "Indirizzo obbligatorio";
-    if (!formData.phoneNumber.trim())
-      newErrors.phoneNumber = "Telefono obbligatorio";
-    if (!formData.manager.name.trim())
-      newErrors.managerName = "Nome manager obbligatorio";
-    if (!formData.manager.surname.trim())
-      newErrors.managerSurname = "Cognome manager obbligatorio";
-    if (!formData.manager.email.trim())
-      newErrors.managerEmail = "Email obbligatoria";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleLogoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!allowedFileTypes.includes(file.type)) {
-      setSubmitError(
-        "Formato file non supportato. Usa JPEG, PNG, GIF, WebP o SVG.",
-      );
-      return;
-    }
-
-    // Validate file size
-    if (file.size > maxFileSize) {
-      setSubmitError("File troppo grande. Dimensione massima: 5MB.");
-      return;
-    }
-
-    setUploadingLogo(true);
-    setSubmitError(null);
-
-    try {
-      // In a real application, you would upload to a server here
-      // For now, we'll create a base64 string for preview and storage
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-
-        // Set preview
-        setLogoPreview(base64String);
-
-        // Store file data
-        setLogoFile(file);
-
-        // Update form data with base64 string
-        setFormData((prev) => ({
-          ...prev,
-          profileImage: base64String,
-        }));
-
-        setUploadingLogo(false);
-      };
-
-      reader.onerror = () => {
-        setSubmitError("Errore nella lettura del file");
-        setUploadingLogo(false);
-      };
-
-      reader.readAsDataURL(file);
-    } catch (err: any) {
-      setSubmitError("Errore nell'upload del logo: " + err.message);
-      setUploadingLogo(false);
-    }
-  };
-
-  const handleRemoveLogo = () => {
-    setLogoPreview(null);
-    setLogoFile(null);
-    setFormData((prev) => ({
-      ...prev,
-      profileImage: "",
-    }));
-
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setSubmitting(true);
-    try {
-      // In a real application, you would upload the file first
-      // and then submit the form with the URL
-      await onSubmit(formData);
-      handleClose();
-    } catch (err: any) {
-      setSubmitError(err.message || "Errore nella creazione dell'agenzia");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleClose = () => {
-    setErrors({});
-    setSubmitError(null);
-    setLogoPreview(null);
-    setLogoFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    onClose();
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    if (name.startsWith("manager.")) {
-      const field = name.split(".")[1];
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
       setFormData((prev) => ({
         ...prev,
-        manager: { ...prev.manager, [field]: value },
+        [name]: value,
       }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    },
+    [],
+  );
+
+  const handleManagerChange = useCallback((field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      manager: {
+        ...prev.manager,
+        [field]: value,
+      },
+    }));
+  }, []);
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        setSelectedFile(file);
+
+        // Crea anteprima
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setLogoPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [],
+  );
+
+  const handleFileUploadClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleRemoveFile = useCallback(() => {
+    setSelectedFile(null);
+    setLogoPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
-  };
+  }, []);
+
+  const resetForm = useCallback(() => {
+    setFormData({
+      agencyName: "",
+      address: "",
+      description: "",
+      phoneNumber: "",
+      url: "",
+      manager: {
+        name: "",
+        surname: "",
+        email: "",
+      },
+    });
+    setSelectedFile(null);
+    setLogoPreview(null);
+    setError(null);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    resetForm();
+    onClose();
+  }, [onClose, resetForm]);
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Validazione
+        if (!formData.agencyName.trim()) {
+          throw new Error("Il nome agenzia è obbligatorio");
+        }
+        if (!formData.address.trim()) {
+          throw new Error("L'indirizzo è obbligatorio");
+        }
+        if (!formData.phoneNumber.trim()) {
+          throw new Error("Il telefono è obbligatorio");
+        }
+        if (!formData.description.trim()) {
+          throw new Error("La descrizione è obbligatoria");
+        }
+        if (!formData.manager.name.trim()) {
+          throw new Error("Il nome del manager è obbligatorio");
+        }
+        if (!formData.manager.surname.trim()) {
+          throw new Error("Il cognome del manager è obbligatorio");
+        }
+        if (!formData.manager.email.trim()) {
+          throw new Error("L'email del manager è obbligatoria");
+        }
+        if (!selectedFile) {
+          throw new Error("Il logo agenzia è obbligatorio");
+        }
+
+        const agencyData = new FormData();
+        agencyData.append("agencyName", formData.agencyName);
+        agencyData.append("address", formData.address);
+        agencyData.append("description", formData.description);
+        agencyData.append("phoneNumber", formData.phoneNumber);
+        agencyData.append("url", formData.url);
+        agencyData.append("managerName", formData.manager.name);
+        agencyData.append("managerSurname", formData.manager.surname);
+        agencyData.append("managerEmail", formData.manager.email);
+        if (selectedFile) {
+          agencyData.append("profileImage", selectedFile);
+        }
+
+        console.log("📤 Invio FormData:", {
+          agencyName: formData.agencyName,
+          address: formData.address,
+          description: formData.description,
+          phoneNumber: formData.phoneNumber,
+          url: formData.url,
+          managerName: formData.manager.name,
+          managerSurname: formData.manager.surname,
+          managerEmail: formData.manager.email,
+          hasFile: !!selectedFile,
+        });
+
+        await createAgency(agencyData);
+        onSubmit();
+        handleClose();
+      } catch (err: any) {
+        console.error("Errore nella creazione dell'agenzia:", err);
+        setError(err.message || "Errore nella creazione dell'agenzia");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [formData, selectedFile, onSubmit, handleClose],
+  );
 
   return (
     <Dialog
@@ -207,287 +197,137 @@ const CreateAgencyModal: React.FC<CreateAgencyModalProps> = ({
       onClose={handleClose}
       fullWidth
       maxWidth="sm"
-      sx={{
-        "& .MuiDialog-paper": {
-          alignItems: "center",
+      scroll="paper"
+      PaperProps={{
+        sx: {
+          borderRadius: 5,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          maxHeight: "90vh",
         },
       }}
-      PaperProps={{ sx: { borderRadius: 4 } }}
     >
-      <DialogTitle sx={{ textAlign: "center", fontWeight: 600 }}>
-        Crea Agenzia
-        <IconButton
-          onClick={handleClose}
-          sx={{ position: "absolute", right: 8, top: 8 }}
-        >
+      {/* HEADER */}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
+          bgcolor: "white",
+          borderBottom: "1px solid #eee",
+          p: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <IconButton onClick={handleClose}>
           <CloseIcon />
         </IconButton>
-      </DialogTitle>
+        <Typography fontWeight={800}>Crea Agenzia</Typography>
+        <Box width={40} />
+      </Box>
 
-      <form onSubmit={handleSubmit}>
-        <DialogContent>
-          {submitError && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {submitError}
-            </Alert>
-          )}
-
-          <Box display="flex" flexDirection="column" gap={2}>
-            {/* Logo Upload Section */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" gutterBottom>
-                Logo Agenzia
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                {logoPreview ? (
-                  <Box sx={{ position: "relative" }}>
-                    <Avatar
-                      src={logoPreview}
-                      alt="Logo preview"
-                      sx={{
-                        width: 100,
-                        height: 100,
-                        border: "2px dashed #ddd",
-                      }}
-                    />
-                    <IconButton
-                      size="small"
-                      onClick={handleRemoveLogo}
-                      sx={{
-                        position: "absolute",
-                        top: -8,
-                        right: -8,
-                        backgroundColor: "white",
-                        boxShadow: 1,
-                        "&:hover": {
-                          backgroundColor: "grey.100",
-                        },
-                      }}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                ) : (
-                  <Avatar
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      border: "2px dashed #ddd",
-                      backgroundColor: "grey.100",
-                    }}
-                  >
-                    <AddPhotoIcon sx={{ fontSize: 40, color: "grey.400" }} />
-                  </Avatar>
-                )}
-
-                <Box>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    style={{ display: "none" }}
-                    id="logo-upload"
-                  />
-                  <label htmlFor="logo-upload">
-                    <Button
-                      variant="outlined"
-                      component="span"
-                      startIcon={
-                        uploadingLogo ? (
-                          <CircularProgress size={20} />
-                        ) : (
-                          <AddPhotoIcon />
-                        )
-                      }
-                      disabled={uploadingLogo}
-                    >
-                      {uploadingLogo ? "Caricamento..." : "Carica Logo"}
-                    </Button>
-                  </label>
-                  <Typography
-                    variant="caption"
-                    color="textSecondary"
-                    sx={{ display: "block", mt: 1 }}
-                  >
-                    JPEG, PNG, GIF, WebP o SVG. Max 5MB
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-
-            <TextField
-              label="Nome Agenzia"
-              name="agencyName"
-              value={formData.agencyName}
-              onChange={handleChange}
-              error={!!errors.agencyName}
-              helperText={errors.agencyName}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              label="Telefono"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              error={!!errors.phoneNumber}
-              helperText={errors.phoneNumber}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              label="Indirizzo"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              error={!!errors.address}
-              helperText={errors.address}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              label="Sito Web"
-              name="url"
-              value={formData.url}
-              onChange={handleChange}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              label="Descrizione"
-              name="description"
-              multiline
-              rows={3}
-              value={formData.description}
-              onChange={handleChange}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <Typography fontWeight={600} mt={1}>
-              Manager
+      {/* CONTENUTO SCROLLABILE */}
+      <Box sx={{ p: 3, flex: "1 1 auto", overflowY: "auto" }}>
+        {error && (
+          <Box
+            sx={{
+              bgcolor: "#fee",
+              borderRadius: 4,
+              p: 2,
+              mb: 3,
+              border: "1px solid #fcc",
+            }}
+          >
+            <Typography sx={{ color: "#c00", fontSize: 14 }}>
+              {error}
             </Typography>
-
-            <TextField
-              label="Nome"
-              name="manager.name"
-              value={formData.manager.name}
-              onChange={handleChange}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              label="Cognome"
-              name="manager.surname"
-              value={formData.manager.surname}
-              onChange={handleChange}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              label="Email"
-              name="manager.email"
-              type="email"
-              value={formData.manager.email}
-              onChange={handleChange}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              sx={{
-                mt: 2,
-                textAlign: "center",
-                fontWeight: 600,
-                borderRadius: 4,
-                py: 1.5,
-                backgroundColor: "#62A1BA",
-                fontSize: "1rem",
-                "&:hover": {
-                  backgroundColor: "#4a8ba3",
-                },
-              }}
-              disabled={submitting}
-            >
-              {submitting ? "Creazione..." : "Crea Agenzia"}
-            </Button>
           </Box>
-        </DialogContent>
-      </form>
+        )}
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <BasicInfoSection
+            formData={{
+              agencyName: formData.agencyName,
+              address: formData.address,
+              phoneNumber: formData.phoneNumber,
+              url: formData.url,
+            }}
+            onFieldChange={handleChange}
+          />
+
+          <DescriptionSection
+            description={formData.description}
+            onFieldChange={handleChange}
+          />
+
+          <LogoUploadSection
+            selectedFile={selectedFile}
+            logoPreview={logoPreview}
+            fileInputRef={fileInputRef}
+            onFileSelect={handleFileSelect}
+            onFileUploadClick={handleFileUploadClick}
+            onRemoveFile={handleRemoveFile}
+          />
+
+          <Divider />
+
+          <ManagerInfoSection
+            managerData={formData.manager}
+            onManagerChange={handleManagerChange}
+          />
+        </Box>
+      </Box>
+
+      {/* FOOTER */}
+      <Box
+        sx={{
+          position: "sticky",
+          bottom: 0,
+          bgcolor: "white",
+          borderTop: "1px solid #e0e0e0",
+          p: 2,
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 2,
+        }}
+      >
+        <Button
+          color="inherit"
+          onClick={handleClose}
+          sx={{
+            borderRadius: 4,
+            px: 3,
+            color: "#666",
+            "&:hover": {
+              backgroundColor: "rgba(0,0,0,0.04)",
+            },
+          }}
+        >
+          Annulla
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={loading}
+          sx={{
+            backgroundColor: "#62A1BA",
+            borderRadius: 4,
+            px: 4,
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            "&:hover": {
+              backgroundColor: "#4299b5",
+            },
+          }}
+        >
+          {loading && <CircularProgress size={20} color="inherit" />}
+          {loading ? "Creazione..." : "Crea Agenzia"}
+        </Button>
+      </Box>
     </Dialog>
   );
-};
-
-export default CreateAgencyModal;
+}

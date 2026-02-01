@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Paper,
@@ -15,15 +15,12 @@ import {
 import { createAgency, getAllAgencies } from "../../services/AgencyService";
 import { createAdmin } from "../../services/UserService";
 import Header from "../../shared/components/Header/Header";
-import { CreateAdminDTO } from "../../shared/models/User.model";
+import { CreateAdmin } from "../../shared/models/User.model";
 import AgencyTable from "../../shared/components/admin/AgencyTable/AgencyTable";
 import CreateAgencyModal from "../../shared/components/admin/CreateAgencyModal";
 import CreateAdminModal from "../../shared/components/admin/CreateAdminModal";
 import { toast } from "react-hot-toast";
-import {
-  AgencyResponse,
-  CreateAgencyDTO,
-} from "../../shared/models/Agency.model";
+import { AgencyResponse, CreateAgency } from "../../shared/models/Agency.model";
 
 export default function AdminDashboard() {
   const [agencies, setAgencies] = useState<AgencyResponse[]>([]);
@@ -34,35 +31,32 @@ export default function AdminDashboard() {
   const [isCreateAdminModalOpen, setIsCreateAdminModalOpen] = useState(false);
   const [adminLoading, setAdminLoading] = useState(false);
 
-  const fetchAgencies = async () => {
-    setLoading(true);
+  const fetchAgencies = useCallback(async () => {
     try {
-      const data = await getAllAgencies();
-      setAgencies(data || []);
+      setLoading(true);
+      const response = await getAllAgencies();
+      setAgencies(response || []);
     } catch (err) {
       console.error("Error fetching agencies:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAgencies();
-  }, []);
+  }, [fetchAgencies]);
 
-  const handleCreateAgency = async (agencyData: CreateAgencyDTO) => {
+  const handleCreateAgency = async () => {
     try {
-      const response = await createAgency(agencyData);
       await fetchAgencies();
-      const createdName = response?.agency?.agencyName || "Agenzia";
-      toast.success(`Agenzia ${createdName} creata con successo!`);
+      toast.success("Agenzia creata con successo!");
       setIsCreateModalOpen(false);
     } catch (err) {
-      console.error("Errore nella creazione dell'agenzia:", err);
-      toast.error("Errore nella creazione dell'agenzia");
+      console.error("Errore nel ricaricamento delle agenzie:", err);
     }
   };
-  const handleCreateAdmin = async (adminData: CreateAdminDTO) => {
+  const handleCreateAdmin = async (adminData: CreateAdmin) => {
     if (!adminData.email || !adminData.name || !adminData.surname) {
       toast.error("Per favore, compila tutti i campi obbligatori");
       return;
@@ -71,11 +65,9 @@ export default function AdminDashboard() {
     try {
       const response = await createAdmin(adminData);
       toast.success(
-        `Amministratore "${adminData.name} ${adminData.surname}" creato!`,
+        `Amministratore "${response} ${adminData.surname}" creato!`,
       );
       setIsCreateAdminModalOpen(false);
-      // I dati della password sono in response.data (non in response.data.data)
-      console.log("Password temporanea:", response.data.temporaryPassword);
     } catch (err) {
       toast.error("Errore nella creazione dell'amministratore");
       console.error("Errore nella creazione dell'amministratore:", err);
