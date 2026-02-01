@@ -37,7 +37,7 @@ UserRouter.get(
 UserRouter.post(
   "/admin/create",
   enforceAuthentication,
-  authorizeRoles("admin", "manager", "agent"),
+  authorizeRoles("admin"),
   UserController.createAdmin,
 );
 
