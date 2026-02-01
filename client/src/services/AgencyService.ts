@@ -1,8 +1,5 @@
 import { API } from "../shared/axios/Interceptors";
-import {
-  AgencyResponse,
-  CreateAgencyResponse,
-} from "../shared/models/Agency.model";
+import { Agency, CreateAgencyResponse } from "../shared/models/Agency.model";
 
 export async function createAgency(
   agencyData: FormData,
@@ -19,12 +16,12 @@ export async function createAgency(
   return response.data;
 }
 
-export async function getAgencyById(idAgency: string): Promise<AgencyResponse> {
-  const response = await API.get<AgencyResponse>(`/agency/${idAgency}`);
+export async function getAgencyById(idAgency: string): Promise<Agency> {
+  const response = await API.get<Agency>(`/agency/${idAgency}`);
   return response.data;
 }
 
-export async function getAllAgencies(): Promise<AgencyResponse[]> {
-  const response = await API.get<AgencyResponse[]>("/agency");
+export async function getAllAgencies(): Promise<Agency[]> {
+  const response = await API.get<Agency[]>("/agency");
   return response.data;
 }
