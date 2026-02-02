@@ -1,10 +1,10 @@
-export interface CreateManagerDTO {
+export interface CreateManager {
   name: string;
   surname: string;
   email: string;
 }
 
-export interface ManagerResponseDTO {
+export interface ManagerResponse {
   idUser: string;
   email: string;
   name: string;

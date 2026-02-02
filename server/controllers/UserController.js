@@ -42,7 +42,7 @@ export class UserController {
 
   static async createAdmin(req, res, next) {
     try {
-      const dto = req.body;
+      const dto = new createAdminDTO(req.body);
       const admin = await UserService.createAdmin(User, Admin, dto);
       const result = UserMapper.toUserDTO(admin);
       res.status(201).json(result);

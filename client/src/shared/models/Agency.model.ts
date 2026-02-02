@@ -1,4 +1,4 @@
-import { CreateManagerDTO, ManagerResponseDTO } from "./Manager.model";
+import { CreateManager, ManagerResponse } from "./Manager.model";
 
 export interface CreateAgency {
   agencyName: string;
@@ -7,11 +7,11 @@ export interface CreateAgency {
   profileImage: string;
   phoneNumber: string;
   url: string;
-  manager: CreateManagerDTO;
+  manager: CreateManager;
 }
 
 // Risposta che arriva dal backend per le agenzie
-export interface AgencyResponse {
+export interface Agency {
   idAgency: string;
   agencyName: string;
   address: string;
@@ -23,10 +23,10 @@ export interface AgencyResponse {
   managerName?: string;
   createdAt?: string;
   updatedAt?: string;
-  manager?: ManagerResponseDTO;
+  manager?: ManagerResponse;
 }
 
 export interface CreateAgencyResponse {
-  agency: AgencyResponse;
-  manager: ManagerResponseDTO;
+  agency: Agency;
+  manager: ManagerResponse;
 }

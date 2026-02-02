@@ -10,7 +10,6 @@ import {
 
 import { LocationOn, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export interface Listing {
   id: number;
@@ -28,7 +27,6 @@ interface ListingCardProps {
 export default function EstateCardCompact({ listing }: ListingCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate();
 
   const hasMultiplePhotos = listing.photos && listing.photos.length > 1;
 
@@ -56,9 +54,7 @@ export default function EstateCardCompact({ listing }: ListingCardProps) {
         boxShadow: "none",
         display: "flex",
         flexDirection: "column",
-        cursor: "pointer",
       }}
-      onClick={() => navigate(`/estate/${listing.id}`)}
     >
       {/* Immagine in alto */}
       <Box

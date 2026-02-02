@@ -9,11 +9,6 @@ export interface User {
   role: Roles;
 }
 
-export interface CreateAdmin {
-  email: string;
-  name: string;
-  surname: string;
-}
 
 export interface UserResponseDTO {
   idUser: string;
@@ -25,7 +20,7 @@ export interface UserResponseDTO {
   updatedAt?: Date;
 }
 
-export interface ChangePasswordDTO {
+export interface ChangePassword {
   oldPassword: string;
   newPassword: string;
 }

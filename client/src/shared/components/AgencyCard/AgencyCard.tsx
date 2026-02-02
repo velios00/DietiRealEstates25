@@ -1,6 +1,5 @@
 import { Box, Typography, Avatar, Button } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../context/UserContext";
+import { useEffect, useState } from "react";
 import { Roles } from "../../enums/Roles.enum";
 import { getUserAgencyId } from "../../../services/UserService";
 import AddIcon from "@mui/icons-material/Add";
