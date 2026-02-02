@@ -1,30 +1,25 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Container, Grid, Paper, Typography, Button } from "@mui/material";
+import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import MapView from "../../shared/components/MapView/MapView";
-import ImageGallery from "../../shared/components/ImageGallery/ImageGallery";
-import EstateInfoCard from "../../shared/components/EstateInfoCard/EstateInfoCard";
-import OfferModal from "../../shared/components/OfferModal/OfferModal";
-import Pois from "../../shared/components/Pois/Pois";
+import ImageGallery from "../../shared/components/EstateViewComps/ImageGallery/ImageGallery";
+import EstateInfoCard from "../../shared/components/EstateViewComps/EstateInfoCard/EstateInfoCard";
+import OfferModal from "../../shared/components/EstateViewComps/OfferModal/OfferModal";
+import Pois from "../../shared/components/EstateViewComps/Pois/Pois";
 import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { getEstateById } from "../../services/EstateService";
 import { useUser } from "../../shared/hooks/useUser";
-import { Offer } from "../../shared/models/Offer.model";
-import {
-  getOffersByRealEstateId,
-  createOffer,
-} from "../../services/OfferService";
-import {
-  getUserById,
-  canMakeOffer as userCanMakeOffer,
-} from "../../services/UserService";
+import { createOffer } from "../../services/OfferService";
+import { Agency } from "../../shared/models/Agency.model";
+import { getAgencyById } from "../../services/AgencyService";
 
 export default function EstateView() {
   const { idEstate } = useParams<{ idEstate: string }>();
   const { user } = useUser();
 
   const [estate, setEstate] = useState<Estate | null>(null);
+  const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
   const [openOfferModal, setOpenOfferModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,17 +28,32 @@ export default function EstateView() {
   useEffect(() => {
     if (!idEstate) return;
 
-    setLoading(true);
-    getEstateById(idEstate)
-      .then(({ data }) => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await getEstateById(idEstate);
         setEstate(data);
+
+        // Carica l'agenzia se l'immobile ha idAgency
+        if (data.idAgency) {
+          try {
+            const agencyData = await getAgencyById(data.idAgency.toString());
+            setAgency(agencyData);
+          } catch (err) {
+            console.error("Errore nel caricamento dell'agenzia:", err);
+          }
+        }
+
         setError(null);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Errore nel caricamento:", err);
         setError("Impossibile caricare l'immobile");
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [idEstate]);
 
   const handleSubmitOffer = async (offerAmount: number) => {
@@ -139,10 +149,13 @@ export default function EstateView() {
               sx={{ display: "flex", flexDirection: "column" }}
             >
               {/* Card Info - inizia qui, allineata alle foto piccole */}
-              <EstateInfoCard
-                estate={estate}
-                onOfferClick={() => setOpenOfferModal(true)}
-              />
+              {agency && (
+                <EstateInfoCard
+                  estate={estate}
+                  agency={agency}
+                  onOfferClick={() => setOpenOfferModal(true)}
+                />
+              )}
             </Grid>
           </Grid>
         </Container>

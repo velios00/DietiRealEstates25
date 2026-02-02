@@ -14,7 +14,6 @@ export class AgencyController {
         dto,
         req.file,
       );
-
       res.status(201).json(result);
     } catch (err) {
       next(err);

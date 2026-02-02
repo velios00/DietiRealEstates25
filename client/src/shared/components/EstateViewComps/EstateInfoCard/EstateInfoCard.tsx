@@ -1,14 +1,17 @@
 import { Card, CardContent, Box, Typography, Button } from "@mui/material";
 import { SquareFoot, Bed, Bathroom } from "@mui/icons-material";
-import { Estate } from "../../models/Estate.model";
+import { Estate } from "../../../models/Estate.model";
+import { Agency } from "../../../models/Agency.model";
 
 interface EstateInfoCardProps {
   estate: Estate;
+  agency: Agency;
   onOfferClick?: () => void;
 }
 
 export default function EstateInfoCard({
   estate,
+  agency,
   onOfferClick,
 }: EstateInfoCardProps) {
   return (
@@ -35,7 +38,7 @@ export default function EstateInfoCard({
           {estate.title}
         </Typography>
         <Typography variant="caption" sx={{ opacity: 0.9, fontSize: 16 }}>
-          {estate.place.street}, {estate.place.city}, NA
+          {estate.address}
         </Typography>
       </Box>
 
@@ -145,37 +148,26 @@ export default function EstateInfoCard({
               mb: 1.5,
             }}
           >
-            T
+            {agency.profileImage}
           </Box>
           <Box>
             <Typography
               variant="body2"
               sx={{ fontWeight: 700, color: "#333", mb: 0.5 }}
             >
-              Tecnocasa immobiliare
+              {agency.agencyName}
             </Typography>
             <Typography
               variant="caption"
               sx={{ color: "#666", display: "block" }}
             >
-              www.tecnocasa.it
+              {agency.address}
             </Typography>
             <Typography
               variant="caption"
               sx={{ color: "#666", display: "block" }}
             >
-              0814523123
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "#333",
-                display: "block",
-                mt: 1,
-                fontWeight: 500,
-              }}
-            >
-              Pancrazio Stimolato
+              {agency.phoneNumber}
             </Typography>
           </Box>
         </Box>

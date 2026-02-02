@@ -1,5 +1,5 @@
 import { Box, Typography, Chip } from "@mui/material";
-import { Poi } from "../../models/Poi.model";
+import { Poi } from "../../../models/Poi.model";
 
 // Mapping delle categorie Geoapify a label leggibili
 const POI_MAPPING: { [key: string]: string } = {

@@ -1,6 +1,6 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import SearchResults from "../../shared/components/SearchResults/SearchResults";
-import RightSidebar from "../../shared/components/RightSideBar.tsx/RightSideBar";
+import SearchResults from "../../shared/components/SearchEstatesComps/SearchResults/SearchResults";
+import RightSidebar from "../../shared/components/SearchEstatesComps/RightSideBar.tsx/RightSideBar";
 import { EstateFilters } from "../../shared/models/EstateFilters.model";
 import { useCallback, useEffect, useState } from "react";
 import { searchEstates } from "../../services/EstateService";
@@ -59,7 +59,6 @@ export default function SearchEstate() {
   return (
     <>
       <Box sx={{ height: "64px" }} /> {/* Spacer per l'header fisso */}
-      {/* <Header /> */}
       <Box
         sx={{
           display: "flex",
@@ -68,7 +67,7 @@ export default function SearchEstate() {
           backgroundColor: "#f8f9fa",
         }}
       >
-        {/* Colonna sinistra: Risultati della ricerca (ancora più ridotta) */}
+        {/* Colonna sinistra: Risultati della ricerca */}
         <Box
           sx={{
             flex: { xs: 1, md: 0.6 },
@@ -86,7 +85,7 @@ export default function SearchEstate() {
           />
         </Box>
 
-        {/* Colonna destra: Sidebar con searchbar/filtri + mappa (più ampia) */}
+        {/* Colonna destra: Sidebar con searchbar/filtri + mappa */}
         <Box
           sx={{
             flex: { xs: 1, md: 1.4 },

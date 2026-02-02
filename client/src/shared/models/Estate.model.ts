@@ -16,6 +16,7 @@ export interface Estate {
   floor?: number;
   type: string;
   place: {
+    address?: string;
     city: string;
     street?: string;
     lat?: string;

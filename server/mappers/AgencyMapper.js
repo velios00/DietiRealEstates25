@@ -3,7 +3,11 @@ import { createManagerDTO } from "../DTOs/ManagerDTO.js";
 import { AgencyDTO } from "../DTOs/AgencyDTO.js";
 export class AgencyMapper {
   static toCreateAgencyDTO(body) {
-    const managerDTO = new createManagerDTO(body.manager);
+    const managerDTO = new createManagerDTO({
+      name: body.managerName,
+      surname: body.managerSurname,
+      email: body.managerEmail,
+    });
     return new CreateAgencyDTO({
       agencyName: body.agencyName,
       address: body.address,

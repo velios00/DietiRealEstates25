@@ -53,13 +53,6 @@ export class UserService {
   }
 
   static async createAdmin(User, Admin, dto) {
-    console.log("=== CREATING ADMIN - INPUT DATA ===");
-    console.log("DTO completo:", JSON.stringify(dto, null, 2));
-    console.log("Email:", dto.email, "Type:", typeof dto.email);
-    console.log("Name:", dto.name, "Type:", typeof dto.name);
-    console.log("Surname:", dto.surname, "Type:", typeof dto.surname);
-
-    // Controlla se l'email esiste già
     const existingUser = await User.findOne({
       where: { email: dto.email },
     });

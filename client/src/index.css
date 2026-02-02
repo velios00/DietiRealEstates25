@@ -1,169 +1,25 @@
 @import "tailwindcss";
 
 /* =====================
-   RESET BASE
+   LEAFLET POPUP COMPACT CARD
 ===================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
+.estate-popup .leaflet-popup-content-wrapper {
   padding: 0;
-}
-
-body {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #ffffff;
-  color: #213547;
-}
-
-/* =====================
-   HEADER
-===================== */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem 2rem;
-}
-
-.logo {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.nav-menu {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-menu li {
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.login-btn {
-  padding: 0.5rem 1.25rem;
-  border-radius: 999px;
-  border: none;
-  background-color: #eef4ff;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-/* =====================
-   HERO
-===================== */
-.hero {
-  text-align: center;
-  padding: 4rem 1rem;
-}
-
-.hero h2 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.hero p {
-  color: #555;
-  margin-bottom: 2rem;
-}
-
-/* =====================
-   SEARCH BAR
-===================== */
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 0.5rem;
-
-  background-color: #f4f6f8;
-  border-radius: 999px;
-}
-
-.search-bar button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-}
-
-.search-bar input {
-  flex: 1;
-  border: none;
+  border-radius: 12px;
   background: transparent;
-  outline: none;
-  font-size: 1rem;
+  box-shadow: none;
 }
 
-/* =====================
-   LISTINGS
-===================== */
-section h2 {
-  text-align: center;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
+.estate-popup .leaflet-popup-content {
+  margin: 0;
+  width: auto !important;
 }
 
-.listings-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-
-  max-width: 1200px;
-  margin: 0 auto 4rem;
-  padding: 0 2rem;
+.estate-popup .leaflet-popup-tip {
+  background: #ffffff;
+  box-shadow: none;
 }
 
-/* =====================
-   LISTING CARD
-===================== */
-.listing-card {
-  background-color: white;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-}
-
-.listing-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.listing-card div {
-  padding: 1rem;
-}
-
-.listing-card h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.25rem;
-}
-
-.listing-card p {
-  color: #666;
-  margin-bottom: 0.75rem;
-}
-
-.listing-card ul {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
-}
-
-.listing-card strong {
-  font-size: 1.1rem;
-  color: #2563eb;
+.estate-popup .leaflet-popup-close-button {
+  display: none;
 }

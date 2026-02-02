@@ -5,11 +5,9 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Alert,
   Grid,
 } from "@mui/material";
 import { Estate } from "../../shared/models/Estate.model";
-import Header from "../../shared/components/Header/Header";
 import { searchEstates } from "../../services/EstateService";
 import { getAgencyById } from "../../services/AgencyService";
 import AgencyCard from "../../shared/components/AgencyCard/AgencyCard";
@@ -17,16 +15,21 @@ import EstateCard from "../../shared/components/EstateCard/EstateCard";
 import { useParams } from "react-router-dom";
 import { AgencyResponse } from "../../shared/models/Agency.model";
 import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
+import { useUser } from "../../shared/hooks/useUser";
+import CreateEstateModal from "../../shared/components/CreateEstateModal/CreateEstateModal";
 
 export default function Agency() {
   const { id } = useParams<{ id: string }>();
   const [estates, setEstates] = useState<Estate[]>([]);
   const [agency, setAgency] = useState<AgencyResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [estatesLoading, setEstatesLoading] = useState(false);
   const [agencyLoading, setAgencyLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const { user, role } = useUser();
+
+  const canShowCreateButton = role === "agent" || role === "manager";
 
   const fetchAgencyData = async () => {
     if (!id) return;
@@ -35,7 +38,8 @@ export default function Agency() {
       const data = await getAgencyById(id);
       setAgency(data);
     } catch (err) {
-      setError("Errore nel caricamento dei dati dell'agenzia");
+      console.log("Errore nel caricamento dei dati dell'agenzia:", err);
+      setAgency(null);
     } finally {
       setAgencyLoading(false);
     }
@@ -54,8 +58,8 @@ export default function Agency() {
         orderBy: "createdAt",
       });
       setEstates(response.data?.results || response.data || []);
-    } catch (err: any) {
-      setError(err.message || "Failed to load estates");
+    } catch (err) {
+      console.log("Errore nel caricamento degli immobili:", err);
       setEstates([]);
     } finally {
       setEstatesLoading(false);
@@ -66,26 +70,48 @@ export default function Agency() {
     const loadData = async () => {
       if (!id) return;
       setLoading(true);
-      setError(null);
       try {
-        await Promise.all([fetchAgencyData(), fetchEstates()]);
-      } catch (err: any) {
-        setError(err.message || "Failed to load page data");
+        const results = await Promise.allSettled([
+          fetchAgencyData(),
+          fetchEstates(),
+        ]);
+        const hasError = results.some((result) => result.status === "rejected");
+        if (hasError) {
+          const firstError = results.find(
+            (result) => result.status === "rejected",
+          );
+          console.log(
+            "Errore nel caricamento dei dati della pagina:",
+            firstError,
+          );
+        }
+      } catch (err) {
+        console.log("Errore nel caricamento dei dati della pagina:", err);
       } finally {
         setLoading(false);
       }
     };
     loadData();
-  }, [id]);
+  }, [id, currentPage]);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleEstateCreated = () => {
+    fetchEstates();
+  };
 
   const isLoading = loading || agencyLoading || estatesLoading;
 
   if (isLoading && !agency && estates.length === 0) {
     return (
       <Box sx={{ minHeight: "100vh", backgroundColor: "#d4d2d2", py: 4 }}>
-        <Box sx={{ mb: 12 }}>
-          <Header />
-        </Box>
+        <Box sx={{ mb: 12 }}></Box>
         <Container>
           <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
             <CircularProgress sx={{ color: "#62A1BA" }} />
@@ -97,17 +123,9 @@ export default function Agency() {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#d4d2d2", py: 4 }}>
-      <Box sx={{ mb: 12 }}>
-        <Header />
-      </Box>
+      <Box sx={{ mb: 12 }}></Box>
 
       <Container maxWidth="lg">
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
-
         <Paper
           elevation={3}
           sx={{ borderRadius: 4, overflow: "hidden", backgroundColor: "white" }}
@@ -124,6 +142,8 @@ export default function Agency() {
                   agency.manager?.name ||
                   "Unknown Manager"
                 }
+                idAgency={Number(id) || 0}
+                onAddEstate={handleOpenModal}
               />
             </Box>
           )}
@@ -164,6 +184,12 @@ export default function Agency() {
           </Box>
         </Paper>
       </Container>
+      <CreateEstateModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        idAgency={Number(id) || 0}
+        onEstateCreated={handleEstateCreated}
+      />
     </Box>
   );
 }

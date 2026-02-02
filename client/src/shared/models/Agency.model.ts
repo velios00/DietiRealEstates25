@@ -1,6 +1,6 @@
 import { CreateManagerDTO, ManagerResponseDTO } from "./Manager.model";
 
-export interface CreateAgencyDTO {
+export interface CreateAgency {
   agencyName: string;
   address: string;
   description: string;

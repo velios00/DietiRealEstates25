@@ -18,8 +18,8 @@ import {
   Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { getOffersByRealEstateId } from "../../../services/OfferService";
-import { Offer } from "../../models/Offer.model";
+import { getOffersByRealEstateId } from "../../../../services/OfferService";
+import { Offer } from "../../../models/Offer.model";
 
 interface OfferModalProps {
   open: boolean;
