@@ -1,5 +1,6 @@
 import { createHash } from "crypto";
 import { EmailTemplates } from "../utils/mailer.js";
+import { createAdminDTO } from "../DTOs/AdminDTO.js";
 import randomatic from "randomatic";
 
 export class UserService {

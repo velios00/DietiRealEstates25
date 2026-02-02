@@ -13,7 +13,8 @@ import {
   PersonAdd as PersonAddIcon,
 } from "@mui/icons-material";
 import { getAllAgencies } from "../../services/AgencyService";
-import { getAllAdmins } from "../../services/UserService";
+import { createAdmin } from "../../services/UserService";
+import { CreateAdmin } from "../../shared/models/Admin.model";
 import Header from "../../shared/components/Header/Header";
 import AgencyTable from "../../shared/components/AdminDashboardComps/AgencyTable/AgencyTable";
 import CreateAgencyModal from "../../shared/components/AdminDashboardComps/CreateAgencyModal";
@@ -23,7 +24,7 @@ import { Agency } from "../../shared/models/Agency.model";
 
 export default function AdminDashboard() {
   const [agencies, setAgencies] = useState<Agency[]>([]);
-  const [admins, setAdmins] = useState<Admin[]>([]);
+
   const [loading, setLoading] = useState(true);
 
   const [isCreateAgencyModalOpen, setIsCreateAgencyModalOpen] = useState(false);
@@ -46,22 +47,6 @@ export default function AdminDashboard() {
     fetchAgencies();
   }, [fetchAgencies]);
 
-  const fetchAdmins = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await getAllAdmins();
-      setAdmins(response || []);
-    } catch (err) {
-      console.error("Error fetching admins:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAdmins();
-  }, [fetchAdmins]);
-
   const handleCreateAgency = async () => {
     try {
       await fetchAgencies();
@@ -71,13 +56,23 @@ export default function AdminDashboard() {
       console.error("Errore nel ricaricamento delle agenzie:", err);
     }
   };
-  const handleCreateAdmin = async () => {
+  const handleCreateAdmin = async (adminData: CreateAdmin) => {
     try {
-      await fetchAdmins();
+      // Chiama il servizio per creare l'admin
+      await createAdmin(adminData);
       toast.success("Admin creato con successo!");
       setIsCreateAdminModalOpen(false);
-    } catch (err) {
-      console.error("Errore nel ricaricamento degli admin:", err);
+    } catch (err: any) {
+      console.error("Errore nella creazione dell'admin:", err);
+
+      // Gestisci gli errori specifici
+      if (err.response?.status === 400) {
+        toast.error("Email già registrata");
+      } else if (err.response?.status === 401) {
+        toast.error("Non autorizzato");
+      } else {
+        toast.error("Errore durante la creazione dell'admin");
+      }
     }
   };
 

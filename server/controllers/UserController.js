@@ -1,6 +1,7 @@
 import { UserService } from "../services/UserService.js";
 import { UserMapper } from "../mappers/UserMapper.js";
 import { ChangePasswordDTO } from "../DTOs/UserDTO.js";
+import { createAdminDTO } from "../DTOs/AdminDTO.js";
 import { User, Admin, Agent, Manager } from "../models/DietiRealEstatesDB.js";
 
 export class UserController {
@@ -42,7 +43,8 @@ export class UserController {
 
   static async createAdmin(req, res, next) {
     try {
-      const dto = new createAdminDTO(req.body);
+      const adminData = req.body.createAdminDTO || req.body;
+      const dto = new createAdminDTO(adminData);
       const admin = await UserService.createAdmin(User, Admin, dto);
       const result = UserMapper.toUserDTO(admin);
       res.status(201).json(result);

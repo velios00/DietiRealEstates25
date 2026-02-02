@@ -7,29 +7,42 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Avatar,
   Chip,
   Typography,
   Box,
   CircularProgress,
-  Tooltip,
 } from "@mui/material";
 import {
-  Delete as DeleteIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
   LocationOn as LocationIcon,
   Business as BusinessIcon,
 } from "@mui/icons-material";
-import { AgencyResponse } from "../../../models/Agency.model";
+import { Agency } from "../../../models/Agency.model";
+import { useEffect } from "react";
 
 interface AgencyTableProps {
-  agencies: AgencyResponse[];
+  agencies: Agency[];
   loading: boolean;
 }
 
 export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
+  useEffect(() => {
+    if (agencies.length > 0) {
+      console.log("DEBUG - Prima agenzia:", {
+        agencyName: agencies[0].agencyName,
+        idManager: agencies[0].idManager,
+        managerName: agencies[0].managerName,
+        manager: agencies[0].manager,
+        hasManager: !!agencies[0].manager,
+        managerKeys: agencies[0].manager
+          ? Object.keys(agencies[0].manager)
+          : [],
+      });
+    }
+  }, [agencies]);
+
   if (loading) {
     return (
       <Box
@@ -62,7 +75,30 @@ export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      sx={{
+        "& .MuiTableCell-root": {
+          fontSize: "1.05rem", // Dimensione base aumentata
+        },
+        "& .MuiTypography-body1": {
+          fontSize: "1.1rem",
+          fontWeight: 500,
+        },
+        "& .MuiTypography-body2": {
+          fontSize: "1rem",
+        },
+        "& .MuiTableCell-head": {
+          fontSize: "1.15rem",
+          fontWeight: 600,
+        },
+        "& .MuiAvatar-root": {
+          width: 56,
+          height: 56,
+          fontSize: "1.5rem",
+        },
+      }}
+    >
       <Table>
         <TableHead>
           <TableRow>
@@ -103,19 +139,13 @@ export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
               </TableCell>
               <TableCell>
                 <Box>
-                  <Typography variant="body1">
-                    {agency.manager?.name} {agency.manager?.surname}
-                  </Typography>
+                  <Typography variant="body1">{agency.managerName}</Typography>
                   <Typography
                     variant="body2"
                     color="textSecondary"
                     display="flex"
                     alignItems="center"
                   >
-                    <EmailIcon
-                      fontSize="small"
-                      sx={{ mr: 0.5, fontSize: 14 }}
-                    />
                     {agency.manager?.email}
                   </Typography>
                 </Box>
@@ -146,36 +176,6 @@ export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
                       </a>
                     </Typography>
                   )}
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label="Attiva"
-                  size="small"
-                  color="success"
-                  variant="outlined"
-                />
-              </TableCell>
-              <TableCell>
-                <Typography variant="body2">
-                  {agency.createdAt
-                    ? new Date(agency.createdAt).toLocaleDateString("it-IT")
-                    : "N/A"}
-                </Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Box display="flex" justifyContent="center" gap={1}>
-                  <Tooltip title="Elimina">
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() =>
-                        onDelete(agency.idAgency, agency.agencyName)
-                      }
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
                 </Box>
               </TableCell>
             </TableRow>

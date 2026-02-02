@@ -1,5 +1,6 @@
 import { API } from "../shared/axios/Interceptors";
-import { CreateAdmin, ChangePassword, User } from "../shared/models/User.model";
+import { ChangePassword, User } from "../shared/models/User.model";
+import { CreateAdmin } from "../shared/models/Admin.model";
 import { AuthUser } from "../shared/models/AuthUser.model";
 
 export function getUserById(idUser: string) {
@@ -7,7 +8,7 @@ export function getUserById(idUser: string) {
 }
 
 export function createAdmin(dto: CreateAdmin) {
-  return API.post("/user/admin/create", dto);
+  return API.post("/user/admin/create", { createAdminDTO: dto });
 }
 
 export function changePassword(dto: ChangePassword) {
