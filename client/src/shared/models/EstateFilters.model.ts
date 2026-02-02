@@ -3,9 +3,9 @@ export interface EstateFilters {
   city?: string;
   minPrice?: number;
   maxPrice?: number;
-  minRooms?: number;
+  nRooms?: number;
   minBeds?: number;
-  minBathrooms?: number;
+  nBathrooms?: number;
   minSize?: number;
   maxSize?: number;
   floor?: number;

@@ -29,8 +29,8 @@ const DEFAULT_FILTERS: Partial<EstateFilters> = {
   type: "affitto",
   minPrice: 20000,
   maxPrice: 10000000,
-  minRooms: 0,
-  minBathrooms: 0,
+  nRooms: 0,
+  nBathrooms: 0,
   minSize: 10,
   maxSize: 1000,
 };
@@ -125,10 +125,10 @@ export default function FiltersModal({
         />
 
         <RoomsBathsSection
-          rooms={localFilters.minRooms || 0}
-          baths={localFilters.minBathrooms || 0}
-          onRoomsChange={(value) => handleFilterChange("minRooms", value)}
-          onBathsChange={(value) => handleFilterChange("minBathrooms", value)}
+          rooms={localFilters.nRooms || 0}
+          baths={localFilters.nBathrooms || 0}
+          onRoomsChange={(value) => handleFilterChange("nRooms", value)}
+          onBathsChange={(value) => handleFilterChange("nBathrooms", value)}
         />
 
         <SurfaceSection
@@ -139,10 +139,8 @@ export default function FiltersModal({
         />
 
         <FloorSection
-          value={localFilters.floor?.toString() || ""}
-          onChange={(value) =>
-            handleFilterChange("floor", value ? parseInt(value) : undefined)
-          }
+          value={localFilters.floor}
+          onChange={(value) => handleFilterChange("floor", value)}
         />
 
         <EnergyClassSection

@@ -18,7 +18,7 @@ import {
   Person as PersonIcon,
   Email as EmailIcon,
 } from "@mui/icons-material";
-import { CreateAdmin } from "../../../shared/models/User.model.ts";
+import { CreateAdmin } from "../../../shared/models/Admin.model.ts";
 
 interface CreateAdminModalProps {
   open: boolean;
@@ -33,21 +33,14 @@ export default function CreateAdminModal({
   onSubmit,
   loading = false,
 }: CreateAdminModalProps) {
-  const [formData, setFormData] = useState({
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<CreateAdmin>({
     email: "",
     name: "",
     surname: "",
   });
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
-  // Reset form when modal opens/closes
-  useEffect(() => {
-    if (open) {
-      resetForm();
-    }
-  }, [open]);
 
   const resetForm = () => {
     setFormData({
@@ -58,6 +51,13 @@ export default function CreateAdminModal({
     setErrors({});
     setSubmitError(null);
   };
+
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (open) {
+      resetForm();
+    }
+  }, [open]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};

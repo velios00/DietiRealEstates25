@@ -6,7 +6,6 @@ import {
   Typography,
   IconButton,
   Divider,
-  Alert,
   CircularProgress,
   InputAdornment,
   TextField, // Aggiunto per le icone
@@ -179,18 +178,6 @@ export default function CreateAgencyModal({
         if (selectedFile) {
           agencyData.append("profileImage", selectedFile);
         }
-
-        console.log("📤 Invio FormData:", {
-          agencyName: formData.agencyName,
-          address: formData.address,
-          description: formData.description,
-          phoneNumber: formData.phoneNumber,
-          url: formData.url,
-          managerName: formData.manager.name,
-          managerSurname: formData.manager.surname,
-          managerEmail: formData.manager.email,
-          hasFile: !!selectedFile,
-        });
 
         await createAgency(agencyData);
         onSubmit();

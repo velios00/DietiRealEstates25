@@ -170,15 +170,20 @@ export class EstateService {
       filters.maxSize,
     );
 
-    const simpleFilters = [
-      "nRooms",
-      "nBathrooms",
-      "energyClass",
-      "floor",
-      "createdBy",
-      "type",
-      "idAgency",
-    ];
+    // nRooms and nBathrooms are "minimum" filters (>=)
+    if (filters.nRooms != null && filters.nRooms > 0) {
+      whereConditions.nRooms = { [Op.gte]: filters.nRooms };
+    }
+    if (filters.nBathrooms != null && filters.nBathrooms > 0) {
+      whereConditions.nBathrooms = { [Op.gte]: filters.nBathrooms };
+    }
+
+    // energyClass - case insensitive search
+    if (filters.energyClass != null) {
+      whereConditions.energyClass = { [Op.iLike]: filters.energyClass };
+    }
+
+    const simpleFilters = ["floor", "createdBy", "type", "idAgency"];
 
     simpleFilters.forEach((key) => {
       if (filters[key] != null) {

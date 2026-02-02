@@ -1,16 +1,16 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 
 type FloorSectionProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: number | undefined;
+  onChange: (value: number | undefined) => void;
 };
 
 const SECTION_TITLE_SX = { fontSize: 20, fontWeight: 600 } as const;
 
 const floorOptions = [
-  { value: "terra", label: "Piano terra" },
-  { value: "intermedi", label: "Intermedi" },
-  { value: "ultimo", label: "Ultimo piano" },
+  { value: 0, label: "Piano terra" },
+  { value: 1, label: "Intermedi" },
+  { value: 2, label: "Ultimo piano" },
 ];
 
 const getButtonSx = (isActive: boolean) => ({
@@ -43,7 +43,9 @@ export default function FloorSection({ value, onChange }: FloorSectionProps) {
           <Button
             key={floor.value}
             variant={value === floor.value ? "contained" : "outlined"}
-            onClick={() => onChange(floor.value)}
+            onClick={() =>
+              onChange(value === floor.value ? undefined : floor.value)
+            }
             fullWidth
             sx={getButtonSx(value === floor.value)}
           >
