@@ -27,12 +27,12 @@ interface CreateAdminModalProps {
   loading?: boolean;
 }
 
-const CreateAdminModal: React.FC<CreateAdminModalProps> = ({
+export default function CreateAdminModal({
   open,
   onClose,
   onSubmit,
   loading = false,
-}) => {
+}: CreateAdminModalProps) {
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -347,6 +347,4 @@ const CreateAdminModal: React.FC<CreateAdminModalProps> = ({
       </Box>
     </Dialog>
   );
-};
-
-export default CreateAdminModal;
+}
