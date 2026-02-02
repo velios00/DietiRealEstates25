@@ -3,6 +3,7 @@ import SearchResults from "../../shared/components/SearchEstatesComps/SearchResu
 import RightSidebar from "../../shared/components/SearchEstatesComps/RightSideBar.tsx/RightSideBar";
 import { EstateFilters } from "../../shared/models/EstateFilters.model";
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { searchEstates } from "../../services/EstateService";
 import { Listing } from "../../shared/components/EstateCard/EstateCard";
 import { Estate } from "../../shared/models/Estate.model";
@@ -11,14 +12,51 @@ import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
 export default function SearchEstate() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [searchParams] = useSearchParams();
 
-  const [filters, setFilters] = useState<EstateFilters>({});
+  const getFiltersFromParams = (): EstateFilters => {
+    const city = searchParams.get("city") ?? undefined;
+    const latParam = searchParams.get("lat");
+    const lonParam = searchParams.get("lon");
+    const radiusParam = searchParams.get("radius");
+
+    const lat = latParam ? parseFloat(latParam) : undefined;
+    const lon = lonParam ? parseFloat(lonParam) : undefined;
+    const radius = radiusParam ? parseFloat(radiusParam) : undefined;
+
+    if (
+      lat !== undefined &&
+      lon !== undefined &&
+      !Number.isNaN(lat) &&
+      !Number.isNaN(lon)
+    ) {
+      return {
+        city,
+        lat,
+        lon,
+        radius: radius && !Number.isNaN(radius) ? radius : 10,
+      };
+    }
+
+    return city ? { city } : {};
+  };
+
+  const [filters, setFilters] = useState<EstateFilters>(() =>
+    getFiltersFromParams(),
+  );
   const [estates, setEstates] = useState<Estate[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [totalResults, setTotalResults] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [radius, setRadius] = useState<number>(5);
+
+  // Inizializza i filtri quando la pagina viene raggiunta
+  useEffect(() => {
+    const nextFilters = getFiltersFromParams();
+    setFilters(nextFilters);
+    setCurrentPage(1);
+  }, [searchParams]);
 
   const fetchEstates = useCallback(async () => {
     setLoading(true);

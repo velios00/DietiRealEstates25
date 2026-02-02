@@ -12,24 +12,23 @@ import {
   Add as AddIcon,
   PersonAdd as PersonAddIcon,
 } from "@mui/icons-material";
-import { createAgency, getAllAgencies } from "../../services/AgencyService";
-import { createAdmin } from "../../services/UserService";
+import { getAllAgencies } from "../../services/AgencyService";
+import { getAllAdmins } from "../../services/UserService";
 import Header from "../../shared/components/Header/Header";
-import { CreateAdmin } from "../../shared/models/User.model";
-import AgencyTable from "../../shared/components/admin/AgencyTable/AgencyTable";
-import CreateAgencyModal from "../../shared/components/admin/CreateAgencyModal";
-import CreateAdminModal from "../../shared/components/admin/CreateAdminModal";
+import AgencyTable from "../../shared/components/AdminDashboardComps/AgencyTable/AgencyTable";
+import CreateAgencyModal from "../../shared/components/AdminDashboardComps/CreateAgencyModal";
+import CreateAdminModal from "../../shared/components/AdminDashboardComps/CreateAdminModal";
 import { toast } from "react-hot-toast";
-import { AgencyResponse, CreateAgency } from "../../shared/models/Agency.model";
+import { Agency } from "../../shared/models/Agency.model";
 
 export default function AdminDashboard() {
-  const [agencies, setAgencies] = useState<AgencyResponse[]>([]);
+  const [agencies, setAgencies] = useState<Agency[]>([]);
+  const [admins, setAdmins] = useState<Admin[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateAgencyModalOpen, setIsCreateAgencyModalOpen] = useState(false);
 
   const [isCreateAdminModalOpen, setIsCreateAdminModalOpen] = useState(false);
-  const [adminLoading, setAdminLoading] = useState(false);
 
   const fetchAgencies = useCallback(async () => {
     try {
@@ -47,30 +46,38 @@ export default function AdminDashboard() {
     fetchAgencies();
   }, [fetchAgencies]);
 
+  const fetchAdmins = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await getAllAdmins();
+      setAdmins(response || []);
+    } catch (err) {
+      console.error("Error fetching admins:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAdmins();
+  }, [fetchAdmins]);
+
   const handleCreateAgency = async () => {
     try {
       await fetchAgencies();
       toast.success("Agenzia creata con successo!");
-      setIsCreateModalOpen(false);
+      setIsCreateAgencyModalOpen(false);
     } catch (err) {
       console.error("Errore nel ricaricamento delle agenzie:", err);
     }
   };
-  const handleCreateAdmin = async (adminData: CreateAdmin) => {
-    if (!adminData.email || !adminData.name || !adminData.surname) {
-      toast.error("Per favore, compila tutti i campi obbligatori");
-      return;
-    }
-    setAdminLoading(true);
+  const handleCreateAdmin = async () => {
     try {
-      const response = await createAdmin(adminData);
-      toast.success(`Amministratore "${adminData.surname}" creato!`);
+      await fetchAdmins();
+      toast.success("Admin creato con successo!");
       setIsCreateAdminModalOpen(false);
     } catch (err) {
-      toast.error("Errore nella creazione dell'amministratore");
-      console.error("Errore nella creazione dell'amministratore:", err);
-    } finally {
-      setAdminLoading(false);
+      console.error("Errore nel ricaricamento degli admin:", err);
     }
   };
 
@@ -154,7 +161,7 @@ export default function AdminDashboard() {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => setIsCreateModalOpen(true)}
+                onClick={() => setIsCreateAgencyModalOpen(true)}
                 sx={{
                   backgroundColor: "#62A1BA",
                   fontSize: "1rem",
@@ -180,13 +187,12 @@ export default function AdminDashboard() {
         open={isCreateAdminModalOpen}
         onClose={() => setIsCreateAdminModalOpen(false)}
         onSubmit={handleCreateAdmin}
-        loading={adminLoading}
       />
 
       {/* Create Agency Modal */}
       <CreateAgencyModal
-        open={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        open={isCreateAgencyModalOpen}
+        onClose={() => setIsCreateAgencyModalOpen(false)}
         onSubmit={handleCreateAgency}
       />
     </Box>

@@ -17,7 +17,6 @@ import {
   ChevronRight,
 } from "@mui/icons-material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export interface Listing {
   id: number;
@@ -38,7 +37,6 @@ interface ListingCardProps {
 export default function EstateCard({ listing }: ListingCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate();
 
   const hasMultiplePhotos = listing.photos && listing.photos.length > 1;
 
@@ -70,9 +68,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
         },
         display: "flex",
         flexDirection: "column",
-        cursor: "pointer",
       }}
-      onClick={() => navigate(`/estate/${listing.idEstate}`)}
     >
       {/* Immagine in alto */}
       <Box
@@ -193,6 +189,11 @@ export default function EstateCard({ listing }: ListingCardProps) {
             }}
           >
             € {listing.price.toLocaleString()}
+            {listing.type === "Affitto" && (
+              <span style={{ fontSize: "0.85rem", marginLeft: "4px" }}>
+                /mese
+              </span>
+            )}
           </Typography>
         </Box>
 

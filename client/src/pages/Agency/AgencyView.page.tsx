@@ -13,23 +13,19 @@ import { getAgencyById } from "../../services/AgencyService";
 import AgencyCard from "../../shared/components/AgencyCard/AgencyCard";
 import EstateCard from "../../shared/components/EstateCard/EstateCard";
 import { useParams } from "react-router-dom";
-import { AgencyResponse } from "../../shared/models/Agency.model";
+import { Agency } from "../../shared/models/Agency.model";
 import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
-import { useUser } from "../../shared/hooks/useUser";
 import CreateEstateModal from "../../shared/components/CreateEstateModal/CreateEstateModal";
 
-export default function Agency() {
+export default function AgencyView() {
   const { id } = useParams<{ id: string }>();
   const [estates, setEstates] = useState<Estate[]>([]);
-  const [agency, setAgency] = useState<AgencyResponse | null>(null);
+  const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
   const [estatesLoading, setEstatesLoading] = useState(false);
   const [agencyLoading, setAgencyLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [modalOpen, setModalOpen] = useState(false);
-  const { user, role } = useUser();
-
-  const canShowCreateButton = role === "agent" || role === "manager";
 
   const fetchAgencyData = async () => {
     if (!id) return;

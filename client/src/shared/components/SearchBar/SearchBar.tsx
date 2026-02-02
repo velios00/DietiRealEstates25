@@ -47,6 +47,16 @@ export function SearchBar({
     setLocalValue(location.address);
     clear();
     onLocationSelect?.(location);
+
+    // Se siamo sulla homepage (onSearch non è definito), naviga automaticamente alla pagina di ricerca
+    if (!onSearch) {
+      navigate("/search-estates", {
+        state: {
+          query: location.city,
+          location: location,
+        },
+      });
+    }
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -120,7 +130,7 @@ export function SearchBar({
             left: 0,
             right: 0,
             mt: 0.5,
-            zIndex: 1300,
+            zIndex: 9999,
             maxHeight: 300,
             overflow: "auto",
           }}
