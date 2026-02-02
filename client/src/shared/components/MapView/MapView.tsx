@@ -52,7 +52,10 @@ export default function MapView({ estates, center, isLoading }: MapViewProps) {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {estates.map((estate) => (
-          <EstateMarker key={estate.idEstate} estate={estate} />
+          <EstateMarker
+            key={estate.idRealEstate || estate.idEstate || estate.id}
+            estate={estate}
+          />
         ))}
       </MapContainer>
     </Box>

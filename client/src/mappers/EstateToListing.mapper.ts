@@ -17,7 +17,7 @@ export function mapEstateToListing(estate: Estate): Listing {
     : estate.place.city;
 
   return {
-    id: estate.idEstate ?? estate.id,
+    id: estate.idRealEstate || estate.idEstate || estate.id,
     title: estate.title,
     address: addressWithoutPostalCode,
     price: estate.price,
