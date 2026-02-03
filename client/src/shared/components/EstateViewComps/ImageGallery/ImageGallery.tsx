@@ -10,6 +10,7 @@ import {
   ImageListItem,
 } from "@mui/material";
 import { Close, Image } from "@mui/icons-material";
+import ImageViewerDialog from "./ImageViewerDialog";
 
 interface ImageGalleryProps {
   photos: string[];
@@ -19,10 +20,24 @@ interface ImageGalleryProps {
 export default function ImageGallery({ photos, title }: ImageGalleryProps) {
   const [openGallery, setOpenGallery] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [openViewer, setOpenViewer] = useState(false);
 
   if (!photos || photos.length === 0) {
     return null;
   }
+
+  const handleOpenViewer = (index: number) => {
+    setCurrentImageIndex(index);
+    setOpenViewer(true);
+  };
+
+  const handlePrev = () => {
+    setCurrentImageIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % photos.length);
+  };
 
   return (
     <>
@@ -210,12 +225,23 @@ export default function ImageGallery({ photos, title }: ImageGalleryProps) {
                     width: "100%",
                     cursor: "pointer",
                   }}
+                  onClick={() => handleOpenViewer(idx)}
                 />
               </ImageListItem>
             ))}
           </ImageList>
         </DialogContent>
       </Dialog>
+
+      <ImageViewerDialog
+        open={openViewer}
+        title={title}
+        photos={photos}
+        currentIndex={currentImageIndex}
+        onClose={() => setOpenViewer(false)}
+        onPrev={handlePrev}
+        onNext={handleNext}
+      />
     </>
   );
 }
