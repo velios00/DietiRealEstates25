@@ -25,6 +25,10 @@ export function createModel(database) {
       allowNull: false,
       defaultValue: "pending",
     },
+    counterOfferAmount: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     idUser: {
       type: DataTypes.INTEGER,
       allowNull: false,
