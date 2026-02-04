@@ -9,6 +9,7 @@ import EstateView from "./pages/EstateView/EstateView.Page";
 import { AuthGuard } from "./shared/components/AuthGuard/AuthGuard";
 import { Roles } from "./shared/enums/Roles.enum";
 import AgencyView from "./pages/Agency/AgencyView.page";
+import UserDashboard from "./pages/UserDashboard/UserDashboard.page";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: "/estate/:idEstate",
         element: <EstateView />,
+      },
+      {
+        path: "/user",
+        element: <UserDashboard />,
       },
     ],
   },
