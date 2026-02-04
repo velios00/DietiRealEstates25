@@ -2,6 +2,7 @@ import { Card, CardContent, Box, Typography, Button } from "@mui/material";
 import { SquareFoot, Bed, Bathroom } from "@mui/icons-material";
 import { Estate } from "../../../models/Estate.model";
 import { Agency } from "../../../models/Agency.model";
+import { cleanAddress } from "../../../../mappers/EstateToListing.mapper";
 
 interface EstateInfoCardProps {
   estate: Estate;
@@ -38,7 +39,9 @@ export default function EstateInfoCard({
           {estate.title}
         </Typography>
         <Typography variant="caption" sx={{ opacity: 0.9, fontSize: 16 }}>
-          {estate.address}
+          {estate.place?.address
+            ? cleanAddress(`${estate.place.address}`)
+            : estate.address}
         </Typography>
       </Box>
 
