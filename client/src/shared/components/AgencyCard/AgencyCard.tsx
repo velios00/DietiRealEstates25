@@ -1,9 +1,8 @@
-import { Box, Typography, Avatar, Button } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Roles } from "../../enums/Roles.enum";
-import { getUserAgencyId } from "../../../services/UserService";
-import AddIcon from "@mui/icons-material/Add";
-import { useUser } from "../../hooks/useUser";
+import { Box, Typography, Button, Avatar } from "@mui/material";
+import {
+  Add as AddIcon,
+  PersonAdd as PersonAddIcon,
+} from "@mui/icons-material";
 
 interface AgencyCardProps {
   name: string;
@@ -11,7 +10,18 @@ interface AgencyCardProps {
   description: string;
   manager: string;
   idAgency: number;
-  onAddEstate?: () => void;
+  onAddEstate: () => void;
+  onAddAgent?: () => void;
+}
+
+interface AgencyCardProps {
+  name: string;
+  logo: string;
+  description: string;
+  manager: string;
+  idAgency: number;
+  onAddEstate: () => void;
+  onAddAgent?: () => void;
 }
 
 export default function AgencyCard({
@@ -21,101 +31,92 @@ export default function AgencyCard({
   manager,
   idAgency,
   onAddEstate,
+  onAddAgent,
 }: AgencyCardProps) {
-  const userContext = useUser();
-  const [isUserOfAgency, setIsUserOfAgency] = useState(false);
-  const user = userContext?.user;
-
-  useEffect(() => {
-    const checkIfUserBelongsToAgency = async () => {
-      if (!user || (user.role !== Roles.AGENT && user.role !== Roles.MANAGER)) {
-        setIsUserOfAgency(false);
-        return;
-      }
-
-      try {
-        const response = await getUserAgencyId(parseInt(user.idUser));
-        const userAgencyId = response.data?.idAgency ?? response.data;
-        setIsUserOfAgency(Number(userAgencyId) === Number(idAgency));
-      } catch (err) {
-        console.log("Errore nel controllo dell'agenzia dell'utente:", err);
-        setIsUserOfAgency(false);
-      }
-    };
-
-    checkIfUserBelongsToAgency();
-  }, [user, idAgency]);
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box display="flex" gap={4} alignItems="center">
-        {/* SINISTRA: Logo e Manager */}
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          minWidth={180}
-          textAlign="center"
-        >
-          <Avatar
-            src={logo}
-            alt={`Logo ${name}`}
-            sx={{
-              width: 100,
-              height: 100,
-              mb: 1.5,
-              border: "2px solid #62A1BA",
-            }}
-          />
-          <Typography variant="subtitle2" color="text.secondary">
-            Manager: <strong>{manager}</strong>
+    <Box>
+      {/* Header with Agency Info */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 3,
+          mb: 3,
+        }}
+      >
+        <Avatar
+          src={logo}
+          alt={name}
+          sx={{
+            width: 120,
+            height: 120,
+            border: "3px solid #62A1BA",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        />
+        <Box sx={{ flex: 1 }}>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, mb: 1, color: "#2c3e50" }}
+          >
+            {name}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{ color: "#5d6d7e", mb: 2, lineHeight: 1.6 }}
+          >
+            {description}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "#7f8c8d" }}>
+            <strong>Manager:</strong> {manager}
           </Typography>
         </Box>
+      </Box>
 
-        {/* DESTRA: Testi principali */}
-        <Box flex={1}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="flex-start"
-            gap={2}
+      {/* Action Buttons */}
+      <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={onAddEstate}
+          sx={{
+            backgroundColor: "#62A1BA",
+            fontSize: "1rem",
+            fontWeight: 600,
+            px: 3,
+            py: 1.5,
+            borderRadius: 3,
+            "&:hover": {
+              backgroundColor: "#4a8ba3",
+            },
+          }}
+        >
+          Aggiungi Immobile
+        </Button>
+
+        {onAddAgent && (
+          <Button
+            variant="outlined"
+            startIcon={<PersonAddIcon />}
+            onClick={onAddAgent}
+            sx={{
+              borderColor: "#62A1BA",
+              color: "#62A1BA",
+              fontSize: "1rem",
+              fontWeight: 600,
+              px: 3,
+              py: 1.5,
+              borderRadius: 3,
+              "&:hover": {
+                borderColor: "#4a8ba3",
+                color: "#4a8ba3",
+                backgroundColor: "rgba(98, 161, 186, 0.04)",
+              },
+            }}
           >
-            <Box flex={1}>
-              <Typography
-                variant="h4"
-                sx={{ fontWeight: 700, color: "#2c3e50", mb: 1 }}
-              >
-                {name}
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ color: "#7f8c8d", lineHeight: 1.6 }}
-              >
-                {description}
-              </Typography>
-            </Box>
-
-            {/* Bottone Carica Immobile */}
-            {isUserOfAgency && (
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={onAddEstate}
-                sx={{
-                  backgroundColor: "#62A1BA",
-                  color: "white",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  whiteSpace: "nowrap",
-                  "&:hover": {
-                    backgroundColor: "#4a7f99",
-                  },
-                }}
-              >
-                Carica Immobile
-              </Button>
-            )}
-          </Box>
-        </Box>
+            Aggiungi Agente
+          </Button>
+        )}
       </Box>
     </Box>
   );

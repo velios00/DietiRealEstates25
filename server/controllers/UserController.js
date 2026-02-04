@@ -1,7 +1,6 @@
 import { UserService } from "../services/UserService.js";
 import { UserMapper } from "../mappers/UserMapper.js";
 import { ChangePasswordDTO } from "../DTOs/UserDTO.js";
-import { createAdminDTO } from "../DTOs/AdminDTO.js";
 import { User, Admin, Agent, Manager } from "../models/DietiRealEstatesDB.js";
 
 export class UserController {

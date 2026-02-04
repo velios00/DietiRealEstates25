@@ -30,14 +30,14 @@ export class AgentService {
       await EmailTemplates.sendAgentWelcome(
         dto.email,
         dto.name,
-        randomPassword
+        randomPassword,
       );
-      console.log("Email inviata con successo a:", dto.manager.email);
+      console.log("Email inviata con successo a:", dto.email);
     } catch (emailError) {
       console.error(
         "Errore nell'invio dell'email a:",
         dto.manager.email,
-        emailError
+        emailError,
       );
     }
 

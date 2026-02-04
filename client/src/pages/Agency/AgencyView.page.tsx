@@ -10,15 +10,22 @@ import {
 import { Estate } from "../../shared/models/Estate.model";
 import { searchEstates } from "../../services/EstateService";
 import { getAgencyById } from "../../services/AgencyService";
+import { createAgent } from "../../services/AgentService";
 import AgencyCard from "../../shared/components/AgencyCard/AgencyCard";
 import EstateCard from "../../shared/components/EstateCard/EstateCard";
+import CreateAgentModal from "../../shared/components/CreateAgentModal/CreateAgentModal";
 import { useParams } from "react-router-dom";
 import { Agency } from "../../shared/models/Agency.model";
+import { CreateAgent } from "../../shared/models/Agent.model";
 import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
 import CreateEstateModal from "../../shared/components/CreateEstateModal/CreateEstateModal";
+import { toast } from "react-hot-toast";
+import { useUser } from "../../shared/hooks/useUser";
+import { Roles } from "../../shared/enums/Roles.enum";
 
 export default function AgencyView() {
   const { id } = useParams<{ id: string }>();
+  const { role } = useUser();
   const [estates, setEstates] = useState<Estate[]>([]);
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,6 +33,10 @@ export default function AgencyView() {
   const [agencyLoading, setAgencyLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
+
+  // Check if user is a manager
+  const isManager = role === Roles.MANAGER;
 
   const fetchAgencyData = async () => {
     if (!id) return;
@@ -102,6 +113,28 @@ export default function AgencyView() {
     fetchEstates();
   };
 
+  const handleCreateAgent = async (agentData: CreateAgent) => {
+    try {
+      await createAgent(agentData);
+      toast.success("Agente creato con successo!");
+      setIsCreateAgentModalOpen(false);
+      // Optionally refresh agency data to show the new agent
+      await fetchAgencyData();
+    } catch (err: any) {
+      console.error("Errore nella creazione dell'agente:", err);
+
+      // Handle specific errors
+      if (err.response?.status === 400) {
+        toast.error("Email già registrata");
+      } else if (err.response?.status === 401) {
+        toast.error("Non autorizzato");
+      } else {
+        toast.error("Errore durante la creazione dell'agente");
+      }
+      throw err; // Re-throw to let the modal handle it
+    }
+  };
+
   const isLoading = loading || agencyLoading || estatesLoading;
 
   if (isLoading && !agency && estates.length === 0) {
@@ -140,6 +173,9 @@ export default function AgencyView() {
                 }
                 idAgency={Number(id) || 0}
                 onAddEstate={handleOpenModal}
+                onAddAgent={
+                  isManager ? () => setIsCreateAgentModalOpen(true) : undefined
+                }
               />
             </Box>
           )}
@@ -180,12 +216,23 @@ export default function AgencyView() {
           </Box>
         </Paper>
       </Container>
+
+      {/* Create Estate Modal */}
       <CreateEstateModal
         open={modalOpen}
         onClose={handleCloseModal}
         idAgency={Number(id) || 0}
         onEstateCreated={handleEstateCreated}
       />
+
+      {/* Create Agent Modal */}
+      {isManager && (
+        <CreateAgentModal
+          open={isCreateAgentModalOpen}
+          onClose={() => setIsCreateAgentModalOpen(false)}
+          onSubmit={handleCreateAgent}
+        />
+      )}
     </Box>
   );
 }
