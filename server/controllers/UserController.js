@@ -78,4 +78,19 @@ export class UserController {
       next(err);
     }
   }
+
+  static async getCurrentUser(req, res, next) {
+    try {
+      const user = await UserService.getUserById(User, req.userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const result = UserMapper.toUserDTO(user);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
 }

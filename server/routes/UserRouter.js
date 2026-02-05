@@ -20,6 +20,8 @@ UserRouter.get(
   //authorizeRoles('admin') dovrebbe esserci ma per ora lo teniamo fuori
 );
 
+UserRouter.get("/me", enforceAuthentication, UserController.getCurrentUser);
+
 UserRouter.get(
   "/:idUser",
   enforceAuthentication,

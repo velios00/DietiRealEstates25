@@ -3,7 +3,7 @@ import "./App.css";
 import { Outlet, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "./shared/models/JwtPayload.model";
-import { getUserById } from "./services/UserService";
+import { getCurrentUser } from "./services/UserService";
 import { UserContext } from "./shared/context/UserContext";
 import { Roles } from "./shared/enums/Roles.enum";
 import { createTheme, ThemeProvider } from "@mui/material";
@@ -39,7 +39,7 @@ function App() {
       if (decodedToken.exp && decodedToken.exp < currentTime) {
         console.log("token scaduto, mettere logout");
       } else {
-        getUserById(decodedToken.user.idUser).then(({ data: user }) => {
+        getCurrentUser().then(({ data: user }) => {
           // Converti User in AuthUser
           const authUser: AuthUser = {
             idUser: user.idUser,

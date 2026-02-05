@@ -36,3 +36,7 @@ export function canMakeOffer(user: AuthUser | null): boolean {
 export function getUserAgencyId(idUser: number) {
   return API.get(`/user/${idUser}/agency`);
 }
+
+export function getCurrentUser() {
+  return API.get("/user/me");
+}
