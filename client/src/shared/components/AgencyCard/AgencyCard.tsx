@@ -10,17 +10,7 @@ interface AgencyCardProps {
   description: string;
   manager: string;
   idAgency: number;
-  onAddEstate: () => void;
-  onAddAgent?: () => void;
-}
-
-interface AgencyCardProps {
-  name: string;
-  logo: string;
-  description: string;
-  manager: string;
-  idAgency: number;
-  onAddEstate: () => void;
+  onAddEstate?: () => void;
   onAddAgent?: () => void;
 }
 
@@ -35,7 +25,7 @@ export default function AgencyCard({
 }: AgencyCardProps) {
   return (
     <Box>
-      {/* Header with Agency Info */}
+      {/* Header con Info Agenzia e Bottoni */}
       <Box
         sx={{
           display: "flex",
@@ -44,6 +34,7 @@ export default function AgencyCard({
           mb: 3,
         }}
       >
+        {/* Avatar Logo */}
         <Avatar
           src={logo}
           alt={name}
@@ -54,6 +45,8 @@ export default function AgencyCard({
             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
           }}
         />
+
+        {/* Informazioni Agenzia */}
         <Box sx={{ flex: 1 }}>
           <Typography
             variant="h4"
@@ -71,52 +64,56 @@ export default function AgencyCard({
             <strong>Manager:</strong> {manager}
           </Typography>
         </Box>
-      </Box>
 
-      {/* Action Buttons */}
-      <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={onAddEstate}
-          sx={{
-            backgroundColor: "#62A1BA",
-            fontSize: "1rem",
-            fontWeight: 600,
-            px: 3,
-            py: 1.5,
-            borderRadius: 3,
-            "&:hover": {
-              backgroundColor: "#4a8ba3",
-            },
-          }}
-        >
-          Aggiungi Immobile
-        </Button>
+        {/* Action Buttons in alto a destra */}
+        <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
+          {onAddEstate && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={onAddEstate}
+              sx={{
+                backgroundColor: "#62A1BA",
+                fontSize: "1rem",
+                fontWeight: 600,
+                px: 3,
+                py: 1.5,
+                borderRadius: 3,
+                whiteSpace: "nowrap",
+                "&:hover": {
+                  backgroundColor: "#4a8ba3",
+                },
+              }}
+            >
+              Aggiungi Immobile
+            </Button>
+          )}
 
-        {onAddAgent && (
-          <Button
-            variant="outlined"
-            startIcon={<PersonAddIcon />}
-            onClick={onAddAgent}
-            sx={{
-              borderColor: "#62A1BA",
-              color: "#62A1BA",
-              fontSize: "1rem",
-              fontWeight: 600,
-              px: 3,
-              py: 1.5,
-              borderRadius: 3,
-              "&:hover": {
-                borderColor: "#4a8ba3",
-                color: "#4a8ba3",
-                backgroundColor: "rgba(98, 161, 186, 0.04)",
-              },
-            }}
-          >
-            Aggiungi Agente
-          </Button>
-        )}
+          {onAddAgent && (
+            <Button
+              variant="outlined"
+              startIcon={<PersonAddIcon />}
+              onClick={onAddAgent}
+              sx={{
+                borderColor: "#62A1BA",
+                color: "#62A1BA",
+                fontSize: "1rem",
+                fontWeight: 600,
+                px: 3,
+                py: 1.5,
+                borderRadius: 3,
+                whiteSpace: "nowrap",
+                "&:hover": {
+                  borderColor: "#4a8ba3",
+                  color: "#4a8ba3",
+                  backgroundColor: "rgba(98, 161, 186, 0.04)",
+                },
+              }}
+            >
+              Aggiungi Agente
+            </Button>
+          )}
+        </Box>
       </Box>
     </Box>
   );

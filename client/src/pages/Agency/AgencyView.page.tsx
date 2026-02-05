@@ -35,8 +35,10 @@ export default function AgencyView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
 
-  // Check if user is a manager
+  // Check if user is a manager or agent
   const isManager = role === Roles.MANAGER;
+  const isAgent = role === Roles.AGENT;
+  const canManageEstates = isManager || isAgent;
 
   const fetchAgencyData = async () => {
     if (!id) return;
@@ -172,7 +174,7 @@ export default function AgencyView() {
                   "Unknown Manager"
                 }
                 idAgency={Number(id) || 0}
-                onAddEstate={handleOpenModal}
+                onAddEstate={canManageEstates ? handleOpenModal : undefined}
                 onAddAgent={
                   isManager ? () => setIsCreateAgentModalOpen(true) : undefined
                 }
