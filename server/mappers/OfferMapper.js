@@ -19,10 +19,12 @@ export class OfferMapper {
 
   static toOfferDTO(offer) {
     return new OfferDTO({
-      id: offer.id,
+      idOffer: offer.idOffer,
+      idUser: offer.idUser,
+      idRealEstate: offer.idRealEstate,
       amount: offer.amount,
-      userName: offer.user?.name || "Esterno",
-      userSurname: offer.user?.surname || "",
+      userName: offer.User?.name || "Esterno",
+      userSurname: offer.User?.surname || "",
       status: offer.status,
       dateOffer: offer.dateOffer,
       inSistem: offer.inSistem,

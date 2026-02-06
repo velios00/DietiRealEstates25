@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogTitle,
@@ -9,24 +10,27 @@ import {
   TextField,
   Button,
   IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { getOffersByRealEstateId } from "../../../../services/OfferService";
+import {
+  getOffersByRealEstateId,
+  createCounterOffer,
+  updateCounterOfferStatus,
+  updateOfferStatus,
+} from "../../../../services/OfferService";
 import { Offer } from "../../../models/Offer.model";
+import OfferCard from "./OfferCard";
+import CounterOfferModal from "./CounterOfferModal";
+import { Roles } from "../../../enums/Roles.enum";
+import { useUser } from "../../../hooks/useUser";
+import toast from "react-hot-toast";
 
 interface OfferModalProps {
   open: boolean;
   onClose: () => void;
   estateId: number;
   estatePrice: number;
-  onSubmit: (offerPrice: number) => void;
+  onSubmit: (offerPrice: number) => Promise<void>;
 }
 
 export default function OfferModal({
@@ -36,31 +40,133 @@ export default function OfferModal({
   estatePrice,
   onSubmit,
 }: OfferModalProps) {
+  const userContext = useUser();
+  const navigate = useNavigate();
+  const isManagerOrAgent =
+    userContext?.role === Roles.MANAGER || userContext?.role === Roles.AGENT;
+  const currentUserId = userContext?.user?.idUser;
   const [offerPrice, setOfferPrice] = useState<string>("");
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [statusUpdatingId, setStatusUpdatingId] = useState<number | null>(null);
+  const [counterOfferOpen, setCounterOfferOpen] = useState(false);
+  const [counterOfferId, setCounterOfferId] = useState<number | null>(null);
+  const [counterSubmitting, setCounterSubmitting] = useState(false);
+  const [counterStatusUpdatingId, setCounterStatusUpdatingId] = useState<
+    number | null
+  >(null);
 
-  const handleSubmit = () => {
-    if (offerPrice && !isNaN(parseFloat(offerPrice))) {
-      onSubmit(parseFloat(offerPrice));
+  const handleSubmit = async () => {
+    if (!userContext?.user) {
+      toast.error("Devi accedere per proporre un'offerta.");
+      handleClose();
+      navigate("/login");
+      return;
+    }
+
+    if (!offerPrice || isNaN(parseFloat(offerPrice))) return;
+
+    const price = parseFloat(offerPrice);
+    setSubmitting(true);
+
+    try {
+      await onSubmit(price);
       setOfferPrice("");
+      // Ricarica le offerte per mostrare quella appena creata
+      await fetchOffers();
+    } catch (error) {
+      console.error("Errore nell'invio dell'offerta:", error);
+      toast.error("Errore nell'invio dell'offerta. Riprova.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const fetchOffers = useCallback(() => {
+  const handleStatusChange = async (
+    idOffer: number,
+    status: "accepted" | "rejected",
+  ) => {
+    if (!isManagerOrAgent) return;
+
+    setStatusUpdatingId(idOffer);
+    try {
+      await updateOfferStatus(idOffer, { status });
+      toast.success(
+        status === "accepted" ? "Offerta accettata." : "Offerta rifiutata.",
+      );
+      await fetchOffers();
+    } catch (error) {
+      console.error("Errore nell'aggiornamento dell'offerta:", error);
+      toast.error("Errore nell'aggiornamento dell'offerta. Riprova.");
+    } finally {
+      setStatusUpdatingId(null);
+    }
+  };
+
+  const handleOpenCounterOffer = (idOffer: number) => {
+    if (!isManagerOrAgent) return;
+    setCounterOfferId(idOffer);
+    setCounterOfferOpen(true);
+  };
+
+  const handleCloseCounterOffer = () => {
+    setCounterOfferOpen(false);
+    setCounterOfferId(null);
+  };
+
+  const handleSubmitCounterOffer = async (amount: number) => {
+    if (!counterOfferId) return;
+
+    setCounterSubmitting(true);
+    try {
+      await createCounterOffer(counterOfferId, { counterAmount: amount });
+      toast.success("Controfferta inviata.");
+      handleCloseCounterOffer();
+      await fetchOffers();
+    } catch (error) {
+      console.error("Errore nell'invio della controfferta:", error);
+      toast.error("Errore nell'invio della controfferta. Riprova.");
+    } finally {
+      setCounterSubmitting(false);
+    }
+  };
+
+  const handleCounterStatusChange = async (
+    idOffer: number,
+    status: "accepted" | "rejected",
+  ) => {
+    if (isManagerOrAgent) return;
+
+    setCounterStatusUpdatingId(idOffer);
+    try {
+      await updateCounterOfferStatus(idOffer, { status });
+      toast.success(
+        status === "accepted"
+          ? "Controfferta accettata."
+          : "Controfferta rifiutata.",
+      );
+      await fetchOffers();
+    } catch (error) {
+      console.error("Errore nell'aggiornamento della controfferta:", error);
+      toast.error("Errore nell'aggiornamento della controfferta. Riprova.");
+    } finally {
+      setCounterStatusUpdatingId(null);
+    }
+  };
+
+  const fetchOffers = useCallback(async () => {
     if (!estateId) return;
 
     setLoading(true);
-    getOffersByRealEstateId(estateId)
-      .then((response) => {
-        setOffers(response.data);
-      })
-      .catch((error) => {
-        console.error("Errore nel recupero delle offerte:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await getOffersByRealEstateId(estateId);
+      setOffers(response.data);
+    } catch (error) {
+      console.error("Errore nel recupero delle offerte:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [estateId]);
 
   useEffect(() => {
@@ -78,12 +184,12 @@ export default function OfferModal({
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="sm"
+      maxWidth="md"
       fullWidth
       slotProps={{
         paper: {
           sx: {
-            borderRadius: 2,
+            borderRadius: 10,
             boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
           },
         },
@@ -91,14 +197,17 @@ export default function OfferModal({
     >
       <DialogTitle
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          position: "relative",
+          textAlign: "center",
           borderBottom: "1px solid #e0e0e0",
           pb: 2,
         }}
       >
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+        <Typography
+          variant="h6"
+          component="span"
+          sx={{ fontWeight: 700, display: "block" }}
+        >
           Proponi Offerta
         </Typography>
         <IconButton
@@ -107,6 +216,10 @@ export default function OfferModal({
           sx={{
             color: "text.secondary",
             "&:hover": { bgcolor: "action.hover" },
+            position: "absolute",
+            right: 12,
+            top: "50%",
+            transform: "translateY(-50%)",
           }}
         >
           <CloseIcon />
@@ -138,164 +251,183 @@ export default function OfferModal({
         </Box>
 
         {/* Storico Offerte */}
-        {offers && offers.length > 0 && (
-          <Box sx={{ mb: 4 }}>
-            <Typography
-              variant="subtitle2"
-              sx={{
-                textAlign: "center",
-                fontWeight: 600,
-                color: "#62A1BA",
-                mb: 2,
-              }}
-            >
-              Storico Offerte
-            </Typography>
-            <TableContainer
-              sx={{
-                borderRadius: 1,
-                border: "1px solid #e0e0e0",
-                maxHeight: 300,
-              }}
-            >
-              <Table size="small" stickyHeader>
-                <TableHead sx={{ bgcolor: "#f5f5f5" }}>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: 600, fontSize: "0.85rem" }}>
-                      Utente
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{ fontWeight: 600, fontSize: "0.85rem" }}
-                    >
-                      Importo
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 600, fontSize: "0.85rem" }}>
-                      Stato
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {offers.map((offer) => (
-                    <TableRow key={offer.idOffer}>
-                      <TableCell sx={{ fontSize: "0.9rem" }}>
-                        {offer.userName} {offer.userSurname}
-                      </TableCell>
-                      <TableCell align="right" sx={{ fontSize: "0.9rem" }}>
-                        ${offer.amount.toLocaleString("it-IT")}
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={
-                            offer.status === "pending"
-                              ? "In Attesa"
-                              : offer.status === "accepted"
-                                ? "Accettata"
-                                : offer.status === "rejected"
-                                  ? "Rifiutata"
-                                  : "Controrapposta"
-                          }
-                          size="small"
-                          variant="outlined"
-                          sx={{
-                            bgcolor:
-                              offer.status === "pending"
-                                ? "#fff3e0"
-                                : offer.status === "accepted"
-                                  ? "#e8f5e9"
-                                  : offer.status === "rejected"
-                                    ? "#ffebee"
-                                    : "#e3f2fd",
-                            borderColor:
-                              offer.status === "pending"
-                                ? "#ff9800"
-                                : offer.status === "accepted"
-                                  ? "#4caf50"
-                                  : offer.status === "rejected"
-                                    ? "#f44336"
-                                    : "#2196f3",
-                            color:
-                              offer.status === "pending"
-                                ? "#ff9800"
-                                : offer.status === "accepted"
-                                  ? "#4caf50"
-                                  : offer.status === "rejected"
-                                    ? "#f44336"
-                                    : "#2196f3",
-                          }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        )}
-
-        {/* Sezione offerta */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 4, display: "flex", flexDirection: "column", gap: 2 }}>
           <Typography
             variant="subtitle2"
             sx={{
+              textAlign: "center",
               fontWeight: 600,
               color: "#62A1BA",
-              mb: 2,
-              textAlign: "center",
+              mb: 1,
             }}
           >
-            La tua Offerta
+            Storico Offerte
           </Typography>
-
-          <TextField
-            fullWidth
-            type="number"
-            value={offerPrice}
-            onChange={(e) => setOfferPrice(e.target.value)}
-            placeholder="Inserisci il tuo prezzo"
-            slotProps={{
-              input: {
-                inputProps: {
-                  step: "1000",
-                  min: "0",
-                },
-              },
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                fontSize: "1.6rem",
-                fontWeight: 600,
+          {offers && offers.length > 0 ? (
+            (isManagerOrAgent
+              ? offers
+              : offers.filter(
+                  (offer) =>
+                    currentUserId !== undefined &&
+                    offer.idUser === Number(currentUserId),
+                )
+            ).map((offer) => (
+              <Box
+                key={offer.idOffer}
+                sx={{ display: "flex", alignItems: "center", gap: 2 }}
+              >
+                <Box sx={{ flex: 1 }}>
+                  <OfferCard
+                    offer={offer}
+                    isManagerOrAgent={isManagerOrAgent}
+                  />
+                </Box>
+                {isManagerOrAgent && offer.status === "pending" && (
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      disabled={statusUpdatingId === offer.idOffer}
+                      onClick={() => handleOpenCounterOffer(offer.idOffer)}
+                      sx={{ textTransform: "none" }}
+                    >
+                      Controfferta
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      disabled={statusUpdatingId === offer.idOffer}
+                      onClick={() =>
+                        handleStatusChange(offer.idOffer, "rejected")
+                      }
+                      sx={{ textTransform: "none" }}
+                    >
+                      Rifiuta
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      disabled={statusUpdatingId === offer.idOffer}
+                      onClick={() =>
+                        handleStatusChange(offer.idOffer, "accepted")
+                      }
+                      sx={{ textTransform: "none" }}
+                    >
+                      Accetta
+                    </Button>
+                  </Box>
+                )}
+                {!isManagerOrAgent && offer.status === "countered" && (
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      disabled={counterStatusUpdatingId === offer.idOffer}
+                      onClick={() =>
+                        handleCounterStatusChange(offer.idOffer, "rejected")
+                      }
+                      sx={{ textTransform: "none" }}
+                    >
+                      Rifiuta
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      disabled={counterStatusUpdatingId === offer.idOffer}
+                      onClick={() =>
+                        handleCounterStatusChange(offer.idOffer, "accepted")
+                      }
+                      sx={{ textTransform: "none" }}
+                    >
+                      Accetta
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            ))
+          ) : (
+            <Typography
+              variant="body2"
+              sx={{
                 textAlign: "center",
-                "& input": {
-                  textAlign: "center",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#4a90a4",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#4a90a4",
-                },
-              },
-            }}
-          />
+                color: "#999",
+                py: 2,
+              }}
+            >
+              Nessuna offerta
+            </Typography>
+          )}
         </Box>
 
-        {/* Messaggio informativo */}
-        {offerPrice && !isNaN(parseFloat(offerPrice)) && (
-          <Typography
-            variant="caption"
-            sx={{
-              color:
-                parseFloat(offerPrice) >= estatePrice ? "#4caf50" : "#ff9800",
-              display: "block",
-              textAlign: "center",
-            }}
-          >
-            {parseFloat(offerPrice) >= estatePrice
-              ? "Offerta idonea"
-              : "Offerta inferiore al prezzo di partenza"}
-          </Typography>
+        {!isManagerOrAgent && (
+          <>
+            {/* Sezione offerta */}
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: 600,
+                  color: "#62A1BA",
+                  mb: 2,
+                  textAlign: "center",
+                }}
+              >
+                La tua Offerta
+              </Typography>
+
+              <TextField
+                fullWidth
+                type="number"
+                value={offerPrice}
+                onChange={(e) => setOfferPrice(e.target.value)}
+                placeholder="Inserisci il tuo prezzo"
+                slotProps={{
+                  input: {
+                    inputProps: {
+                      step: "1000",
+                      min: "0",
+                    },
+                  },
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2,
+                    fontSize: "1.6rem",
+                    fontWeight: 600,
+                    textAlign: "center",
+                    "& input": {
+                      textAlign: "center",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#4a90a4",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#4a90a4",
+                    },
+                  },
+                }}
+              />
+            </Box>
+
+            {/* Messaggio informativo */}
+            {offerPrice && !isNaN(parseFloat(offerPrice)) && (
+              <Typography
+                variant="caption"
+                sx={{
+                  color:
+                    parseFloat(offerPrice) <= estatePrice
+                      ? "#4caf50"
+                      : "#ff9800",
+                  display: "block",
+                  textAlign: "center",
+                }}
+              >
+                {parseFloat(offerPrice) <= estatePrice
+                  ? "Offerta idonea"
+                  : "Offerta superiore al prezzo di partenza"}
+              </Typography>
+            )}
+          </>
         )}
       </DialogContent>
 
@@ -317,28 +449,39 @@ export default function OfferModal({
         >
           Annulla
         </Button>
-        <Button
-          onClick={handleSubmit}
-          variant="contained"
-          disabled={!offerPrice || isNaN(parseFloat(offerPrice))}
-          sx={{
-            bgcolor: "#4a90a4",
-            textTransform: "none",
-            fontSize: "1rem",
-            borderRadius: 2,
-            px: 3,
-            "&:hover": {
-              bgcolor: "#3a7a94",
-            },
-            "&:disabled": {
-              bgcolor: "#ddd",
-              color: "#999",
-            },
-          }}
-        >
-          Proponi Offerta
-        </Button>
+        {!isManagerOrAgent && (
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            disabled={
+              !offerPrice || isNaN(parseFloat(offerPrice)) || submitting
+            }
+            sx={{
+              bgcolor: "#4a90a4",
+              textTransform: "none",
+              fontSize: "1rem",
+              borderRadius: 2,
+              px: 3,
+              "&:hover": {
+                bgcolor: "#3a7a94",
+              },
+              "&:disabled": {
+                bgcolor: "#ddd",
+                color: "#999",
+              },
+            }}
+          >
+            {submitting ? "Invio..." : "Proponi Offerta"}
+          </Button>
+        )}
       </DialogActions>
+      <CounterOfferModal
+        open={counterOfferOpen}
+        onClose={handleCloseCounterOffer}
+        onSubmit={handleSubmitCounterOffer}
+        submitting={counterSubmitting}
+        minAmount={estatePrice}
+      />
     </Dialog>
   );
 }

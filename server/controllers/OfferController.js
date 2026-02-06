@@ -1,7 +1,6 @@
 import { Offer, RealEstate, User } from "../models/DietiRealEstatesDB.js";
 import { OfferMapper } from "../mappers/OfferMapper.js";
 import { OfferService } from "../services/OfferService.js";
-import { OfferDTO } from "../DTOs/OfferDTO.js";
 
 export class OfferController {
   static async createOffer(req, res, next) {
@@ -109,6 +108,7 @@ export class OfferController {
       }
       const updatedOffer = await OfferService.updateCounterOfferStatus(
         Offer,
+        RealEstate,
         idOffer,
         status,
         req.userId,

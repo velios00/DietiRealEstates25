@@ -60,9 +60,7 @@ export default function EstateView() {
     if (!estate || !user) return;
 
     try {
-      // Cleaned up the non-existent variables (userRole, formatDisplayName)
-      await createOffer({
-        idRealEstate: estate.idRealEstate, // Using correct ID property
+      await createOffer(estate.idRealEstate, {
         amount: offerAmount,
         inSistem: true,
       });

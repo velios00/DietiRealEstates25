@@ -7,8 +7,21 @@ export class CreateOfferDTO {
 }
 
 export class OfferDTO {
-  constructor({ id, amount, userName, userSurname, status, dateOffer, inSistem, counterOfferAmount}) {
-    this.id = id;
+  constructor({
+    idOffer,
+    idUser,
+    idRealEstate,
+    amount,
+    userName,
+    userSurname,
+    status,
+    dateOffer,
+    inSistem,
+    counterOfferAmount,
+  }) {
+    this.idOffer = idOffer;
+    this.idUser = idUser;
+    this.idRealEstate = idRealEstate;
     this.amount = amount;
     this.userName = userName;
     this.userSurname = userSurname;
@@ -18,14 +31,13 @@ export class OfferDTO {
     this.counterOfferAmount = counterOfferAmount;
   }
 
-    get statusLabel() {
+  get statusLabel() {
     const labels = {
       pending: "In Attesa",
       accepted: "Accettata",
       rejected: "Rifiutata",
-      counter_offer: "Controproposta"
+      counter_offer: "Controproposta",
     };
     return labels[this.status] || this.status;
   }
-
 }

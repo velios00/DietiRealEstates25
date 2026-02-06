@@ -6,12 +6,7 @@ import {
 } from "../middleware/authorization.js";
 
 export const UserRouter = express.Router();
-UserRouter.put(
-  "/change",
-  enforceAuthentication,
-  UserController.changePassword,
-  //authorizeroles per ora non implementato (ogni utente può cambiare la propria password)
-);
+UserRouter.put("/change", enforceAuthentication, UserController.changePassword);
 
 UserRouter.get(
   "/",
@@ -22,12 +17,7 @@ UserRouter.get(
 
 UserRouter.get("/me", enforceAuthentication, UserController.getCurrentUser);
 
-UserRouter.get(
-  "/:idUser",
-  enforceAuthentication,
-  authorizeRoles("admin", "manager", "agent"),
-  UserController.getUserById,
-);
+UserRouter.get("/:idUser", enforceAuthentication, UserController.getUserById);
 
 UserRouter.get(
   "/admin/all",
