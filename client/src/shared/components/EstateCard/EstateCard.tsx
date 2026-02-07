@@ -17,6 +17,7 @@ import {
   ChevronRight,
 } from "@mui/icons-material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Interfaccia estesa per supportare sia listing semplici che con dati offerta
 export interface Listing {
@@ -42,6 +43,7 @@ interface ListingCardProps {
 export default function EstateCard({ listing }: ListingCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   const hasMultiplePhotos = listing.photos && listing.photos.length > 1;
 
@@ -76,6 +78,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
 
   return (
     <Card
+      onClick={() => navigate(`/estate/${listing.id}`)}
       sx={{
         width: 480,
         borderRadius: 6,
@@ -83,6 +86,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
+          cursor: "pointer",
           transform: "translateY(-5px)",
           boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
         },

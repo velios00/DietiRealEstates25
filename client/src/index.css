@@ -12,7 +12,9 @@
 
 .estate-popup .leaflet-popup-content {
   margin: 0;
-  width: auto !important;
+  width: 600px !important;
+  height: auto !important;
+  overflow: hidden;
 }
 
 .estate-popup .leaflet-popup-tip {
