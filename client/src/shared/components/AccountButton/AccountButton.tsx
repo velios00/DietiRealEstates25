@@ -72,9 +72,14 @@ export default function AccountButton() {
     }
   };
 
-  const handleDashboardClick = () => {
+  const handleAdminDashboardClick = () => {
     handleClose();
     navigate("/admin");
+  };
+
+  const handleUserDashboardClick = () => {
+    handleClose();
+    navigate("/user");
   };
 
   const renderRoleBasedMenuItem = () => {
@@ -108,7 +113,7 @@ export default function AccountButton() {
     if (userRole === "admin") {
       return (
         <MenuItem
-          onClick={handleDashboardClick}
+          onClick={handleAdminDashboardClick}
           sx={{
             color: "#62A1BA",
             fontWeight: 600,
@@ -126,7 +131,26 @@ export default function AccountButton() {
       );
     }
 
-    // Per user, non mostrare nulla
+    if (userRole === "user") {
+      return (
+        <MenuItem
+          onClick={handleUserDashboardClick}
+          sx={{
+            color: "#62A1BA",
+            fontWeight: 600,
+            py: 1.5,
+            "&:hover": {
+              backgroundColor: "rgba(98, 161, 186, 0.08)",
+            },
+          }}
+        >
+          <ListItemIcon>
+            <DashboardIcon sx={{ color: "#62A1BA" }} />
+          </ListItemIcon>
+          <ListItemText>Dashboard</ListItemText>
+        </MenuItem>
+      );
+    }
     return null;
   };
 

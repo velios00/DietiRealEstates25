@@ -29,7 +29,6 @@ export interface Listing {
   size: number;
   photos: string[];
   type: string;
-  // Campi opzionali per le offerte
   offerAmount?: number;
   offerStatus?: "pending" | "accepted" | "rejected" | "countered";
   counterOfferAmount?: number;

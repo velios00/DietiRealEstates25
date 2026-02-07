@@ -9,6 +9,7 @@ interface AgencyCardProps {
   logo: string;
   description: string;
   manager: string;
+  managerEmail?: string;
   idAgency: number;
   onAddEstate?: () => void;
   onAddAgent?: () => void;
@@ -19,6 +20,7 @@ export default function AgencyCard({
   logo,
   description,
   manager,
+  managerEmail,
   idAgency,
   onAddEstate,
   onAddAgent,
@@ -61,7 +63,8 @@ export default function AgencyCard({
             {description}
           </Typography>
           <Typography variant="body2" sx={{ color: "#7f8c8d" }}>
-            <strong>Manager:</strong> {manager}
+            <strong>Manager:</strong> {managerEmail && `${managerEmail} - `}
+            {manager}
           </Typography>
         </Box>
 
