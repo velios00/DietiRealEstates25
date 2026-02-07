@@ -18,6 +18,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 
+// Interfaccia estesa per supportare sia listing semplici che con dati offerta
 export interface Listing {
   id: number;
   title: string;
@@ -28,6 +29,10 @@ export interface Listing {
   size: number;
   photos: string[];
   type: string;
+  // Campi opzionali per le offerte
+  offerAmount?: number;
+  offerStatus?: "pending" | "accepted" | "rejected" | "countered";
+  counterOfferAmount?: number;
 }
 
 interface ListingCardProps {
@@ -53,6 +58,21 @@ export default function EstateCard({ listing }: ListingCardProps) {
       prev === listing.photos.length - 1 ? 0 : prev + 1,
     );
   };
+
+  // Funzione helper per ottenere colore e label dello stato dell'offerta
+  const getOfferStatusConfig = (status: string) => {
+    const configs = {
+      pending: { color: "#FFA726", label: "In Attesa" },
+      accepted: { color: "#66BB6A", label: "Accettata" },
+      rejected: { color: "#EF5350", label: "Rifiutata" },
+      countered: { color: "#42A5F5", label: "Controproposta" },
+    };
+    return configs[status as keyof typeof configs] || configs.pending;
+  };
+
+  const statusConfig = listing.offerStatus
+    ? getOfferStatusConfig(listing.offerStatus)
+    : null;
 
   return (
     <Card
@@ -104,6 +124,22 @@ export default function EstateCard({ listing }: ListingCardProps) {
             fontSize: "0.75rem",
           }}
         />
+        {/* Badge stato offerta - mostrato solo se presente */}
+        {statusConfig && (
+          <Chip
+            label={statusConfig.label}
+            size="small"
+            sx={{
+              position: "absolute",
+              top: 12,
+              left: 12,
+              backgroundColor: statusConfig.color,
+              color: "white",
+              fontWeight: 600,
+              fontSize: "0.75rem",
+            }}
+          />
+        )}
         {/* Frecce di navigazione */}
         {hasMultiplePhotos && isHovered && (
           <>
@@ -195,6 +231,37 @@ export default function EstateCard({ listing }: ListingCardProps) {
               </span>
             )}
           </Typography>
+
+          {/* Mostra dettagli offerta se presente */}
+          {listing.offerAmount && (
+            <Box sx={{ mt: 1, pt: 1, borderTop: "1px solid #eee" }}>
+              <Typography
+                variant="body2"
+                sx={{ color: "#7f8c8d", fontSize: "0.85rem" }}
+              >
+                La tua offerta:{" "}
+                <strong style={{ color: "#2c3e50" }}>
+                  € {listing.offerAmount.toLocaleString()}
+                </strong>
+              </Typography>
+              {listing.counterOfferAmount && (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#42A5F5",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    mt: 0.5,
+                  }}
+                >
+                  Controproposta:{" "}
+                  <strong>
+                    € {listing.counterOfferAmount.toLocaleString()}
+                  </strong>
+                </Typography>
+              )}
+            </Box>
+          )}
         </Box>
 
         {/* Colonna destra: Caratteristiche */}

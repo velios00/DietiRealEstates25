@@ -13,6 +13,13 @@ OfferRouter.post(
 );
 
 OfferRouter.get(
+  "/my-offers-estates",
+  enforceAuthentication,
+  authorizeRoles("user"),
+  OfferController.getMyOffersWithEstates,
+);
+
+OfferRouter.get(
   "/:idRealEstate",
   enforceAuthentication,
   OfferController.getOffersByRealEstateId,

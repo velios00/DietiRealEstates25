@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
   Box,
+  Button,
   Typography,
   IconButton,
   CircularProgress,
   Alert,
-  InputAdornment,
+  Divider,
 } from "@mui/material";
-import {
-  Close as CloseIcon,
-  Person as PersonIcon,
-  Email as EmailIcon,
-} from "@mui/icons-material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import { CreateAgent } from "../../models/Agent.model";
+import AgentBasicInfoSection from "./CreateAgentModalSections/AgentBasicInfoSection";
+import AgentNoteSection from "./CreateAgentModalSections/AgentNoteSection";
 
 interface CreateAgentModalProps {
   open: boolean;
@@ -125,13 +119,15 @@ export default function CreateAgentModal({
       fullWidth
       maxWidth="sm"
       scroll="paper"
-      PaperProps={{
-        sx: {
-          borderRadius: 5,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          maxHeight: "90vh",
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 5,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            maxHeight: "90vh",
+          },
         },
       }}
     >
@@ -156,6 +152,7 @@ export default function CreateAgentModal({
         <Box width={40} />
       </Box>
 
+      {/* CONTENUTO SCROLLABILE */}
       <Box sx={{ p: 3, flex: "1 1 auto", overflowY: "auto" }}>
         {submitError && (
           <Alert
@@ -168,128 +165,27 @@ export default function CreateAgentModal({
         )}
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          {/* Campo Email */}
-          <TextField
-            fullWidth
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
-            disabled={loading}
-            required
-            autoComplete="off"
-            autoFocus
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon sx={{ color: "#62A1BA" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                "&:hover fieldset": {
-                  borderColor: "#62A1BA",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#62A1BA",
-                  borderWidth: 2,
-                },
-              },
-            }}
-          />
-
-          {/* Campo Nome */}
-          <TextField
-            fullWidth
-            label="Nome"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            error={!!errors.name}
-            helperText={errors.name}
-            disabled={loading}
-            required
-            autoComplete="off"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: "#62A1BA" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                "&:hover fieldset": {
-                  borderColor: "#62A1BA",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#62A1BA",
-                  borderWidth: 2,
-                },
-              },
-            }}
-          />
-
-          {/* Campo Cognome */}
-          <TextField
-            fullWidth
-            label="Cognome"
-            name="surname"
-            value={formData.surname}
-            onChange={handleChange}
-            error={!!errors.surname}
-            helperText={errors.surname}
-            disabled={loading}
-            required
-            autoComplete="off"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: "#62A1BA" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                "&:hover fieldset": {
-                  borderColor: "#62A1BA",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#62A1BA",
-                  borderWidth: 2,
-                },
-              },
-            }}
-          />
-
-          {/* Nota informativa */}
-          <Box
-            sx={{
-              mt: 1,
-              p: 2,
-              backgroundColor: "#f0f7fa",
-              borderRadius: 2,
-              borderLeft: "4px solid #62A1BA",
-            }}
-          >
-            <Typography
-              variant="body2"
-              color="#5d6d7e"
-              sx={{ display: "flex", alignItems: "flex-start" }}
-            >
-              <Box component="span" sx={{ fontWeight: "bold", mr: 0.5 }}>
-                Nota:
-              </Box>
-              Una password temporanea verrà generata automaticamente e sarà
-              inviata via email all'agente.
+          {/* Sezione Informazioni Base */}
+          <Box>
+            <Typography variant="subtitle1" fontWeight={600} mb={2}>
+              Informazioni Agente
             </Typography>
+            <AgentBasicInfoSection
+              formData={formData}
+              errors={errors}
+              loading={loading}
+              onFieldChange={handleChange}
+            />
+          </Box>
+
+          <Divider />
+
+          {/* Sezione Nota */}
+          <Box>
+            <Typography variant="subtitle1" fontWeight={600} mb={2}>
+              Informazioni Aggiuntive
+            </Typography>
+            <AgentNoteSection />
           </Box>
         </Box>
       </Box>

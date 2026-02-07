@@ -18,6 +18,7 @@ export class OfferDTO {
     dateOffer,
     inSistem,
     counterOfferAmount,
+    realEstate,
   }) {
     this.idOffer = idOffer;
     this.idUser = idUser;
@@ -29,6 +30,7 @@ export class OfferDTO {
     this.dateOffer = dateOffer;
     this.inSistem = inSistem;
     this.counterOfferAmount = counterOfferAmount;
+    this.realEstate = realEstate;
   }
 
   get statusLabel() {

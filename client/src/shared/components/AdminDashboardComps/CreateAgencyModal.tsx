@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import {
+  Alert,
   Dialog,
   Box,
   Button,
@@ -257,12 +258,14 @@ export default function CreateAgencyModal({
                 name="agencyName"
                 value={formData.agencyName}
                 onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon sx={{ color: "#62A1BA" }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <BusinessIcon sx={{ color: "#62A1BA" }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
@@ -276,12 +279,14 @@ export default function CreateAgencyModal({
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LocationIcon sx={{ color: "#62A1BA" }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocationIcon sx={{ color: "#62A1BA" }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
@@ -295,12 +300,14 @@ export default function CreateAgencyModal({
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PhoneIcon sx={{ color: "#62A1BA" }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIcon sx={{ color: "#62A1BA" }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
@@ -314,12 +321,14 @@ export default function CreateAgencyModal({
                 name="url"
                 value={formData.url}
                 onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LanguageIcon sx={{ color: "#62A1BA" }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LanguageIcon sx={{ color: "#62A1BA" }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
@@ -343,15 +352,17 @@ export default function CreateAgencyModal({
               name="description"
               value={formData.description}
               onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    sx={{ mt: 1, alignSelf: "flex-start" }}
-                  >
-                    <DescriptionIcon sx={{ color: "#62A1BA" }} />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      sx={{ mt: 1, alignSelf: "flex-start" }}
+                    >
+                      <DescriptionIcon sx={{ color: "#62A1BA" }} />
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
@@ -433,12 +444,14 @@ export default function CreateAgencyModal({
                 label="Nome Manager"
                 value={formData.manager.name}
                 onChange={(e) => handleManagerChange("name", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonIcon sx={{ color: "#62A1BA" }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon sx={{ color: "#62A1BA" }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
@@ -451,12 +464,14 @@ export default function CreateAgencyModal({
                 label="Cognome Manager"
                 value={formData.manager.surname}
                 onChange={(e) => handleManagerChange("surname", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonIcon sx={{ color: "#62A1BA" }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon sx={{ color: "#62A1BA" }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
@@ -470,12 +485,14 @@ export default function CreateAgencyModal({
                 type="email"
                 value={formData.manager.email}
                 onChange={(e) => handleManagerChange("email", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailIcon sx={{ color: "#62A1BA" }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon sx={{ color: "#62A1BA" }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root": {

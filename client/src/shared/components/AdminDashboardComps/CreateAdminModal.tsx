@@ -125,13 +125,15 @@ export default function CreateAdminModal({
       fullWidth
       maxWidth="sm"
       scroll="paper"
-      PaperProps={{
-        sx: {
-          borderRadius: 5,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          maxHeight: "90vh",
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 5,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            maxHeight: "90vh",
+          },
         },
       }}
     >
@@ -183,12 +185,14 @@ export default function CreateAdminModal({
             required
             autoComplete="off"
             autoFocus
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon sx={{ color: "#62A1BA" }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon sx={{ color: "#62A1BA" }} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -216,12 +220,14 @@ export default function CreateAdminModal({
             disabled={loading}
             required
             autoComplete="off"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: "#62A1BA" }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon sx={{ color: "#62A1BA" }} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -249,12 +255,14 @@ export default function CreateAdminModal({
             disabled={loading}
             required
             autoComplete="off"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: "#62A1BA" }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon sx={{ color: "#62A1BA" }} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {

@@ -133,8 +133,15 @@ export default function ChangePasswordModal({
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: { borderRadius: 3 },
+      slotProps={{
+        paper: {
+          elevation: 8,
+          sx: {
+            borderRadius: 4,
+            padding: 2,
+            backgroundColor: "grey.100",
+          },
+        },
       }}
     >
       <DialogTitle

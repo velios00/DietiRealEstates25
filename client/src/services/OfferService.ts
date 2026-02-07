@@ -45,3 +45,7 @@ export function createExternalOffer(
 ) {
   return API.post(`/offers/sendOffer/non-sistem`, data);
 }
+
+export function getMyOffersWithEstates() {
+  return API.get(`/offers/my-offers-estates`);
+}

@@ -28,3 +28,31 @@ export function mapEstateToListing(estate: Estate): Listing {
     type: estate.type ?? "Vendita",
   };
 }
+
+export function mapOfferToListing(offer: any): Listing {
+  const estate = offer.realEstate;
+
+  if (!estate) {
+    throw new Error("RealEstate data is missing from offer");
+  }
+
+  const fullAddress = estate.place?.address || estate.place?.city || "";
+  const addressWithoutPostalCode = fullAddress
+    ? cleanAddress(fullAddress)
+    : estate.place?.city || "";
+
+  return {
+    id: estate.idRealEstate,
+    title: estate.title,
+    address: addressWithoutPostalCode,
+    price: estate.price,
+    rooms: estate.nRooms,
+    baths: estate.nBathrooms,
+    size: estate.size,
+    photos: estate.photos && estate.photos.length > 0 ? estate.photos : [""],
+    type: estate.type ?? "Vendita",
+    offerAmount: offer.amount,
+    offerStatus: offer.status,
+    counterOfferAmount: offer.counterOfferAmount || undefined,
+  };
+}

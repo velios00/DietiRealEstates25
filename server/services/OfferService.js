@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+
 export class OfferService {
   static async createOffer(Offer, RealEstate, dto, userId) {
     const estate = await RealEstate.findByPk(dto.idRealEstate);
@@ -159,6 +160,26 @@ export class OfferService {
     const offers = await Offer.findAll({
       where: { idUser: userId },
       include: [{ model: User, attributes: ["name", "surname"] }],
+      order: [["dateOffer", "DESC"]],
+    });
+    return offers;
+  }
+
+  static async getMyOffersWithEstates(Offer, userId, User, RealEstate, Place) {
+    const offers = await Offer.findAll({
+      where: { idUser: userId },
+      include: [
+        { model: User, attributes: ["name", "surname"] },
+        {
+          model: RealEstate,
+          include: [
+            {
+              model: Place,
+              attributes: ["idPlace", "city", "address"],
+            },
+          ],
+        },
+      ],
       order: [["dateOffer", "DESC"]],
     });
     return offers;

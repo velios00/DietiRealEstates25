@@ -14,19 +14,18 @@ import {
 import { Lock as LockIcon } from "@mui/icons-material";
 import { useUser } from "../../shared/hooks/useUser";
 import { getCurrentUser } from "../../services/UserService";
-import { searchEstates } from "../../services/EstateService";
+import { getMyOffersWithEstates } from "../../services/OfferService";
 import { User } from "../../shared/models/User.model";
-import { Estate } from "../../shared/models/Estate.model";
 import ChangePasswordModal from "../../shared/components/ChangePasswordModal/ChangePasswordModal";
 import EstateCard from "../../shared/components/EstateCard/EstateCard";
-import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
+import { mapOfferToListing } from "../../mappers/EstateToListing.mapper";
 
 export default function UserDashboard() {
   const { user: authUser } = useUser();
   const [userData, setUserData] = useState<User | null>(null);
-  const [estates, setEstates] = useState<Estate[]>([]);
+  const [offers, setOffers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [estatesLoading, setEstatesLoading] = useState(false);
+  const [offersLoading, setOffersLoading] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -51,28 +50,23 @@ export default function UserDashboard() {
     }
   }, []);
 
-  const fetchEstates = async () => {
-    setEstatesLoading(true);
+  const fetchMyOffers = async () => {
+    setOffersLoading(true);
     try {
-      const response = await searchEstates({
-        filters: {},
-        page: 1,
-        limit: 10,
-        orderBy: "createdAt",
-      });
-      setEstates(response.data?.results || response.data || []);
+      const response = await getMyOffersWithEstates();
+      setOffers(response.data || []);
     } catch (err) {
-      console.log("Errore nel caricamento degli immobili:", err);
-      setEstates([]);
+      console.log("Errore nel caricamento delle offerte:", err);
+      setOffers([]);
     } finally {
-      setEstatesLoading(false);
+      setOffersLoading(false);
     }
   };
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        await Promise.allSettled([fetchUserData(), fetchEstates()]);
+        await Promise.allSettled([fetchUserData(), fetchMyOffers()]);
       } catch (err) {
         console.log("Errore nel caricamento dei dati della pagina:", err);
       }
@@ -202,9 +196,9 @@ export default function UserDashboard() {
             </Box>
           )}
 
-          {/* SEZIONE INFERIORE: Immobili */}
+          {/* SEZIONE INFERIORE: Le Mie Offerte */}
           <Box sx={{ p: 4, position: "relative", minHeight: "200px" }}>
-            {estatesLoading && (
+            {offersLoading && (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <CircularProgress sx={{ color: "#62A1BA" }} />
               </Box>
@@ -214,28 +208,33 @@ export default function UserDashboard() {
               variant="h5"
               sx={{ fontWeight: 700, mb: 4, color: "#2c3e50" }}
             >
-              Immobili disponibili ({estates.length}){" "}
-              {/*DA MODIFICARE
-              SE USER: IMMOBILI A CUI HAI FATTO OFFERTE
-              SE AGENT/MANAGER: IMMOBILI CREATI DA TE*/}
+              Le Mie Offerte ({offers.length})
             </Typography>
 
-            {estates.length === 0 && !estatesLoading ? (
+            {offers.length === 0 && !offersLoading ? (
               <Typography
                 variant="body1"
                 color="text.secondary"
                 textAlign="center"
                 py={4}
               >
-                Nessun immobile disponibile al momento.
+                Non hai ancora fatto offerte su nessun immobile.
               </Typography>
             ) : (
               <Grid container spacing={4}>
-                {estates.map((estate) => (
-                  <Grid key={estate.idEstate} size={{ xs: 12, sm: 6, md: 6 }}>
-                    <EstateCard listing={mapEstateToListing(estate)} />
-                  </Grid>
-                ))}
+                {offers.map((offer) => {
+                  try {
+                    const listing = mapOfferToListing(offer);
+                    return (
+                      <Grid key={offer.idOffer} size={{ xs: 12, sm: 6, md: 6 }}>
+                        <EstateCard listing={listing} />
+                      </Grid>
+                    );
+                  } catch (error) {
+                    console.error("Errore nel mapping dell'offerta:", error);
+                    return null;
+                  }
+                })}
               </Grid>
             )}
           </Box>

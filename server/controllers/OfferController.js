@@ -1,4 +1,9 @@
-import { Offer, RealEstate, User } from "../models/DietiRealEstatesDB.js";
+import {
+  Offer,
+  RealEstate,
+  User,
+  Place,
+} from "../models/DietiRealEstatesDB.js";
 import { OfferMapper } from "../mappers/OfferMapper.js";
 import { OfferService } from "../services/OfferService.js";
 
@@ -168,6 +173,24 @@ export class OfferController {
     try {
       const offers = await OfferService.getMyOffers(Offer, req.userId, User);
       const offersDTO = offers.map((offer) => OfferMapper.toOfferDTO(offer));
+      res.status(200).json(offersDTO);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getMyOffersWithEstates(req, res, next) {
+    try {
+      const offers = await OfferService.getMyOffersWithEstates(
+        Offer,
+        req.userId,
+        User,
+        RealEstate,
+        Place,
+      );
+      const offersDTO = offers.map((offer) =>
+        OfferMapper.toOfferDTOWithEstate(offer),
+      );
       res.status(200).json(offersDTO);
     } catch (err) {
       next(err);
