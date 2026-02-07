@@ -50,7 +50,13 @@ export const router = createBrowserRouter([
       },
       {
         path: "/user",
-        element: <UserDashboard />,
+        element: (
+          <AuthGuard
+            allowedRoles={[Roles.USER, Roles.ADMIN, Roles.AGENT, Roles.MANAGER]}
+          >
+            <UserDashboard />
+          </AuthGuard>
+        ),
       },
     ],
   },
