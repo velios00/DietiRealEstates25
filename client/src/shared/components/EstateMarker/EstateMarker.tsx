@@ -4,8 +4,9 @@ import { cleanAddress } from "../../../mappers/EstateToListing.mapper";
 
 interface EstateMarkerProps {
   estate: {
-    idEstate: number;
-    id: number;
+    idRealEstate?: number;
+    idEstate?: number;
+    id?: number;
     title: string;
     price: number;
     address?: string;
@@ -27,6 +28,9 @@ interface EstateMarkerProps {
 export default function EstateMarker({ estate }: EstateMarkerProps) {
   if (!estate?.place?.lat || !estate?.place?.lon) return null;
 
+  const listingId = estate.idRealEstate ?? estate.idEstate ?? estate.id;
+  if (!listingId) return null;
+
   const position: [number, number] = [
     parseFloat(estate.place.lat as string),
     parseFloat(estate.place.lon as string),
@@ -34,19 +38,22 @@ export default function EstateMarker({ estate }: EstateMarkerProps) {
 
   // Mappare i dati al formato Listing compatto
   const listing: Listing = {
-    id: estate.id,
+    id: listingId,
     title: estate.title,
     address: cleanAddress(
       estate.place.address || estate.address || estate.place.city,
     ),
     price: estate.price,
+    rooms: estate.nRooms,
+    baths: estate.nBathrooms,
+    size: estate.size,
     photos: estate.photos || [],
     type: estate.type,
   };
 
   return (
     <Marker position={position}>
-      <Popup maxWidth={420} className="estate-popup">
+      <Popup className="estate-popup">
         <EstateCardCompact listing={listing} />
       </Popup>
     </Marker>

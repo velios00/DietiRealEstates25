@@ -1,4 +1,10 @@
-import { Box, CircularProgress, Pagination, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Divider,
+  Pagination,
+  Typography,
+} from "@mui/material";
 import EstateCard, { Listing } from "../../EstateCard/EstateCard";
 
 interface SearchResultsProps {
@@ -28,7 +34,14 @@ export default function SearchResults(props: SearchResultsProps) {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box
+      sx={{
+        p: 3,
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {/* Header risultati */}
       <Box sx={{ mb: 4 }}>
         <Typography
@@ -46,15 +59,18 @@ export default function SearchResults(props: SearchResultsProps) {
           sx={{
             color: "#7f8c8d",
             fontSize: "1.1rem",
+            textAlign: "center",
           }}
         >
           {props.totalResults} risultati
         </Typography>
       </Box>
-
+      <Divider sx={{ width: "100%", mb: 4 }} />
       {/* Lista verticale di annunci */}
       {props.listings.length === 0 ? (
-        <Typography>Nessun risultato trovato</Typography>
+        <Typography sx={{ textAlign: "center" }}>
+          Nessun risultato trovato
+        </Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           {props.listings.map((listing) => (
