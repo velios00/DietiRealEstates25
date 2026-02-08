@@ -167,14 +167,14 @@ export default function FiltersModal({
 
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
               <Chip
-                label={`${localFilters.radius || 10} km`}
+                label={`${localFilters.radius || 5} km`}
                 variant="outlined"
                 sx={{ borderColor: "#62A1BA", color: "#000000" }}
               />
             </Box>
 
             <Slider
-              value={localFilters.radius || 10}
+              value={localFilters.radius || 5}
               onChange={(_, value) =>
                 handleFilterChange("radius", value as number)
               }

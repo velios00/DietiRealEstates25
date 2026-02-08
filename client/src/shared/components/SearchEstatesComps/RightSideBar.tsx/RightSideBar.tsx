@@ -32,7 +32,7 @@ export default function RightSidebar({
       ...filters,
       lat: location.lat,
       lon: location.lon,
-      radius: filters.radius || 10, // Default 10 km se non specificato
+      radius: filters.radius || 5, // Default 5 km se non specificato
     });
   };
 
@@ -94,6 +94,9 @@ export default function RightSidebar({
             filters.lat && filters.lon
               ? [parseFloat(filters.lat), parseFloat(filters.lon)]
               : [40.8522, 14.2441] // Napoli se nessune coordinate specificate
+          }
+          radiusKm={
+            filters.lat && filters.lon ? filters.radius || 5 : undefined
           }
         />
       </Box>

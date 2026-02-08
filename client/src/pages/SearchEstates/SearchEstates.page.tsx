@@ -34,7 +34,7 @@ export default function SearchEstate() {
         city,
         lat,
         lon,
-        radius: radius && !Number.isNaN(radius) ? radius : 10,
+        radius: radius && !Number.isNaN(radius) ? radius : 5,
       };
     }
 
@@ -49,7 +49,6 @@ export default function SearchEstate() {
   const [totalResults, setTotalResults] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [radius, setRadius] = useState<number>(5);
 
   // Inizializza i filtri quando la pagina viene raggiunta
   useEffect(() => {

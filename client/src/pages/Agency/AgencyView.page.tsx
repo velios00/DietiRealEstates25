@@ -204,9 +204,13 @@ export default function AgencyView() {
                 Nessun immobile disponibile per questa agenzia.
               </Typography>
             ) : (
-              <Grid container spacing={4}>
+              <Grid container spacing={4} justifyContent="center">
                 {estates.map((estate) => (
-                  <Grid key={estate.idEstate} size={{ xs: 12, sm: 6, md: 6 }}>
+                  <Grid
+                    key={estate.idEstate}
+                    size={{ xs: 12, sm: 6, md: 6 }}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
                     <EstateCard listing={mapEstateToListing(estate)} />
                   </Grid>
                 ))}

@@ -1,6 +1,6 @@
 import "leaflet/dist/leaflet.css";
 import { LatLngTuple } from "leaflet";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Circle } from "react-leaflet";
 import { Box } from "@mui/material";
 import { Estate } from "../../models/Estate.model";
 import { useEffect } from "react";
@@ -19,11 +19,18 @@ interface MapViewProps {
   estates: Estate[];
   center?: LatLngTuple;
   isLoading?: boolean;
+  radiusKm?: number;
 }
 
-export default function MapView({ estates, center, isLoading }: MapViewProps) {
+export default function MapView({
+  estates,
+  center,
+  isLoading,
+  radiusKm,
+}: MapViewProps) {
   const defaultCenter: LatLngTuple = [51.505, -0.09];
   const mapCenter = center || defaultCenter;
+  const radiusMeters = radiusKm ? radiusKm * 1000 : undefined;
   return (
     <Box
       sx={{
@@ -51,6 +58,17 @@ export default function MapView({ estates, center, isLoading }: MapViewProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
+        {radiusMeters && (
+          <Circle
+            center={mapCenter}
+            radius={radiusMeters}
+            pathOptions={{
+              color: "#62A1BA",
+              fillColor: "#62A1BA",
+              fillOpacity: 0.15,
+            }}
+          />
+        )}
         {estates.map((estate) => (
           <EstateMarker
             key={estate.idRealEstate || estate.idEstate || estate.id}
