@@ -1,4 +1,4 @@
-import { geoCodeAddress, getPOIs } from "../utils/geoapify.js";
+import { geoCodeAddress, getPOIs } from "../config/geoapify.js";
 import { ImageService } from "./ImageService.js";
 import { Op } from "sequelize";
 

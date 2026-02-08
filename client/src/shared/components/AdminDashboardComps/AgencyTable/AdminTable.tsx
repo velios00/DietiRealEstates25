@@ -23,10 +23,10 @@ import {
   LocationOn as LocationIcon,
   Business as BusinessIcon,
 } from "@mui/icons-material";
-import { AgencyResponse } from "../../../models/Agency.model";
+import { Agency } from "../../../models/Agency.model";
 
 interface AgencyTableProps {
-  agencies: AgencyResponse[];
+  agencies: Agency[];
   loading: boolean;
 }
 

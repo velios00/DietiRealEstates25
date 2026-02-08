@@ -8,16 +8,15 @@ import {
   TableRow,
   Paper,
   Avatar,
-  Chip,
   Typography,
   Box,
   CircularProgress,
 } from "@mui/material";
 import {
-  Email as EmailIcon,
   Phone as PhoneIcon,
   LocationOn as LocationIcon,
   Business as BusinessIcon,
+  Email as EmailIcon,
 } from "@mui/icons-material";
 import { Agency } from "../../../models/Agency.model";
 import { useEffect } from "react";
@@ -33,12 +32,9 @@ export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
       console.log("DEBUG - Prima agenzia:", {
         agencyName: agencies[0].agencyName,
         idManager: agencies[0].idManager,
-        managerName: agencies[0].managerName,
         manager: agencies[0].manager,
         hasManager: !!agencies[0].manager,
-        managerKeys: agencies[0].manager
-          ? Object.keys(agencies[0].manager)
-          : [],
+        managerEmail: agencies[0].manager?.email,
       });
     }
   }, [agencies]);
@@ -79,7 +75,7 @@ export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
       component={Paper}
       sx={{
         "& .MuiTableCell-root": {
-          fontSize: "1.05rem", // Dimensione base aumentata
+          fontSize: "1.05rem",
         },
         "& .MuiTypography-body1": {
           fontSize: "1.1rem",
@@ -139,15 +135,26 @@ export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
               </TableCell>
               <TableCell>
                 <Box>
-                  <Typography variant="body1">{agency.managerName}</Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    display="flex"
-                    alignItems="center"
-                  >
-                    {agency.manager?.email}
+                  <Typography variant="body1">
+                    {agency.manager
+                      ? `${agency.manager.name} ${agency.manager.surname}`
+                      : "N/A"}
                   </Typography>
+                  {agency.manager?.email && (
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      display="flex"
+                      alignItems="center"
+                      sx={{ mt: 0.5 }}
+                    >
+                      <EmailIcon
+                        fontSize="small"
+                        sx={{ mr: 0.5, fontSize: 14 }}
+                      />
+                      {agency.manager.email}
+                    </Typography>
+                  )}
                 </Box>
               </TableCell>
               <TableCell>

@@ -1,5 +1,5 @@
 import randomatic from "randomatic";
-import { EmailTemplates } from "../utils/mailer.js";
+import { EmailTemplates } from "../config/mailer.js";
 import { ImageService } from "./ImageService.js";
 
 export class AgencyService {

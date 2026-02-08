@@ -1,6 +1,7 @@
 import { CreateAgencyDTO } from "../DTOs/AgencyDTO.js";
 import { createManagerDTO } from "../DTOs/ManagerDTO.js";
 import { AgencyDTO } from "../DTOs/AgencyDTO.js";
+
 export class AgencyMapper {
   static toCreateAgencyDTO(body) {
     const managerDTO = new createManagerDTO({
@@ -20,6 +21,17 @@ export class AgencyMapper {
   }
 
   static agencyToDTO(agency) {
+    // Estrai i dati del manager se presenti
+    const managerData = agency.Manager?.User
+      ? {
+          idUser: agency.Manager.User.idUser,
+          email: agency.Manager.User.email,
+          name: agency.Manager.User.name,
+          surname: agency.Manager.User.surname,
+          role: agency.Manager.User.role,
+        }
+      : null;
+
     return new AgencyDTO({
       idAgency: agency.idAgency,
       agencyName: agency.agencyName,
@@ -28,13 +40,8 @@ export class AgencyMapper {
       profileImage: agency.profileImage,
       phoneNumber: agency.phoneNumber,
       url: agency.url,
-
       idManager: agency.Manager ? agency.Manager.idManager : null,
-
-      managerName:
-        agency.Manager && agency.Manager.User
-          ? `${agency.Manager.User.name} ${agency.Manager.User.surname}`
-          : null,
+      manager: managerData,
     });
   }
 

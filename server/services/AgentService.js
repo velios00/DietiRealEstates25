@@ -1,5 +1,5 @@
 import randomatic from "randomatic";
-import { EmailTemplates } from "../utils/mailer.js";
+import { EmailTemplates } from "../config/mailer.js";
 
 export class AgentService {
   static async createAgent(User, Agent, Manager, ManagerId, dto) {

@@ -20,12 +20,11 @@ import { CreateAgent } from "../../shared/models/Agent.model";
 import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
 import CreateEstateModal from "../../shared/components/CreateEstateModal/CreateEstateModal";
 import { toast } from "react-hot-toast";
-import { useUser } from "../../shared/hooks/useUser";
-import { Roles } from "../../shared/enums/Roles.enum";
+import { useIsAgencyUser } from "../../shared/hooks/useIsAgencyUser";
 
 export default function AgencyView() {
   const { id } = useParams<{ id: string }>();
-  const { role } = useUser();
+  const { isAgencyUser, isManager, isAgent } = useIsAgencyUser();
   const [estates, setEstates] = useState<Estate[]>([]);
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,10 +34,8 @@ export default function AgencyView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
 
-  // Check if user is a manager or agent
-  const isManager = role === Roles.MANAGER;
-  const isAgent = role === Roles.AGENT;
-  const canManageEstates = isManager || isAgent;
+  // canManageEstates is true if user is manager or agent
+  const canManageEstates = isAgencyUser;
 
   const fetchAgencyData = async () => {
     if (!id) return;
@@ -169,9 +166,9 @@ export default function AgencyView() {
                 logo={agency.profileImage || "https://via.placeholder.com/150"}
                 description={agency.description || "No description available"}
                 manager={
-                  agency.managerName ||
-                  agency.manager?.name ||
-                  "Unknown Manager"
+                  agency.manager
+                    ? `${agency.manager.name} ${agency.manager.surname}`
+                    : "Unknown Manager"
                 }
                 idAgency={Number(id) || 0}
                 onAddEstate={canManageEstates ? handleOpenModal : undefined}

@@ -28,7 +28,7 @@ export class AgencyDTO {
     profileImage,
     phoneNumber,
     url,
-    managerName,
+    manager,
   }) {
     this.idAgency = idAgency;
     this.agencyName = agencyName;
@@ -38,6 +38,6 @@ export class AgencyDTO {
     this.phoneNumber = phoneNumber;
     this.url = url;
     this.idManager = idManager;
-    this.managerName = managerName;
+    this.manager = manager;
   }
 }

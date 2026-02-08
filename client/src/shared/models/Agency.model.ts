@@ -10,6 +10,15 @@ export interface CreateAgency {
   manager: CreateManager;
 }
 
+// Dati del manager inclusi nell'Agency
+export interface ManagerData {
+  idUser: string;
+  email: string;
+  name: string;
+  surname: string;
+  role: string;
+}
+
 // Risposta che arriva dal backend per le agenzie
 export interface Agency {
   idAgency: string;
@@ -20,10 +29,9 @@ export interface Agency {
   phoneNumber: string;
   url: string;
   idManager?: string;
-  managerName?: string;
   createdAt?: string;
   updatedAt?: string;
-  manager?: ManagerResponse;
+  manager?: ManagerData;
 }
 
 export interface CreateAgencyResponse {

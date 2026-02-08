@@ -1,4 +1,4 @@
-import cloudinary from "../utils/cloudinary.js";
+import cloudinary from "../config/cloudinary.js";
 
 export class ImageService {
   static async uploadImage(file) {
@@ -18,7 +18,7 @@ export class ImageService {
               return reject(error);
             }
             resolve(result.secure_url);
-          }
+          },
         )
         .end(file.buffer);
     });
