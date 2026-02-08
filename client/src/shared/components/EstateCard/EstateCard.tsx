@@ -43,6 +43,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+  const isRent = listing.type?.toLowerCase() === "affitto";
 
   const hasMultiplePhotos = listing.photos && listing.photos.length > 1;
 
@@ -228,7 +229,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
             }}
           >
             € {listing.price.toLocaleString()}
-            {listing.type === "Affitto" && (
+            {isRent && (
               <span style={{ fontSize: "0.85rem", marginLeft: "4px" }}>
                 /mese
               </span>

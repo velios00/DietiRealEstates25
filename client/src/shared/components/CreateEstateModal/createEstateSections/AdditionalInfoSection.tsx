@@ -16,23 +16,39 @@ export default function AdditionalInfoSection({
   energyClasses,
   onFieldChange,
 }: AdditionalInfoSectionProps) {
+  const floorOptions = [
+    { value: "0", label: "Piano Terra" },
+    { value: "1", label: "Piano intermedio" },
+    { value: "2", label: "Ultimo piano" },
+  ];
+
   return (
     <Box sx={{ display: "flex", gap: 2 }}>
       {/* Piano */}
       <TextField
+        select
         fullWidth
         label="Piano"
         name="floor"
-        type="number"
         value={formData.floor}
         onChange={onFieldChange}
         size="small"
+        SelectProps={{
+          native: true,
+        }}
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: 3,
           },
         }}
-      />
+      >
+        <option value="">Seleziona</option>
+        {floorOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </TextField>
 
       {/* Classe Energetica */}
       <TextField

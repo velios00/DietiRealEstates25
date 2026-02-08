@@ -119,8 +119,14 @@ export default function CreateEstateModal({
         if (!formData.price || parseFloat(formData.price) <= 0) {
           throw new Error("Il prezzo deve essere maggiore di 0");
         }
+        if (!Number.isInteger(Number(formData.price))) {
+          throw new Error("Il prezzo non può avere centesimi");
+        }
         if (!formData.size || parseFloat(formData.size) <= 0) {
           throw new Error("La metratura deve essere maggiore di 0");
+        }
+        if (!Number.isInteger(Number(formData.size))) {
+          throw new Error("La metratura non può avere decimali");
         }
         if (!formData.nRooms || parseInt(formData.nRooms) <= 0) {
           throw new Error("Il numero di locali deve essere maggiore di 0");
@@ -134,8 +140,8 @@ export default function CreateEstateModal({
         if (!formData.city.trim()) {
           throw new Error("La città è obbligatoria");
         }
-        if (selectedFiles.length === 0) {
-          throw new Error("Aggiungi almeno una foto");
+        if (selectedFiles.length < 3) {
+          throw new Error("Aggiungi almeno 3 foto");
         }
 
         const estateData = new FormData();

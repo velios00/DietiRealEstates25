@@ -52,7 +52,10 @@ export class EstateService {
       throw new Error("User is neither a manager nor an agent");
     }
     console.log("CreatedBy:", createdBy);
-    const geo = await geoCodeAddress(dto.address, apiKey);
+    const addressForGeocode = dto.city
+      ? `${dto.address}, ${dto.city}`
+      : dto.address;
+    const geo = await geoCodeAddress(addressForGeocode, apiKey);
 
     let place = await Place.findOne({
       where: {
@@ -66,6 +69,7 @@ export class EstateService {
 
       place = await Place.create({
         ...geo,
+        city: geo.city || dto.city,
         pois: JSON.stringify(pois),
       });
     }

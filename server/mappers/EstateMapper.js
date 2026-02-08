@@ -9,6 +9,7 @@ export class EstateMapper {
       price: body.price,
       size: body.size,
       address: body.address,
+      city: body.city,
       type: body.type,
       nRooms: body.nRooms,
       nBathrooms: body.nBathrooms,

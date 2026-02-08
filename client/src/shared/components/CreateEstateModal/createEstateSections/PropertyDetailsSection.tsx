@@ -27,7 +27,7 @@ export default function PropertyDetailsSection({
         value={formData.price}
         onChange={onFieldChange}
         size="small"
-        inputProps={{ step: "0.01" }}
+        inputProps={{ step: "1", min: "0" }}
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: 3,
@@ -44,7 +44,7 @@ export default function PropertyDetailsSection({
         value={formData.size}
         onChange={onFieldChange}
         size="small"
-        inputProps={{ step: "0.01" }}
+        inputProps={{ step: "1", min: "0" }}
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: 3,
