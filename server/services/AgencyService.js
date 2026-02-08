@@ -58,9 +58,10 @@ export class AgencyService {
 
       await transaction.commit();
 
-      EmailTemplates.sendManagerWelcome(
+      EmailTemplates.sendWelcomeEmail(
         dto.manager.email,
         dto.manager.name,
+        "manager",
         dto.agencyName,
         temporaryPassword,
       );

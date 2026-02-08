@@ -27,18 +27,16 @@ export class AgentService {
 
     //Invio Email
     try {
-      await EmailTemplates.sendAgentWelcome(
+      await EmailTemplates.sendWelcomeEmail(
         dto.email,
         dto.name,
+        "agent",
+        null,
         randomPassword,
       );
       console.log("Email inviata con successo a:", dto.email);
     } catch (emailError) {
-      console.error(
-        "Errore nell'invio dell'email a:",
-        dto.manager.email,
-        emailError,
-      );
+      console.error("Errore nell'invio dell'email a:", dto.email, emailError);
     }
 
     return { user: newUser, agent: newAgent };

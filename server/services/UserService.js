@@ -79,9 +79,11 @@ export class UserService {
       idAdmin: newUser.idUser,
     });
 
-    await EmailTemplates.sendAdminWelcome(
+    await EmailTemplates.sendWelcomeEmail(
       dto.email,
       dto.name,
+      "admin",
+      null,
       temporaryPassword,
     );
 
