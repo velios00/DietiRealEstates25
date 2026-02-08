@@ -27,8 +27,8 @@ type Props = {
 
 const DEFAULT_FILTERS: Partial<EstateFilters> = {
   type: "affitto",
-  minPrice: 20000,
-  maxPrice: 10000000,
+  minPrice: 0,
+  maxPrice: 5000000,
   nRooms: 0,
   nBathrooms: 0,
   minSize: 10,
@@ -118,8 +118,8 @@ export default function FiltersModal({
         />
 
         <PriceRangeSection
-          minPrice={localFilters.minPrice || 20000}
-          maxPrice={localFilters.maxPrice || 1000000}
+          minPrice={localFilters.minPrice || 0}
+          maxPrice={localFilters.maxPrice || 5000000}
           onMinChange={(value) => handleFilterChange("minPrice", value)}
           onMaxChange={(value) => handleFilterChange("maxPrice", value)}
         />

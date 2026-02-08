@@ -41,8 +41,8 @@ export default function PriceRangeSection({
           onMinChange(min);
           onMaxChange(max);
         }}
-        min={20000}
-        max={1000000}
+        min={0}
+        max={5000000}
         step={1000}
         sx={{
           color: "#62A1BA",
