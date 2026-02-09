@@ -19,6 +19,7 @@ import Header from "../../shared/components/Header/Header";
 import AgencyTable from "../../shared/components/AdminDashboardComps/AgencyTable/AgencyTable";
 import CreateAgencyModal from "../../shared/components/AdminDashboardComps/CreateAgencyModal";
 import CreateAdminModal from "../../shared/components/AdminDashboardComps/CreateAdminModal";
+import ChangePasswordButton from "../../shared/components/ChangePasswordButton/ChangePasswordButton";
 import { toast } from "react-hot-toast";
 import { Agency } from "../../shared/models/Agency.model";
 
@@ -100,6 +101,7 @@ export default function AdminDashboard() {
                 Gestione Amministrazione
               </Typography>
               <Box display="flex" gap={2}>
+                <ChangePasswordButton />
                 <Button
                   variant="contained"
                   startIcon={<PersonAddIcon />}

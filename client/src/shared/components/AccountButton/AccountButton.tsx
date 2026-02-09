@@ -83,33 +83,6 @@ export default function AccountButton() {
   };
 
   const renderRoleBasedMenuItem = () => {
-    if (userRole === "agent" || userRole === "manager") {
-      return (
-        <MenuItem
-          onClick={handleAgencyClick}
-          disabled={isLoadingAgency}
-          sx={{
-            color: "#62A1BA",
-            fontWeight: 600,
-            py: 1.5,
-            "&:hover": {
-              backgroundColor: "rgba(98, 161, 186, 0.08)",
-            },
-            "&.Mui-disabled": {
-              opacity: 0.6,
-            },
-          }}
-        >
-          <ListItemIcon>
-            <BusinessIcon sx={{ color: "#62A1BA" }} />
-          </ListItemIcon>
-          <ListItemText>
-            {isLoadingAgency ? "Caricamento..." : "La mia agenzia"}
-          </ListItemText>
-        </MenuItem>
-      );
-    }
-
     if (userRole === "admin") {
       return (
         <MenuItem
@@ -131,8 +104,33 @@ export default function AccountButton() {
       );
     }
 
-    if (userRole === "user") {
-      return (
+    // For all other roles (agent, manager, user, etc.), show user dashboard
+    return (
+      <>
+        {(userRole === "agent" || userRole === "manager") && (
+          <MenuItem
+            onClick={handleAgencyClick}
+            disabled={isLoadingAgency}
+            sx={{
+              color: "#62A1BA",
+              fontWeight: 600,
+              py: 1.5,
+              "&:hover": {
+                backgroundColor: "rgba(98, 161, 186, 0.08)",
+              },
+              "&.Mui-disabled": {
+                opacity: 0.6,
+              },
+            }}
+          >
+            <ListItemIcon>
+              <BusinessIcon sx={{ color: "#62A1BA" }} />
+            </ListItemIcon>
+            <ListItemText>
+              {isLoadingAgency ? "Caricamento..." : "La mia agenzia"}
+            </ListItemText>
+          </MenuItem>
+        )}
         <MenuItem
           onClick={handleUserDashboardClick}
           sx={{
@@ -149,9 +147,8 @@ export default function AccountButton() {
           </ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
         </MenuItem>
-      );
-    }
-    return null;
+      </>
+    );
   };
 
   return (
@@ -235,7 +232,6 @@ export default function AccountButton() {
             </ListItemIcon>
             <ListItemText>Logout</ListItemText>
           </MenuItem>
-          {/* TODO: Aggiungere altre opzioni basate sul ruolo */}
         </Menu>
       )}
     </Box>

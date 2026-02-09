@@ -14,6 +14,13 @@ EstateRouter.post(
   EstateController.createEstate,
 );
 
+EstateRouter.get(
+  "/my-estates",
+  enforceAuthentication,
+  authorizeRoles("agent", "manager"),
+  EstateController.getMyEstates,
+);
+
 EstateRouter.delete(
   "/:id",
   enforceAuthentication,

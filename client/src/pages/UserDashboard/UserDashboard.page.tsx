@@ -5,37 +5,30 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Button,
   Avatar,
   Grid,
-  Snackbar,
-  Alert,
 } from "@mui/material";
-import { Lock as LockIcon } from "@mui/icons-material";
 import { useUser } from "../../shared/hooks/useUser";
 import { getCurrentUser } from "../../services/UserService";
 import { getMyOffersWithEstates } from "../../services/OfferService";
+import { getMyEstates } from "../../services/EstateService";
 import { User } from "../../shared/models/User.model";
-import ChangePasswordModal from "../../shared/components/ChangePasswordModal/ChangePasswordModal";
+import { Roles } from "../../shared/enums/Roles.enum";
 import EstateCard from "../../shared/components/EstateCard/EstateCard";
-import { mapOfferToListing } from "../../mappers/EstateToListing.mapper";
+import ChangePasswordButton from "../../shared/components/ChangePasswordButton/ChangePasswordButton";
+import {
+  mapOfferToListing,
+  mapEstateToListing,
+} from "../../mappers/EstateToListing.mapper";
 
 export default function UserDashboard() {
   const { user: authUser } = useUser();
   const [userData, setUserData] = useState<User | null>(null);
   const [offers, setOffers] = useState<any[]>([]);
+  const [estates, setEstates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [offersLoading, setOffersLoading] = useState(false);
-  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: "success" | "error" | "info";
-  }>({
-    open: false,
-    message: "",
-    severity: "info",
-  });
+  const [estatesLoading, setEstatesLoading] = useState(false);
 
   const fetchUserData = useCallback(async () => {
     try {
@@ -63,33 +56,37 @@ export default function UserDashboard() {
     }
   };
 
+  const fetchMyEstates = async () => {
+    setEstatesLoading(true);
+    try {
+      console.log("🏢 Fetching my estates...");
+      const response = await getMyEstates();
+      console.log("🏢 Response from getMyEstates:", response);
+      console.log("🏢 Response.data:", response.data);
+      console.log("🏢 Response.data.results:", response.data?.results);
+      setEstates(response.data?.results || []);
+    } catch (err) {
+      console.log("Errore nel caricamento degli immobili:", err);
+      setEstates([]);
+    } finally {
+      setEstatesLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        await Promise.allSettled([fetchUserData(), fetchMyOffers()]);
-      } catch (err) {
-        console.log("Errore nel caricamento dei dati della pagina:", err);
-      }
-    };
-    loadData();
+    fetchUserData();
   }, [fetchUserData]);
 
-  const handleChangePassword = () => {
-    setPasswordModalOpen(true);
-  };
+  useEffect(() => {
+    if (!userData) return;
 
-  const handlePasswordChangeSuccess = () => {
-    setSnackbar({
-      open: true,
-      message:
-        "Password modificata con successo! Per sicurezza, effettua nuovamente l'accesso.",
-      severity: "success",
-    });
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
+    // Fetch different data based on user role
+    if (userData.role === Roles.AGENT || userData.role === Roles.MANAGER) {
+      fetchMyEstates();
+    } else {
+      fetchMyOffers();
+    }
+  }, [userData]);
 
   // Get user initials for avatar
   const getInitials = () => {
@@ -173,97 +170,108 @@ export default function UserDashboard() {
                 </Box>
 
                 {/* Pulsante Cambia Password */}
-                <Button
-                  variant="contained"
-                  startIcon={<LockIcon />}
-                  onClick={handleChangePassword}
-                  sx={{
-                    backgroundColor: "#62A1BA",
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    px: 3,
-                    py: 1.5,
-                    borderRadius: 3,
-                    whiteSpace: "nowrap",
-                    "&:hover": {
-                      backgroundColor: "#4a8ba3",
-                    },
-                  }}
-                >
-                  Cambia Password
-                </Button>
+                <ChangePasswordButton />
               </Box>
             </Box>
           )}
 
-          {/* SEZIONE INFERIORE: Le Mie Offerte */}
+          {/* SEZIONE INFERIORE: Le Mie Offerte / I Miei Immobili */}
           <Box sx={{ p: 4, position: "relative", minHeight: "200px" }}>
-            {offersLoading && (
+            {(offersLoading || estatesLoading) && (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <CircularProgress sx={{ color: "#62A1BA" }} />
               </Box>
             )}
 
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 700, mb: 4, color: "#2c3e50" }}
-            >
-              Le Mie Offerte ({offers.length})
-            </Typography>
+            {userData?.role === Roles.AGENT ||
+            userData?.role === Roles.MANAGER ? (
+              <>
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: 700, mb: 4, color: "#2c3e50" }}
+                >
+                  I Miei Immobili ({estates.length})
+                </Typography>
 
-            {offers.length === 0 && !offersLoading ? (
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                textAlign="center"
-                py={4}
-              >
-                Non hai ancora fatto offerte su nessun immobile.
-              </Typography>
+                {estates.length === 0 && !estatesLoading ? (
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    textAlign="center"
+                    py={4}
+                  >
+                    Non hai ancora caricato nessun immobile.
+                  </Typography>
+                ) : (
+                  <Grid container spacing={4}>
+                    {estates.map((estate) => {
+                      try {
+                        const listing = mapEstateToListing(estate);
+                        return (
+                          <Grid
+                            key={estate.idRealEstate}
+                            size={{ xs: 12, sm: 6, md: 6 }}
+                          >
+                            <EstateCard listing={listing} />
+                          </Grid>
+                        );
+                      } catch (error) {
+                        console.error(
+                          "Errore nel mapping dell'immobile:",
+                          error,
+                        );
+                        return null;
+                      }
+                    })}
+                  </Grid>
+                )}
+              </>
             ) : (
-              <Grid container spacing={4}>
-                {offers.map((offer) => {
-                  try {
-                    const listing = mapOfferToListing(offer);
-                    return (
-                      <Grid key={offer.idOffer} size={{ xs: 12, sm: 6, md: 6 }}>
-                        <EstateCard listing={listing} />
-                      </Grid>
-                    );
-                  } catch (error) {
-                    console.error("Errore nel mapping dell'offerta:", error);
-                    return null;
-                  }
-                })}
-              </Grid>
+              <>
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: 700, mb: 4, color: "#2c3e50" }}
+                >
+                  Le Mie Offerte ({offers.length})
+                </Typography>
+
+                {offers.length === 0 && !offersLoading ? (
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    textAlign="center"
+                    py={4}
+                  >
+                    Non hai ancora fatto offerte su nessun immobile.
+                  </Typography>
+                ) : (
+                  <Grid container spacing={4}>
+                    {offers.map((offer) => {
+                      try {
+                        const listing = mapOfferToListing(offer);
+                        return (
+                          <Grid
+                            key={offer.idOffer}
+                            size={{ xs: 12, sm: 6, md: 6 }}
+                          >
+                            <EstateCard listing={listing} />
+                          </Grid>
+                        );
+                      } catch (error) {
+                        console.error(
+                          "Errore nel mapping dell'offerta:",
+                          error,
+                        );
+                        return null;
+                      }
+                    })}
+                  </Grid>
+                )}
+              </>
             )}
           </Box>
         </Paper>
       </Container>
-
-      {/* Change Password Modal */}
-      <ChangePasswordModal
-        open={passwordModalOpen}
-        onClose={() => setPasswordModalOpen(false)}
-        onSuccess={handlePasswordChangeSuccess}
-      />
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-          variant="filled"
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

@@ -37,3 +37,17 @@ export function createEstate(estateData: FormData) {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
+
+export function getMyEstates(params?: {
+  page?: number;
+  limit?: number;
+  orderBy?: "createdAt" | "price";
+}) {
+  return API.get("/real-estates/my-estates", {
+    params: {
+      page: params?.page,
+      limit: params?.limit,
+      orderBy: params?.orderBy,
+    },
+  });
+}

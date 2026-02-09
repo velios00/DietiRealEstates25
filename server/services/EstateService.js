@@ -146,12 +146,13 @@ export class EstateService {
   }
 
   static addRangeFilter(whereConditions, field, min, max) {
-    if (min !== null || max !== null) {
+    if (min != null || max != null) {
+      // != checks for both null and undefined
       whereConditions[field] = {};
-      if (min !== null) {
+      if (min != null) {
         whereConditions[field][Op.gte] = min;
       }
-      if (max !== null) {
+      if (max != null) {
         whereConditions[field][Op.lte] = max;
       }
     }
@@ -187,7 +188,14 @@ export class EstateService {
       whereConditions.energyClass = { [Op.iLike]: filters.energyClass };
     }
 
-    const simpleFilters = ["floor", "createdBy", "type", "idAgency"];
+    const simpleFilters = [
+      "floor",
+      "createdBy",
+      "type",
+      "idAgency",
+      "idAgent",
+      "idManager",
+    ];
 
     simpleFilters.forEach((key) => {
       if (filters[key] != null) {
