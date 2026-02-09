@@ -22,14 +22,12 @@ export class AuthenticationService {
       userAddress: dto.userAddress,
       role: dto.role,
     });
-    console.log("Utente salvato");
 
     return newUser;
   }
 
   static async loginUser(userModel, dto) {
     const hashedPassword = this.hashPassword(dto.password);
-    console.log("dto", dto);
     const foundUser = await userModel.findOne({
       where: { email: dto.email, password: hashedPassword },
     });
@@ -65,7 +63,7 @@ export class AuthenticationService {
       {
         user: {
           idUser: user.idUser,
-          email: user.email, //da cambiare in email probabilmente
+          email: user.email,
           role: user.role,
         },
       },
