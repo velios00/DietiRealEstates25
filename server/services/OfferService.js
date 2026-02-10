@@ -1,5 +1,3 @@
-import { Op } from "sequelize";
-
 export class OfferService {
   static async createOffer(Offer, RealEstate, dto, userId) {
     const estate = await RealEstate.findByPk(dto.idRealEstate);

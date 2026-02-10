@@ -1,4 +1,4 @@
-export class createAdminDTO {
+export class CreateAdminDTO {
   constructor({ email, name, surname }) {
     this.email = email;
     this.name = name;

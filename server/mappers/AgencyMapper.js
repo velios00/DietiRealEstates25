@@ -1,10 +1,9 @@
-import { CreateAgencyDTO } from "../DTOs/AgencyDTO.js";
-import { createManagerDTO } from "../DTOs/ManagerDTO.js";
-import { AgencyDTO } from "../DTOs/AgencyDTO.js";
+import { AgencyDTO, CreateAgencyDTO } from "../DTOs/AgencyDTO.js";
+import { CreateManagerDTO } from "../DTOs/ManagerDTO.js";
 
 export class AgencyMapper {
   static toCreateAgencyDTO(body) {
-    const managerDTO = new createManagerDTO({
+    const managerDTO = new CreateManagerDTO({
       name: body.managerName,
       surname: body.managerSurname,
       email: body.managerEmail,

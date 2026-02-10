@@ -1,4 +1,4 @@
-export class createAgentDTO {
+export class CreateAgentDTO {
   constructor({ name, surname, email, profileImage }) {
     this.name = name;
     this.surname = surname;

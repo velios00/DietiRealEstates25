@@ -1,6 +1,5 @@
 import { createHash } from "crypto";
 import { EmailTemplates } from "../config/mailer.js";
-import { createAdminDTO } from "../DTOs/AdminDTO.js";
 import randomatic from "randomatic";
 
 export class UserService {
@@ -59,7 +58,6 @@ export class UserService {
     });
 
     if (existingUser) {
-      console.log("Email già esistente:", dto.email);
       throw new Error(
         `L'email ${dto.email} è già utilizzata da un altro utente`,
       );
@@ -103,8 +101,6 @@ export class UserService {
       throw new Error("User not found");
     }
 
-    console.log(`Looking for agency for user ${idUser} with role ${user.role}`);
-
     let agencyId = null;
 
     if (user.role === "agent") {
@@ -117,7 +113,6 @@ export class UserService {
       }
 
       agencyId = agent.idAgency;
-      console.log(`Found agent with agency ID: ${agencyId}`);
     } else if (user.role === "manager") {
       // Cerca Manager usando idUser come idManager (foreign key condivisa)
       const manager = await Manager.findByPk(idUser);
@@ -128,7 +123,6 @@ export class UserService {
       }
 
       agencyId = manager.idAgency;
-      console.log(`Found manager with agency ID: ${agencyId}`);
     } else {
       throw new Error(`User role '${user.role}' is not an agent or manager`);
     }

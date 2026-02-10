@@ -28,6 +28,5 @@ export const validatePassword = (password: string) => {
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
     return "La password deve contenere almeno un carattere speciale";
   }
-  console.log("SESS");
   return null;
 };

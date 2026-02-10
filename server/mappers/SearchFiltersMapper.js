@@ -21,22 +21,33 @@ export class SearchFiltersMapper {
   }
 
   static toResponse(dto) {
-    const response = {};
+    const keys = [
+      "minPrice",
+      "maxPrice",
+      "nRooms",
+      "nBathrooms",
+      "minSize",
+      "maxSize",
+      "energyClass",
+      "floor",
+      "type",
+      "idAgency",
+    ];
 
-    if (dto.minPrice !== null) response.minPrice = dto.minPrice;
-    if (dto.maxPrice !== null) response.maxPrice = dto.maxPrice;
-    if (dto.nRooms !== null) response.nRooms = dto.nRooms;
-    if (dto.nBathrooms !== null) response.nBathrooms = dto.nBathrooms;
-    if (dto.minSize !== null) response.minSize = dto.minSize;
-    if (dto.maxSize !== null) response.maxSize = dto.maxSize;
-    if (dto.energyClass !== null) response.energyClass = dto.energyClass;
-    if (dto.floor !== null) response.floor = dto.floor;
-    if (dto.type !== null) response.type = dto.type;
-    if (dto.idAgency !== null) response.idAgency = dto.idAgency;
-    if (dto.lat !== null && dto.lat !== undefined) response.lat = dto.lat;
-    if (dto.lon !== null && dto.lon !== undefined) response.lon = dto.lon;
-    if (dto.radius !== null && dto.radius !== undefined)
-      response.radius = dto.radius;
+    const response = keys.reduce((acc, key) => {
+      if (dto[key] !== null) {
+        acc[key] = dto[key];
+      }
+      return acc;
+    }, {});
+
+    // Gestisci casi speciali per lat, lon e radius
+    ["lat", "lon", "radius"].forEach((key) => {
+      if (dto[key] !== null && dto[key] !== undefined) {
+        response[key] = dto[key];
+      }
+    });
+
     return response;
   }
 }

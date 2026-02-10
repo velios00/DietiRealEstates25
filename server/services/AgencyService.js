@@ -99,9 +99,6 @@ export class AgencyService {
       ],
     });
 
-    // Debug: Logga la struttura dati grezza
-    console.log("Raw agencies data:", JSON.stringify(agencies, null, 2));
-
     return agencies.map((agency) => {
       const agencyData = agency.get({ plain: true });
       return {
@@ -128,23 +125,5 @@ export class AgencyService {
       throw new Error("Agency not found");
     }
     return agency;
-  }
-
-  static async deleteAgency(Agency, Manager, User, idAgency) {
-    const transaction = await Agency.sequelize.transaction();
-
-    try {
-      const manager = await Manager.findOne({ where: { idAgency } });
-      if (!manager) throw new Error("Manager not found");
-
-      await Agency.destroy({ where: { idAgency }, transaction });
-      await Manager.destroy({ where: { idAgency }, transaction });
-      await User.destroy({ where: { idUser: manager.idManager }, transaction });
-
-      await transaction.commit();
-    } catch (err) {
-      await transaction.rollback();
-      throw err;
-    }
   }
 }

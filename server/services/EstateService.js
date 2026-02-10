@@ -18,14 +18,18 @@ export class EstateService {
       ? await Promise.all(files.map((file) => ImageService.uploadImage(file)))
       : [];
 
-    const fallbackPhotos = Array.isArray(dto.photos)
-      ? dto.photos
-      : typeof dto.photos === "string"
-        ? dto.photos
-            .split(",")
-            .map((p) => p.trim())
-            .filter(Boolean)
-        : [];
+    let fallbackPhotos;
+
+    if (Array.isArray(dto.photos)) {
+      fallbackPhotos = dto.photos;
+    } else if (typeof dto.photos === "string") {
+      fallbackPhotos = dto.photos
+        .split(",")
+        .map((p) => p.trim())
+        .filter(Boolean);
+    } else {
+      fallbackPhotos = [];
+    }
 
     dto.photos = uploadedPhotos.length ? uploadedPhotos : fallbackPhotos;
 
@@ -51,7 +55,7 @@ export class EstateService {
     if (!agencyId) {
       throw new Error("User is neither a manager nor an agent");
     }
-    console.log("CreatedBy:", createdBy);
+
     const addressForGeocode = dto.city
       ? `${dto.address}, ${dto.city}`
       : dto.address;
@@ -92,53 +96,6 @@ export class EstateService {
       idPlace: place.idPlace,
     });
     return newEstate;
-  }
-
-  static async deleteEstate(RealEstate, Agent, Manager, userId, estateId) {
-    // Find the estate first
-    const estate = await RealEstate.findByPk(estateId);
-
-    if (!estate) {
-      throw new Error("Estate not found");
-    }
-
-    let userAgencyId = null;
-    let userRole = null;
-
-    const manager = await Manager.findByPk(userId);
-    if (manager) {
-      userAgencyId = manager.idAgency;
-      userRole = "manager";
-    } else {
-      const agent = await Agent.findByPk(userId);
-      if (agent) {
-        userAgencyId = agent.idAgency;
-        userRole = "agent";
-      }
-    }
-
-    if (!userAgencyId) {
-      throw new Error("User is neither a manager nor an agent");
-    }
-
-    if (estate.idAgency !== userAgencyId) {
-      throw new Error("You can only delete estates from your own agency");
-    }
-
-    if (userRole === "agent" && estate.idAgent !== userId) {
-      throw new Error("Agents can only delete estates they created");
-    }
-
-    if (
-      userRole === "manager" &&
-      estate.createdBy === "manager" &&
-      estate.idManager !== userId
-    ) {
-    }
-
-    await estate.destroy();
-
-    return { message: "Estate deleted successfully" };
   }
 
   static async getEstateById(Estate, Place, idRealEstate) {
@@ -228,21 +185,13 @@ export class EstateService {
     pagination,
     EstateMapper,
   ) {
-    console.log("🔍 searchEstates chiamato con filters:", filters);
-    console.log("📋 pagination:", pagination);
-
     const whereConditions = this.buildWhereConditions(filters);
-    console.log("🎯 WHERE conditions costruite:", whereConditions);
+
     const { page = 1, limit = 10, orderBy = "price" } = pagination;
     const offset = (page - 1) * limit;
 
-    // 🔍 Se l'utente seleziona una location con autocomplete → ricerca geografica per raggio
     if (filters.lat && filters.lon && filters.radius) {
-      console.log(
-        `🌍 Ricerca geografica: lat=${filters.lat}, lon=${filters.lon}, radius=${filters.radius}km`,
-      );
-
-      // Ottieni TUTTI gli immobili con i filtri (prezzo, stanze, ecc.)
+      // Ottieni tutti gli immobili con i filtri (prezzo, stanze, ecc.)
       const allEstates = await RealEstate.findAll({
         where: whereConditions,
         include: [
@@ -253,15 +202,6 @@ export class EstateService {
         ],
       });
 
-      console.log(
-        `📍 Totale immobili trovati con filtri (non geografici): ${allEstates.length}`,
-      );
-
-      if (allEstates.length > 0) {
-        console.log(`🏷️ Tipo primo immobile: "${allEstates[0].type}"`);
-      }
-      console.log(`🔍 Filtro type richiesto: "${filters.type}"`);
-
       // Filtra manualmente per distanza usando Haversine
       const estatesInRadius = allEstates.filter((estate) => {
         const distance = this.calculateDistance(
@@ -270,13 +210,8 @@ export class EstateService {
           parseFloat(estate.Place.lat),
           parseFloat(estate.Place.lon),
         );
-        console.log(
-          `  - Immobile: ${estate.title}, lat=${estate.Place.lat}, lon=${estate.Place.lon}, distanza=${distance.toFixed(2)}km`,
-        );
         return distance <= filters.radius;
       });
-
-      console.log(`✅ Immobili nel raggio: ${estatesInRadius.length}`);
 
       // Ordina i risultati
       estatesInRadius.sort((a, b) => {
@@ -286,13 +221,8 @@ export class EstateService {
         return a.price - b.price;
       });
 
-      console.log(`🔢 Dopo ordinamento: ${estatesInRadius.length} immobili`);
-      console.log(`📄 Paginazione: offset=${offset}, limit=${limit}`);
-
       // Applica paginazione
       const paginatedEstates = estatesInRadius.slice(offset, offset + limit);
-
-      console.log(`✂️ Dopo slice: ${paginatedEstates.length} immobili`);
 
       const result = {
         data: paginatedEstates.map((estate) =>
@@ -303,17 +233,9 @@ export class EstateService {
         totalPages: Math.ceil(estatesInRadius.length / limit),
       };
 
-      console.log("📦 Risultato da restituire:", {
-        dataLength: result.data.length,
-        total: result.total,
-        page: result.page,
-        totalPages: result.totalPages,
-      });
-
       return result;
     }
 
-    // ❌ Altrimenti: ricerca senza filtro geografico (solo filtri come prezzo, stanze, ecc. oppure niente)
     const estates = await RealEstate.findAndCountAll({
       where: whereConditions,
       include: [

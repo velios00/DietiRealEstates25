@@ -27,7 +27,6 @@ export function LoginForm() {
       event.preventDefault();
 
       const emailError = validateEmail(loginData.email);
-      console.log("Submitting login form with data:", loginData);
 
       if (emailError) {
         if (emailError) toast.error(emailError);
@@ -52,7 +51,6 @@ export function LoginForm() {
           // userContext?.setUser(authUser);
           if (userContext?.setUser) {
             userContext.setUser(authUser);
-            console.log("UserContext dopo setUser:", userContext?.user);
           }
           window.dispatchEvent(new Event("storage"));
 
@@ -61,7 +59,6 @@ export function LoginForm() {
         })
         .catch((error) => {
           toast.error("Errore nel login, controlla le tue credenziali");
-          console.error("Errore nel login: ", error);
         });
     },
     [navigate, loginData, userContext],
@@ -85,7 +82,6 @@ export function LoginForm() {
 
       if (userContext?.setUser) {
         userContext.setUser(authUser);
-        console.log("UserContext dopo setUser:", userContext?.user);
       }
       window.dispatchEvent(new Event("storage"));
 
@@ -93,7 +89,6 @@ export function LoginForm() {
       navigate("/");
     } catch (error) {
       toast.error("Errore nel login con Google");
-      console.error("Errore nel login con Google: ", error);
     }
   }, [navigate, userContext]);
 

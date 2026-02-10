@@ -1,8 +1,8 @@
-import { createAgentDTO } from "../DTOs/AgentDTO.js";
+import { CreateAgentDTO } from "../DTOs/AgentDTO.js";
 
 export class AgentMapper {
   static toCreateAgentDTO(body) {
-    return new createAgentDTO({
+    return new CreateAgentDTO({
       name: body.name,
       surname: body.surname,
       email: body.email,

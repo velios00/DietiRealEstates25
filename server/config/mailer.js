@@ -22,7 +22,6 @@ export async function sendMail({ to, subject, text, html }) {
       text,
       html,
     });
-    console.log("Message sent: ", info.messageId);
   } catch (err) {
     console.error("Error sending email: ", err);
     throw err;
@@ -34,8 +33,8 @@ export class EmailTemplates {
     email,
     name,
     role,
-    agencyName = null,
     temporaryPassword,
+    agencyName = null,
   ) {
     const roleLabels = {
       manager: "manager",

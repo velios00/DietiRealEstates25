@@ -5,7 +5,7 @@ import MapView from "../../shared/components/MapView/MapView";
 import ImageGallery from "../../shared/components/EstateViewComps/ImageGallery/ImageGallery";
 import EstateInfoCard from "../../shared/components/EstateViewComps/EstateInfoCard/EstateInfoCard";
 import OfferModal from "../../shared/components/EstateViewComps/OfferModal/OfferModal";
-import Pois from "../../shared/components/EstateViewComps/Pois/Pois";
+import Pois from "../../shared/components/EstateViewComps/PoisChips/PoisChips";
 import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { getEstateById } from "../../services/EstateService";

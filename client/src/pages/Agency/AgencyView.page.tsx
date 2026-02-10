@@ -43,8 +43,7 @@ export default function AgencyView() {
     try {
       const data = await getAgencyById(id);
       setAgency(data);
-    } catch (err) {
-      console.log("Errore nel caricamento dei dati dell'agenzia:", err);
+
       setAgency(null);
     } finally {
       setAgencyLoading(false);
@@ -65,7 +64,6 @@ export default function AgencyView() {
       });
       setEstates(response.data?.results || response.data || []);
     } catch (err) {
-      console.log("Errore nel caricamento degli immobili:", err);
       setEstates([]);
     } finally {
       setEstatesLoading(false);
@@ -85,10 +83,6 @@ export default function AgencyView() {
         if (hasError) {
           const firstError = results.find(
             (result) => result.status === "rejected",
-          );
-          console.log(
-            "Errore nel caricamento dei dati della pagina:",
-            firstError,
           );
         }
       } catch (err) {

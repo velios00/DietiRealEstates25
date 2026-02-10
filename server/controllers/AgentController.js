@@ -13,9 +13,8 @@ export class AgentController {
         Agent,
         Manager,
         idManager,
-        dto
+        dto,
       );
-      console.log("idAgency del manager 2:");
       const result = AgentMapper.toAgentDTO(user, agent);
 
       res.status(201).json(result);

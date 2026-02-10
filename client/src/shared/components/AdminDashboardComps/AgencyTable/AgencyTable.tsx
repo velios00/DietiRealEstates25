@@ -19,7 +19,6 @@ import {
   Email as EmailIcon,
 } from "@mui/icons-material";
 import { Agency } from "../../../models/Agency.model";
-import { useEffect } from "react";
 
 interface AgencyTableProps {
   agencies: Agency[];
@@ -27,18 +26,6 @@ interface AgencyTableProps {
 }
 
 export default function AgencyTable({ agencies, loading }: AgencyTableProps) {
-  useEffect(() => {
-    if (agencies.length > 0) {
-      console.log("DEBUG - Prima agenzia:", {
-        agencyName: agencies[0].agencyName,
-        idManager: agencies[0].idManager,
-        manager: agencies[0].manager,
-        hasManager: !!agencies[0].manager,
-        managerEmail: agencies[0].manager?.email,
-      });
-    }
-  }, [agencies]);
-
   if (loading) {
     return (
       <Box

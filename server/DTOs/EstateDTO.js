@@ -1,14 +1,14 @@
-export class createEstateDTO {
+export class CreateEstateDTO {
   constructor({
     title,
-    /*idRealEstate,*/ description,
+    description,
     photos,
     price,
     size,
     address,
     city,
     type,
-    /*idAgency,*/ nRooms,
+    nRooms,
     nBathrooms,
     energyClass,
     floor,
@@ -16,12 +16,10 @@ export class createEstateDTO {
     creatorId,
   }) {
     this.title = title;
-    //this.idRealEstate = idRealEstate;
     this.description = description;
     this.photos = photos;
     this.price = price;
     this.size = size;
-    //this.idAgency = idAgency;
     this.address = address;
     this.city = city;
     this.type = type;

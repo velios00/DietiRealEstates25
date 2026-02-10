@@ -145,7 +145,6 @@ database
       ON "Offers" ("idUser", "idRealEstate")
       WHERE status = 'pending';
     `);
-    console.log("Database sincronizzato");
   })
   .catch((err) => {
     console.log("Errore nella sincronizzazione: " + err.message);

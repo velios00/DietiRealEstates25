@@ -1,7 +1,9 @@
 import express from "express";
 import { AgencyController } from "../controllers/AgencyController.js";
-import { enforceAuthentication } from "../middleware/authorization.js";
-import { authorizeRoles } from "../middleware/authorization.js";
+import {
+  enforceAuthentication,
+  authorizeRoles,
+} from "../middleware/authorization.js";
 import { upload } from "../middleware/multer.js";
 
 export const AgencyRouter = express.Router();

@@ -49,7 +49,6 @@ export default function UserDashboard() {
       const response = await getMyOffersWithEstates();
       setOffers(response.data || []);
     } catch (err) {
-      console.log("Errore nel caricamento delle offerte:", err);
       setOffers([]);
     } finally {
       setOffersLoading(false);
@@ -59,14 +58,10 @@ export default function UserDashboard() {
   const fetchMyEstates = async () => {
     setEstatesLoading(true);
     try {
-      console.log("🏢 Fetching my estates...");
       const response = await getMyEstates();
-      console.log("🏢 Response from getMyEstates:", response);
-      console.log("🏢 Response.data:", response.data);
-      console.log("🏢 Response.data.results:", response.data?.results);
+
       setEstates(response.data?.results || []);
     } catch (err) {
-      console.log("Errore nel caricamento degli immobili:", err);
       setEstates([]);
     } finally {
       setEstatesLoading(false);

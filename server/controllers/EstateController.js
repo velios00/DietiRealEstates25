@@ -6,9 +6,7 @@ import {
   Agent,
   Place,
 } from "../models/DietiRealEstatesDB.js";
-import { SearchFiltersDTO } from "../DTOs/SearchFiltersDTO.js";
 import { SearchFiltersMapper } from "../mappers/SearchFiltersMapper.js";
-import { parse } from "dotenv";
 
 export class EstateController {
   static async createEstate(req, res, next) {
@@ -98,11 +96,6 @@ export class EstateController {
       if (manager) {
         filters.idManager = manager.idManager;
         filters.createdBy = "manager";
-
-        const managerEstates = await RealEstate.findAll({
-          where: { idManager: manager.idManager },
-          attributes: ["idRealEstate", "title", "idManager", "createdBy"],
-        });
       } else if (agent) {
         filters.idAgent = agent.idAgent;
         filters.createdBy = "agent";

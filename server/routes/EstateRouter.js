@@ -1,6 +1,8 @@
 import express from "express";
-import { authorizeRoles } from "../middleware/authorization.js";
-import { enforceAuthentication } from "../middleware/authorization.js";
+import {
+  authorizeRoles,
+  enforceAuthentication,
+} from "../middleware/authorization.js";
 import { EstateController } from "../controllers/EstateController.js";
 import { upload } from "../middleware/multer.js";
 

@@ -34,7 +34,6 @@ export class AgentService {
         null,
         randomPassword,
       );
-      console.log("Email inviata con successo a:", dto.email);
     } catch (emailError) {
       console.error("Errore nell'invio dell'email a:", dto.email, emailError);
     }

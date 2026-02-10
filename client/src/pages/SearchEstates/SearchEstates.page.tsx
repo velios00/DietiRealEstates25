@@ -68,7 +68,6 @@ export default function SearchEstate() {
         limit: 10,
         orderBy: "createdAt",
       });
-      console.log("Response from searchEstates:", response);
       const estatesData: Estate[] = response.data.results;
       const mapped = estatesData.map(mapEstateToListing);
 
