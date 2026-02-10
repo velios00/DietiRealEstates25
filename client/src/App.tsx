@@ -37,7 +37,7 @@ function App() {
       const decodedToken = jwtDecode<JwtPayload>(token);
       const currentTime = Date.now() / 1000;
       if (decodedToken.exp && decodedToken.exp < currentTime) {
-        console.log("token scaduto, mettere logout");
+        localStorage.removeItem("token");
       } else {
         getCurrentUser().then(({ data: user }) => {
           // Converti User in AuthUser
