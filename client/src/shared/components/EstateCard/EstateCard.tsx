@@ -80,7 +80,8 @@ export default function EstateCard({ listing }: ListingCardProps) {
     <Card
       onClick={() => navigate(`/estate/${listing.id}`)}
       sx={{
-        width: 480,
+        width: { xs: 320, sm: 380, md: 420, lg: 480 },
+        height: { xs: 360, sm: 390, md: 405, lg: 420 },
         borderRadius: 6,
         overflow: "hidden",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
@@ -189,8 +190,10 @@ export default function EstateCard({ listing }: ListingCardProps) {
         sx={{
           display: "flex",
           flexDirection: "row",
-          p: 2.5,
-          gap: 2,
+          flex: 1,
+          overflow: "hidden",
+          p: { xs: 1.5, md: 2.5 },
+          gap: { xs: 1.5, md: 2 },
         }}
       >
         {/* Colonna sinistra: Titolo, Prezzo, Indirizzo */}
@@ -199,7 +202,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
             variant="h6"
             sx={{
               fontWeight: 700,
-              fontSize: "1.1rem",
+              fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem" },
               color: "#2c3e50",
               lineHeight: 1.3,
             }}
@@ -214,8 +217,11 @@ export default function EstateCard({ listing }: ListingCardProps) {
               color: "#7f8c8d",
             }}
           >
-            <LocationOn sx={{ fontSize: 16, mr: 0.5 }} />
-            <Typography variant="body2" sx={{ fontSize: "0.85rem" }}>
+            <LocationOn sx={{ fontSize: { xs: 14, md: 16 }, mr: 0.5 }} />
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "0.75rem", sm: "0.8rem", md: "0.85rem" } }}
+            >
               {listing.address}
             </Typography>
           </Box>
@@ -225,7 +231,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
             sx={{
               color: "#62A1BA",
               fontWeight: 600,
-              fontSize: "1.75rem",
+              fontSize: { xs: "1.3rem", sm: "1.5rem", md: "1.75rem" },
             }}
           >
             € {listing.price.toLocaleString()}
@@ -274,34 +280,68 @@ export default function EstateCard({ listing }: ListingCardProps) {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            gap: 1.5,
+            gap: { xs: 1, md: 1.5 },
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <MeetingRoom sx={{ color: "#62A1BA", fontSize: 20 }} />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: { xs: 0.5, md: 1 },
+            }}
+          >
+            <MeetingRoom
+              sx={{ color: "#62A1BA", fontSize: { xs: 18, md: 20 } }}
+            />
             <Typography
               variant="body2"
-              sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
+              sx={{
+                fontWeight: 500,
+                fontSize: { xs: "0.75rem", md: "0.9rem" },
+                color: "#2c3e50",
+              }}
             >
               {listing.rooms} stanze
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Bathroom sx={{ color: "#62A1BA", fontSize: 20 }} />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: { xs: 0.5, md: 1 },
+            }}
+          >
+            <Bathroom sx={{ color: "#62A1BA", fontSize: { xs: 18, md: 20 } }} />
             <Typography
               variant="body2"
-              sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
+              sx={{
+                fontWeight: 500,
+                fontSize: { xs: "0.75rem", md: "0.9rem" },
+                color: "#2c3e50",
+              }}
             >
               {listing.baths} bagni
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <SquareFoot sx={{ color: "#62A1BA", fontSize: 20 }} />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: { xs: 0.5, md: 1 },
+            }}
+          >
+            <SquareFoot
+              sx={{ color: "#62A1BA", fontSize: { xs: 18, md: 20 } }}
+            />
             <Typography
               variant="body2"
-              sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#2c3e50" }}
+              sx={{
+                fontWeight: 500,
+                fontSize: { xs: "0.75rem", md: "0.9rem" },
+                color: "#2c3e50",
+              }}
             >
               {listing.size} m²
             </Typography>

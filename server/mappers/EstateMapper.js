@@ -1,8 +1,8 @@
-import { createEstateDTO } from "../DTOs/EstateDTO.js";
+import { CreateEstateDTO } from "../DTOs/EstateDTO.js";
 
 export class EstateMapper {
   static toCreateEstateDTO(body) {
-    return new createEstateDTO({
+    return new CreateEstateDTO({
       title: body.title,
       description: body.description,
       photos: body.photos,

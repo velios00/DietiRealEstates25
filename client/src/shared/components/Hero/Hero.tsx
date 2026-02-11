@@ -21,14 +21,12 @@ export default function Hero({
       sx={{
         display: "flex",
         position: "relative",
-        height: { xs: "60vh", sm: "70vh", md: "30vh" },
+        height: { xs: "50vh", sm: "70vh", md: "30vh" },
         alignItems: "center",
-        // py: 8,
-        // px: 2,
         backgroundColor: "#f5f5f5",
         color: "white",
         overflow: "visible",
-        minHeight: 600,
+        minHeight: { xs: 450, sm: 550, md: 650 },
         maxHeight: 800,
       }}
     >
@@ -78,32 +76,26 @@ export default function Hero({
             margin: "0 auto",
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
-            mx: "auto",
-            textAlign: "left",
-            marginLeft: {
-              xs: 0,
-
-              lg: "350px",
-            },
+            alignItems: "center",
+            textAlign: "center",
           }}
         >
           <Typography
             variant="h1"
             component="h1"
             sx={{
-              mb: -1,
+              mb: { xs: 1, md: -1 },
               fontWeight: 800,
               fontSize: {
-                xs: "2.5rem",
-                sm: "3.5rem",
-                md: "4rem",
+                xs: "1.8rem",
+                sm: "2.5rem",
+                md: "3.5rem",
                 lg: "4.5rem",
                 xl: "5rem",
               },
               textShadow: "0 2px 8px rgba(0,0,0,0.4)",
-              lineHeight: 1,
-              letterSpacing: "-0.5px",
+              lineHeight: { xs: 1.1, md: 1 },
+              letterSpacing: { xs: "-0.3px", md: "-0.5px" },
               maxWidth: 1100,
             }}
           >
@@ -113,13 +105,14 @@ export default function Hero({
             variant="h2"
             component="p"
             sx={{
-              padding: 1.2,
-              mb: { xs: 4, md: 6 },
+              px: { xs: 1, md: 1.2 },
+              py: { xs: 0.5, md: 1.2 },
+              mb: { xs: 3, sm: 4, md: 6 },
               fontSize: {
-                xs: "1.3rem",
-                sm: "1.6rem",
-                md: "1.9rem",
-                lg: "2.2rem",
+                xs: "1rem",
+                sm: "1.3rem",
+                md: "1.6rem",
+                lg: "2rem",
               },
               opacity: 0.95,
               textShadow: "0 1px 4px rgba(0,0,0,0.4)",

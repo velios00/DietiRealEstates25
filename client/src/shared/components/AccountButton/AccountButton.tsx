@@ -90,16 +90,23 @@ export default function AccountButton() {
           sx={{
             color: "#62A1BA",
             fontWeight: 600,
-            py: 1.5,
+            py: { xs: 1, md: 1.5 },
+            px: { xs: 1.5, md: 2 },
             "&:hover": {
               backgroundColor: "rgba(98, 161, 186, 0.08)",
             },
           }}
         >
-          <ListItemIcon>
-            <DashboardIcon sx={{ color: "#62A1BA" }} />
+          <ListItemIcon sx={{ minWidth: { xs: 36, md: 40 } }}>
+            <DashboardIcon
+              sx={{ color: "#62A1BA", fontSize: { xs: 20, md: 24 } }}
+            />
           </ListItemIcon>
-          <ListItemText>Dashboard</ListItemText>
+          <ListItemText
+            primaryTypographyProps={{ fontSize: { xs: "0.85rem", md: "1rem" } }}
+          >
+            Dashboard
+          </ListItemText>
         </MenuItem>
       );
     }
@@ -114,7 +121,8 @@ export default function AccountButton() {
             sx={{
               color: "#62A1BA",
               fontWeight: 600,
-              py: 1.5,
+              py: { xs: 1, md: 1.5 },
+              px: { xs: 1.5, md: 2 },
               "&:hover": {
                 backgroundColor: "rgba(98, 161, 186, 0.08)",
               },
@@ -123,10 +131,16 @@ export default function AccountButton() {
               },
             }}
           >
-            <ListItemIcon>
-              <BusinessIcon sx={{ color: "#62A1BA" }} />
+            <ListItemIcon sx={{ minWidth: { xs: 36, md: 40 } }}>
+              <BusinessIcon
+                sx={{ color: "#62A1BA", fontSize: { xs: 20, md: 24 } }}
+              />
             </ListItemIcon>
-            <ListItemText>
+            <ListItemText
+              primaryTypographyProps={{
+                fontSize: { xs: "0.85rem", md: "1rem" },
+              }}
+            >
               {isLoadingAgency ? "Caricamento..." : "La mia agenzia"}
             </ListItemText>
           </MenuItem>
@@ -136,16 +150,23 @@ export default function AccountButton() {
           sx={{
             color: "#62A1BA",
             fontWeight: 600,
-            py: 1.5,
+            py: { xs: 1, md: 1.5 },
+            px: { xs: 1.5, md: 2 },
             "&:hover": {
               backgroundColor: "rgba(98, 161, 186, 0.08)",
             },
           }}
         >
-          <ListItemIcon>
-            <DashboardIcon sx={{ color: "#62A1BA" }} />
+          <ListItemIcon sx={{ minWidth: { xs: 36, md: 40 } }}>
+            <DashboardIcon
+              sx={{ color: "#62A1BA", fontSize: { xs: 20, md: 24 } }}
+            />
           </ListItemIcon>
-          <ListItemText>Dashboard</ListItemText>
+          <ListItemText
+            primaryTypographyProps={{ fontSize: { xs: "0.85rem", md: "1rem" } }}
+          >
+            Dashboard
+          </ListItemText>
         </MenuItem>
       </>
     );
@@ -161,25 +182,31 @@ export default function AccountButton() {
           <Avatar
             sx={{
               backgroundColor: "#62A1BA",
-              width: 40,
-              height: 40,
+              width: { xs: 28, md: 36, lg: 40 },
+              height: { xs: 28, md: 36, lg: 40 },
               marginRight: 0.5,
               "&:hover": {
                 backgroundColor: "#62A1BA",
               },
             }}
           >
-            <PersonOutlineIcon sx={{ color: "white", fontSize: 40, px: 0.2 }} />
+            <PersonOutlineIcon
+              sx={{
+                color: "white",
+                fontSize: { xs: 28, md: 36, lg: 40 },
+                px: 0.2,
+              }}
+            />
           </Avatar>
         }
         sx={{
           color: "#62A1BA",
           borderColor: "#62A1BA",
           borderRadius: 28,
-          px: 3,
-          py: 1,
+          px: { xs: 1.5, md: 2.5, lg: 3 },
+          py: { xs: 0.5, md: 0.8, lg: 1 },
           fontWeight: 800,
-          fontSize: "1.3rem",
+          fontSize: { xs: "0.9rem", md: "1.1rem", lg: "1.3rem" },
           textTransform: "lowercase",
           "&:hover": {
             borderColor: "#62A1BA",
@@ -207,7 +234,8 @@ export default function AccountButton() {
             mt: 1,
             "& .MuiPaper-root": {
               borderRadius: 3,
-              minWidth: 180,
+              minWidth: { xs: 160, sm: 180, md: 200 },
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
             },
           }}
         >
@@ -221,16 +249,25 @@ export default function AccountButton() {
             sx={{
               color: "#62A1BA",
               fontWeight: 600,
-              py: 1.5,
+              py: { xs: 1, md: 1.5 },
+              px: { xs: 1.5, md: 2 },
               "&:hover": {
                 backgroundColor: "rgba(98, 161, 186, 0.08)",
               },
             }}
           >
-            <ListItemIcon>
-              <LogoutIcon sx={{ color: "#62A1BA" }} />
+            <ListItemIcon sx={{ minWidth: { xs: 36, md: 40 } }}>
+              <LogoutIcon
+                sx={{ color: "#62A1BA", fontSize: { xs: 20, md: 24 } }}
+              />
             </ListItemIcon>
-            <ListItemText>Logout</ListItemText>
+            <ListItemText
+              primaryTypographyProps={{
+                fontSize: { xs: "0.85rem", md: "1rem" },
+              }}
+            >
+              Logout
+            </ListItemText>
           </MenuItem>
         </Menu>
       )}

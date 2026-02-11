@@ -57,19 +57,18 @@ export default function Header() {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Box
                   component="img"
-                  src={"/src/assets/Dieticolorato.png"}
+                  src="/src/assets/Dieticolorato.png"
                   alt="DIETI Logo"
                   onClick={goHome}
                   sx={{
-                    height: { xs: 40, md: 170 },
-                    width: { xs: "auto", md: "auto" }, // Larghezza automatica
+                    height: { xs: 80, sm: 110, md: 130, lg: 180 },
+                    width: "auto",
                     objectFit: "contain",
-                    aspectRatio: "1080 / 1350", // Proporzioni originali
+                    aspectRatio: "1080 / 1350",
                   }}
                 />
               </Box>
             </Box>
-            {/* Login/Account Button */}
             <AccountButton />
           </Toolbar>
         </Container>

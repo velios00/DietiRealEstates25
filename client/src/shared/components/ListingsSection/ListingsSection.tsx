@@ -15,7 +15,6 @@ export default function ListingsSection() {
       page: 1,
       limit: 8,
       orderBy: "createdAt",
-      
     })
       .then((response) => {
         console.log("Response from searchEstates:", response);
@@ -70,12 +69,12 @@ export default function ListingsSection() {
         }}
       >
         {/* Titolo sezione */}
-        <Box sx={{ mb: 4, pt: 2 }}>
+        <Box sx={{ mb: { xs: 2, md: 4 }, pt: 2 }}>
           <Typography
             variant="h2"
             sx={{
               fontWeight: 700,
-              fontSize: "2.5rem",
+              fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
               textAlign: "center",
               color: "#62A1BA",
             }}
@@ -110,7 +109,7 @@ export default function ListingsSection() {
             ref={containerRef}
             sx={{
               display: "flex",
-              gap: 3,
+              gap: { xs: 2, md: 3 },
               overflowX: "auto",
               overflowY: "hidden",
               scrollbarWidth: "none", // Firefox
