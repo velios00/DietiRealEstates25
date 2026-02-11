@@ -1,13 +1,20 @@
 import { Box, Typography } from "@mui/material";
 import { SearchBar } from "../SearchBar/SearchBar";
+import { Location } from "../../models/Location.model";
 
 interface HeroProps {
   query: string;
   setQuery: (value: string) => void;
   onSearch: () => void;
+  onLocationSelect: (location: Location) => void;
 }
 
-export default function Hero({ query, setQuery, onSearch }: HeroProps) {
+export default function Hero({
+  query,
+  setQuery,
+  onSearch,
+  onLocationSelect,
+}: HeroProps) {
   return (
     <Box
       component="section"
@@ -20,7 +27,7 @@ export default function Hero({ query, setQuery, onSearch }: HeroProps) {
         // px: 2,
         backgroundColor: "#f5f5f5",
         color: "white",
-        overflow: "hidden",
+        overflow: "visible",
         minHeight: 600,
         maxHeight: 800,
       }}
@@ -33,6 +40,7 @@ export default function Hero({ query, setQuery, onSearch }: HeroProps) {
           width: "100%",
           height: "100%",
           zIndex: 0,
+          overflow: "hidden",
         }}
       >
         <Box
@@ -125,7 +133,7 @@ export default function Hero({ query, setQuery, onSearch }: HeroProps) {
               value={query}
               onChange={setQuery}
               onSearch={onSearch}
-              onOpenFilters={() => {}}
+              onLocationSelect={onLocationSelect}
             />
           </Box>
         </Box>

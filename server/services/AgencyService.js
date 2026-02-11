@@ -15,6 +15,13 @@ export class AgencyService {
     dto.profileImage = profileImage;
 
     try {
+      const existingUser = await User.findOne({
+        where: { email: dto.manager.email },
+      });
+      if (existingUser) {
+        throw new Error("Email already exists");
+      }
+
       // Create User WITHIN transaction
       const newUser = await User.create(
         {
@@ -81,10 +88,10 @@ export class AgencyService {
             {
               model: User,
               attributes: ["idUser", "email", "name", "surname", "role"],
-              as: "User", // Add alias if defined in associations
+              as: "User",
             },
           ],
-          as: "Manager", // Add alias if defined
+          as: "Manager",
         },
       ],
       attributes: [

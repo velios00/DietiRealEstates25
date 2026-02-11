@@ -44,18 +44,20 @@ export function SearchBar({
   };
 
   const handleLocationSelect = (location: Location) => {
+    onChange?.(location.city || location.address);
     setLocalValue(location.address);
     clear();
     onLocationSelect?.(location);
 
     // Se siamo sulla homepage (onSearch non è definito), naviga automaticamente alla pagina di ricerca
     if (!onSearch) {
-      navigate("/search-estates", {
-        state: {
-          query: location.city,
-          location: location,
-        },
-      });
+      const params = new URLSearchParams();
+      if (location.city) {
+        params.set("city", location.city);
+      }
+      params.set("lat", location.lat.toString());
+      params.set("lon", location.lon.toString());
+      navigate(`/search-estates?${params.toString()}`);
     }
   };
 
@@ -63,12 +65,29 @@ export function SearchBar({
     event.preventDefault();
     const trimmed = currentValue.trim();
 
+    if (trimmed && suggestions.length > 0 && onLocationSelect) {
+      const normalized = trimmed.toLowerCase();
+      const matchedLocation =
+        suggestions.find(
+          (location) =>
+            location.city.toLowerCase() === normalized ||
+            location.address.toLowerCase() === normalized,
+        ) ?? suggestions[0];
+      onLocationSelect(matchedLocation);
+      return;
+    }
+
     if (onSearch) {
       onSearch(trimmed);
       return;
     }
 
-    navigate("/search-estates", { state: { query: trimmed } });
+    const params = new URLSearchParams();
+    if (trimmed) {
+      params.set("city", trimmed);
+    }
+    const queryString = params.toString();
+    navigate(`/search-estates${queryString ? `?${queryString}` : ""}`);
   };
 
   return (

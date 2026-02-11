@@ -30,6 +30,7 @@ export default function RightSidebar({
     console.log("Location selected:", location);
     onFiltersChange({
       ...filters,
+      city: location.city || filters.city,
       lat: location.lat,
       lon: location.lon,
       radius: filters.radius || 5, // Default 5 km se non specificato

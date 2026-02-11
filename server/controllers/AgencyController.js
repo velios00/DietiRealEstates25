@@ -16,6 +16,9 @@ export class AgencyController {
       );
       res.status(201).json(result);
     } catch (err) {
+      if (err?.message === "Email already exists") {
+        err.status = 409;
+      }
       next(err);
     }
   }

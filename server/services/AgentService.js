@@ -3,6 +3,13 @@ import { EmailTemplates } from "../config/mailer.js";
 
 export class AgentService {
   static async createAgent(User, Agent, Manager, ManagerId, dto) {
+    const existingUser = await User.findOne({
+      where: { email: dto.email },
+    });
+    if (existingUser) {
+      throw new Error("Email already exists");
+    }
+
     const randomPassword = randomatic("Aa0", 10);
 
     const newUser = await User.create({

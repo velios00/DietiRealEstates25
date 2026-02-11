@@ -38,7 +38,7 @@ describe("UserService - changePassword", () => {
     expect(result).toEqual({ message: "Password changed successfully" });
   });
 
-  test("TC2 - Error path: User null", async () => {
+  test("TC2 - Error path: User null (or undefined, same behavior)", async () => {
     UserMock.findByPk.mockResolvedValue(null);
 
     const dto = new ChangePasswordDTO({
