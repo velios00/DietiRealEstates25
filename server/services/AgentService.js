@@ -3,6 +3,22 @@ import { EmailTemplates } from "../config/mailer.js";
 
 export class AgentService {
   static async createAgent(User, Agent, Manager, ManagerId, dto) {
+    if (!dto?.email) {
+      throw new Error("Email is required");
+    }
+
+    if (!dto?.name) {
+      throw new Error("Name is required");
+    }
+
+    if (!dto?.surname) {
+      throw new Error("Surname is required");
+    }
+
+    if (!dto?.profileImage) {
+      throw new Error("Profile image is required");
+    }
+
     const existingUser = await User.findOne({
       where: { email: dto.email },
     });

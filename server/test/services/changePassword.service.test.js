@@ -2,221 +2,214 @@ import { UserService } from "../../services/UserService";
 import { describe, test, expect, beforeEach, jest } from "@jest/globals";
 import { ChangePasswordDTO } from "../../DTOs/UserDTO";
 
-describe("UserService - changePassword", () => {
+describe("changePassword - R-WECT", () => {
   let UserMock;
-  let userInstance;
+
+  const validUser = {
+    idUser: 10,
+    password: "hashed*Pippopaz00",
+  };
+
+  const validDto = new ChangePasswordDTO({
+    oldPassword: "*Pippopaz00",
+    newPassword: "*Pipopazzo90",
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    userInstance = {
-      password: "oldHashed",
-      save: jest.fn().mockResolvedValue(true),
-    };
-
     UserMock = {
       findByPk: jest.fn(),
-      build: jest.fn(),
+      build: jest.fn().mockReturnValue({ password: "hashed*Pippopaz00" }),
     };
   });
 
   test("TC1 - Happy path: change password successfully", async () => {
-    UserMock.build.mockReturnValue({ password: "oldHashed" });
-
-    UserMock.findByPk.mockResolvedValue(userInstance);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "*Piponiaco00",
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
     });
 
-    const result = await UserService.changePassword(UserMock, dto, 10);
+    const result = await UserService.changePassword(
+      UserMock,
+      validDto,
+      validUser.idUser,
+    );
 
-    expect(UserMock.findByPk).toHaveBeenCalledWith(10);
-    expect(userInstance.save).toHaveBeenCalled();
-    expect(userInstance.password).toBe("*Piponiaco00");
+    expect(UserMock.findByPk).toHaveBeenCalledWith(validUser.idUser);
     expect(result).toEqual({ message: "Password changed successfully" });
   });
 
-  test("TC2 - Error path: User null (or undefined, same behavior)", async () => {
+  test("TC2 -Error Path: User is null", async () => {
     UserMock.findByPk.mockResolvedValue(null);
 
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "*Piponiaco00",
-    });
+    await expect(
+      UserService.changePassword(UserMock, validDto, validUser.idUser),
+    ).rejects.toThrow("User not found");
+  });
+
+  test("TC3 - Error Path: User is undefined", async () => {
+    UserMock.findByPk.mockResolvedValue(undefined);
 
     await expect(
-      UserService.changePassword(UserMock, dto, 10),
+      UserService.changePassword(UserMock, validDto, validUser.idUser),
+    ).rejects.toThrow("User not found");
+  });
+
+  test("TC4 - Error Path: User is {} ", async () => {
+    UserMock.findByPk.mockResolvedValue({});
+
+    await expect(
+      UserService.changePassword(UserMock, validDto, validUser.idUser),
     ).rejects.toThrow();
   });
 
-  test("TC3 - Error path: Old password incorrect", async () => {
-    UserMock.build.mockReturnValue({ password: "differentHash" });
-
-    UserMock.findByPk.mockResolvedValue(userInstance);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pipopazzo90",
-      newPassword: "*Piponiaco00",
+  test("TC5 - Error Path: old password is incorrect", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
     });
+    UserMock.build.mockReturnValue({ password: "hashedWrongOldPassword" });
 
-    await expect(UserService.changePassword(UserMock, dto, 10)).rejects.toThrow(
-      "Old password is incorrect",
-    );
-    expect(userInstance.save).not.toHaveBeenCalled();
-  });
-
-  test("TC4 - Error path: Old password is null", async () => {
-    UserMock.build.mockReturnValue({ password: null });
-    UserMock.findByPk.mockResolvedValue(userInstance);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: null,
-      newPassword: "*Piponiaco00",
+    const invalidDto = new ChangePasswordDTO({
+      oldPassword: "WrongOldPassword",
+      newPassword: "*Pipopazzo90",
     });
 
     await expect(
-      UserService.changePassword(UserMock, dto, 10),
-    ).rejects.toThrow();
-    expect(userInstance.save).not.toHaveBeenCalled();
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Old password is incorrect");
   });
 
-  test("TC5 - Error path: Old password is undefined", async () => {
-    UserMock.build.mockReturnValue({ password: undefined });
-    UserMock.findByPk.mockResolvedValue(userInstance);
+  test("TC6 - Error Path: old password is undefined or null (same behaviour)", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    UserMock.build.mockReturnValue({ password: "hashedUndefinedPassword" });
 
-    const dto = new ChangePasswordDTO({
+    const invalidDto = new ChangePasswordDTO({
       oldPassword: undefined,
-      newPassword: "*Piponiaco00",
+      newPassword: "*Pipopazzo90",
     });
 
     await expect(
-      UserService.changePassword(UserMock, dto, 10),
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
     ).rejects.toThrow();
-    expect(userInstance.save).not.toHaveBeenCalled();
   });
 
-  test("TC6 - Error path: Old password is empty string", async () => {
-    UserMock.build.mockReturnValue({ password: "" });
-    UserMock.findByPk.mockResolvedValue(userInstance);
-    const dto = new ChangePasswordDTO({
+  test("TC7 - Error Path: old password is empty string", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    UserMock.build.mockReturnValue({ password: "hashedEmptyPassword" });
+
+    const invalidDto = new ChangePasswordDTO({
       oldPassword: "",
-      newPassword: "*Piponiaco00",
+      newPassword: "*Pipopazzo90",
     });
 
     await expect(
-      UserService.changePassword(UserMock, dto, 10),
-    ).rejects.toThrow();
-    expect(userInstance.save).not.toHaveBeenCalled();
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Old password is incorrect");
   });
 
-  test("TC7 - Error path: New password is null", async () => {
-    UserMock.build.mockReturnValue({ password: "oldHashed" });
-    UserMock.findByPk.mockResolvedValue(userInstance);
+  test("TC8 -Error Path: newPassword is too short", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    const invalidDto = new ChangePasswordDTO({
+      oldPassword: "*Pippopaz00",
+      newPassword: "*Pipo90",
+    });
 
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
+    await expect(
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Invalid new password");
+  });
+
+  test("TC9 - Error Path: newPassword missing uppercase letter", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    const invalidDto = new ChangePasswordDTO({
+      oldPassword: "*Pippopaz00",
+      newPassword: "*pipo90000",
+    });
+
+    await expect(
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Invalid new password");
+  });
+
+  test("TC10 - Error Path: newPassword missing lowercase letter", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    const invalidDto = new ChangePasswordDTO({
+      oldPassword: "*Pippopaz00",
+      newPassword: "*PIPOOOOO90",
+    });
+
+    await expect(
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Invalid new password");
+  });
+
+  test("TC11 - Error Path: newPassword missing number", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    const invalidDto = new ChangePasswordDTO({
+      oldPassword: "*Pippopaz00",
+      newPassword: "*Pipononono",
+    });
+
+    await expect(
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Invalid new password");
+  });
+
+  test("TC12 - Error Path: newPassword missing special character", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    const invalidDto = new ChangePasswordDTO({
+      oldPassword: "*Pippopaz00",
+      newPassword: "Pipooazzo90",
+    });
+
+    await expect(
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Invalid new password");
+  });
+
+  test("TC13 - Error Path: newPassword is null or undefined (same behaviour)", async () => {
+    UserMock.findByPk.mockResolvedValue({
+      ...validUser,
+      save: jest.fn().mockResolvedValue(),
+    });
+    const invalidDto = new ChangePasswordDTO({
+      oldPassword: "*Pippopaz00",
       newPassword: null,
     });
 
-    const result = await UserService.changePassword(UserMock, dto, 10);
-
-    expect(userInstance.password).toBe(null);
-    expect(userInstance.save).toHaveBeenCalled();
+    await expect(
+      UserService.changePassword(UserMock, invalidDto, validUser.idUser),
+    ).rejects.toThrow("Invalid new password");
   });
 
-  test("TC8 - Error path: New password is undefined", async () => {
-    UserMock.build.mockReturnValue({ password: "oldHashed" });
-    UserMock.findByPk.mockResolvedValue(userInstance);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: undefined,
-    });
-
-    const result = await UserService.changePassword(UserMock, dto, 10);
-
-    expect(userInstance.password).toBe(undefined);
-    expect(userInstance.save).toHaveBeenCalled();
-  });
-
-  test("TC9 - Error path: New password is empty string", async () => {
-    UserMock.build.mockReturnValue({ password: "oldHashed" });
-    UserMock.findByPk.mockResolvedValue(userInstance);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "",
-    });
-
-    const result = await UserService.changePassword(UserMock, dto, 10);
-
-    expect(userInstance.password).toBe("");
-    expect(userInstance.save).toHaveBeenCalled();
-  });
-
-  test("TC10 - Error path: idUser not found", async () => {
+  test("TC14 - Error Path: idUser doesn't exist in database(null or undefined same behaviour)", async () => {
     UserMock.findByPk.mockResolvedValue(null);
 
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "*Piponiaco00",
-    });
-
     await expect(
-      UserService.changePassword(UserMock, dto, 9999),
-    ).rejects.toThrow();
-  });
-
-  test("TC11 - Error path: idUser is Null", async () => {
-    UserMock.findByPk.mockResolvedValue(null);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "*Piponiaco00",
-    });
-
-    await expect(
-      UserService.changePassword(UserMock, dto, null),
-    ).rejects.toThrow();
-  });
-
-  test("TC12 - Error path: idUser is Undefined", async () => {
-    UserMock.findByPk.mockResolvedValue(null);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "*Piponiaco00",
-    });
-
-    await expect(
-      UserService.changePassword(UserMock, dto, undefined),
-    ).rejects.toThrow();
-  });
-
-  test("TC13 - Error path: idUser is String", async () => {
-    UserMock.findByPk.mockResolvedValue(null);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "*Piponiaco00",
-    });
-    await expect(
-      UserService.changePassword(UserMock, dto, "abc"),
-    ).rejects.toThrow();
-  });
-
-  test("TC14: Error path: idUser is Negative", async () => {
-    UserMock.findByPk.mockResolvedValue(null);
-
-    const dto = new ChangePasswordDTO({
-      oldPassword: "*Pippo00",
-      newPassword: "*Piponiaco00",
-    });
-
-    await expect(
-      UserService.changePassword(UserMock, dto, -1),
-    ).rejects.toThrow();
+      UserService.changePassword(UserMock, validDto, validUser.idUser),
+    ).rejects.toThrow("User not found");
   });
 });

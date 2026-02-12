@@ -1,5 +1,8 @@
 export class OfferService {
   static async createOffer(Offer, RealEstate, dto, userId) {
+    if (userId == null || userId <= 0) {
+      throw new Error("Invalid user id");
+    }
     const estate = await RealEstate.findByPk(dto.idRealEstate);
     if (!estate) {
       throw new Error("RealEstate not found");
