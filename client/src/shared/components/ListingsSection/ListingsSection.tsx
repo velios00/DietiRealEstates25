@@ -17,7 +17,6 @@ export default function ListingsSection() {
       orderBy: "createdAt",
     })
       .then((response) => {
-        console.log("Response from searchEstates:", response);
         const estates: Estate[] = response.data.results;
         const mapped = estates.map(mapEstateToListing);
         setListings(mapped);
@@ -69,12 +68,12 @@ export default function ListingsSection() {
         }}
       >
         {/* Titolo sezione */}
-        <Box sx={{ mb: { xs: 2, md: 4 }, pt: 2 }}>
+        <Box sx={{ mb: 4, pt: 2 }}>
           <Typography
             variant="h2"
             sx={{
               fontWeight: 700,
-              fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+              fontSize: "2.5rem",
               textAlign: "center",
               color: "#62A1BA",
             }}
@@ -109,7 +108,7 @@ export default function ListingsSection() {
             ref={containerRef}
             sx={{
               display: "flex",
-              gap: { xs: 2, md: 3 },
+              gap: 3,
               overflowX: "auto",
               overflowY: "hidden",
               scrollbarWidth: "none", // Firefox

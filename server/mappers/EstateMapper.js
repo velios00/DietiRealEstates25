@@ -15,7 +15,6 @@ export class EstateMapper {
       nBathrooms: body.nBathrooms,
       energyClass: body.energyClass,
       floor: body.floor,
-      //idAgency: body.idAgency
     });
   }
 

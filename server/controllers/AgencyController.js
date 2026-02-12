@@ -16,9 +16,6 @@ export class AgencyController {
       );
       res.status(201).json(result);
     } catch (err) {
-      if (err?.message === "Email already exists") {
-        err.status = 409;
-      }
       next(err);
     }
   }
@@ -46,7 +43,7 @@ export class AgencyController {
         User,
         idAgency,
       );
-      console.log(agency);
+
       const result = AgencyMapper.agencyToDTO(agency);
       res.status(200).json(result);
     } catch (err) {

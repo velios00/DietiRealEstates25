@@ -104,6 +104,7 @@ export default function AgencyView() {
 
   const handleEstateCreated = () => {
     fetchEstates();
+    toast.success("Immobile creato con successo!");
   };
 
   const handleCreateAgent = async (agentData: CreateAgent) => {
