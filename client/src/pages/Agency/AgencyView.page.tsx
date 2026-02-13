@@ -43,8 +43,6 @@ export default function AgencyView() {
     try {
       const data = await getAgencyById(id);
       setAgency(data);
-
-      setAgency(null);
     } finally {
       setAgencyLoading(false);
     }
