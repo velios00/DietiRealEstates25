@@ -84,7 +84,7 @@ export default function Hero({
             variant="h1"
             component="h1"
             sx={{
-              mb: { xs: 1, md: -1 },
+              mb: { xs: 1.5, md: 1 },
               fontWeight: 800,
               fontSize: {
                 xs: "1.8rem",

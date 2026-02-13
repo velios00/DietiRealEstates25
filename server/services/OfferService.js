@@ -1,5 +1,8 @@
 export class OfferService {
   static async createOffer(Offer, RealEstate, dto, userId) {
+    if (userId == null || userId <= 0) {
+      throw new Error("Invalid user id");
+    }
     const estate = await RealEstate.findByPk(dto.idRealEstate);
     if (!estate) {
       throw new Error("RealEstate not found");
@@ -155,11 +158,17 @@ export class OfferService {
   }
 
   static async getMyOffers(Offer, userId, User) {
+    if (!User || typeof User !== "object" || Array.isArray(User)) {
+      throw new Error("User model is invalid");
+    }
     const offers = await Offer.findAll({
       where: { idUser: userId },
       include: [{ model: User, attributes: ["name", "surname"] }],
       order: [["dateOffer", "DESC"]],
     });
+    if (offers === null || offers === undefined || !Array.isArray(offers)) {
+      throw new Error("Failed to retrieve offers");
+    }
     return offers;
   }
 

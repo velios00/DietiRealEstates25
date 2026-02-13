@@ -26,6 +26,22 @@ export class UserService {
       throw new Error("Old password is incorrect");
     }
 
+    if (
+      !dto?.newPassword ||
+      typeof dto.newPassword !== "string" ||
+      dto.newPassword.length < 8 ||
+      !/[A-Z]/.test(dto.newPassword) ||
+      !/[a-z]/.test(dto.newPassword) ||
+      !/[0-9]/.test(dto.newPassword) ||
+      !/[^A-Za-z0-9]/.test(dto.newPassword)
+    ) {
+      throw new Error("Invalid new password");
+    }
+
+    if (dto.oldPassword == null || dto.oldPassword == undefined) {
+      throw new Error("Old password is null or undefined");
+    }
+
     // Let model handle new password hashing
     user.password = dto.newPassword;
     await user.save();
