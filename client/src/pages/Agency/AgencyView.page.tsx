@@ -43,8 +43,6 @@ export default function AgencyView() {
     try {
       const data = await getAgencyById(id);
       setAgency(data);
-
-      setAgency(null);
     } finally {
       setAgencyLoading(false);
     }
@@ -104,6 +102,7 @@ export default function AgencyView() {
 
   const handleEstateCreated = () => {
     fetchEstates();
+    toast.success("Immobile creato con successo!");
   };
 
   const handleCreateAgent = async (agentData: CreateAgent) => {
