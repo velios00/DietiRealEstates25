@@ -112,41 +112,14 @@ export default function AccountButton() {
     }
 
     // For all other roles (agent, manager, user, etc.), show user dashboard
-    return (
-      <>
-        {(userRole === "agent" || userRole === "manager") && (
-          <MenuItem
-            onClick={handleAgencyClick}
-            disabled={isLoadingAgency}
-            sx={{
-              color: "#62A1BA",
-              fontWeight: 600,
-              py: { xs: 1, md: 1.5 },
-              px: { xs: 1.5, md: 2 },
-              "&:hover": {
-                backgroundColor: "rgba(98, 161, 186, 0.08)",
-              },
-              "&.Mui-disabled": {
-                opacity: 0.6,
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: { xs: 36, md: 40 } }}>
-              <BusinessIcon
-                sx={{ color: "#62A1BA", fontSize: { xs: 20, md: 24 } }}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primaryTypographyProps={{
-                fontSize: { xs: "0.85rem", md: "1rem" },
-              }}
-            >
-              {isLoadingAgency ? "Caricamento..." : "La mia agenzia"}
-            </ListItemText>
-          </MenuItem>
-        )}
+    const menuItems = [];
+
+    if (userRole === "agent" || userRole === "manager") {
+      menuItems.push(
         <MenuItem
-          onClick={handleUserDashboardClick}
+          key="agency"
+          onClick={handleAgencyClick}
+          disabled={isLoadingAgency}
           sx={{
             color: "#62A1BA",
             fontWeight: 600,
@@ -155,21 +128,55 @@ export default function AccountButton() {
             "&:hover": {
               backgroundColor: "rgba(98, 161, 186, 0.08)",
             },
+            "&.Mui-disabled": {
+              opacity: 0.6,
+            },
           }}
         >
           <ListItemIcon sx={{ minWidth: { xs: 36, md: 40 } }}>
-            <DashboardIcon
+            <BusinessIcon
               sx={{ color: "#62A1BA", fontSize: { xs: 20, md: 24 } }}
             />
           </ListItemIcon>
           <ListItemText
-            primaryTypographyProps={{ fontSize: { xs: "0.85rem", md: "1rem" } }}
+            primaryTypographyProps={{
+              fontSize: { xs: "0.85rem", md: "1rem" },
+            }}
           >
-            Dashboard
+            {isLoadingAgency ? "Caricamento..." : "La mia agenzia"}
           </ListItemText>
-        </MenuItem>
-      </>
+        </MenuItem>,
+      );
+    }
+
+    menuItems.push(
+      <MenuItem
+        key="dashboard"
+        onClick={handleUserDashboardClick}
+        sx={{
+          color: "#62A1BA",
+          fontWeight: 600,
+          py: { xs: 1, md: 1.5 },
+          px: { xs: 1.5, md: 2 },
+          "&:hover": {
+            backgroundColor: "rgba(98, 161, 186, 0.08)",
+          },
+        }}
+      >
+        <ListItemIcon sx={{ minWidth: { xs: 36, md: 40 } }}>
+          <DashboardIcon
+            sx={{ color: "#62A1BA", fontSize: { xs: 20, md: 24 } }}
+          />
+        </ListItemIcon>
+        <ListItemText
+          primaryTypographyProps={{ fontSize: { xs: "0.85rem", md: "1rem" } }}
+        >
+          Dashboard
+        </ListItemText>
+      </MenuItem>,
     );
+
+    return menuItems;
   };
 
   return (
@@ -241,8 +248,7 @@ export default function AccountButton() {
         >
           {renderRoleBasedMenuItem()}
 
-          {/* Divider solo se c'è una voce di menu precedente */}
-          {renderRoleBasedMenuItem() && <Divider sx={{ my: 0.5 }} />}
+          <Divider sx={{ my: 0.5 }} />
 
           <MenuItem
             onClick={handleLogout}

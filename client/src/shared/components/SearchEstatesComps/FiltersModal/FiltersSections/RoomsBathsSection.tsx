@@ -23,7 +23,7 @@ export default function RoomsBathsSection({
     <Box sx={{ mb: 4 }}>
       <Grid container spacing={3}>
         {/* LOCALI */}
-        <Grid size={{ xs: 10 }}>
+        <Grid size={{ xs: 12 }}>
           <Box
             sx={{
               display: "flex",
@@ -70,7 +70,7 @@ export default function RoomsBathsSection({
         </Grid>
 
         {/* BAGNI */}
-        <Grid size={{ xs: 10 }}>
+        <Grid size={{ xs: 12 }}>
           <Box
             sx={{
               display: "flex",

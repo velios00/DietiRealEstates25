@@ -52,6 +52,9 @@ export function LoginForm() {
           if (userContext?.setUser) {
             userContext.setUser(authUser);
           }
+          if (userContext?.setRole) {
+            userContext.setRole(authUser.role);
+          }
           window.dispatchEvent(new Event("storage"));
 
           toast.success("Login effettuato con successo");
@@ -82,6 +85,9 @@ export function LoginForm() {
 
       if (userContext?.setUser) {
         userContext.setUser(authUser);
+      }
+      if (userContext?.setRole) {
+        userContext.setRole(authUser.role);
       }
       window.dispatchEvent(new Event("storage"));
 
