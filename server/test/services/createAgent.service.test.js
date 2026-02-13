@@ -22,7 +22,7 @@ describe("AgentService, R-WECT", () => {
     validUserModel.create.mockResolvedValue({ idUser: 1 });
 
     validManagerModel.findByPk.mockResolvedValue({ idAgency: 5 });
-    validAgentModel.create.mockResolvedValue({});
+    validAgentModel.create.mockResolvedValue({ idAgent: 1 });
   });
 
   test("TC1 - Happy path: create agent successfully", async () => {
@@ -41,7 +41,7 @@ describe("AgentService, R-WECT", () => {
     expect(result).toHaveProperty("agent");
   });
 
-  test("TC2 - Error Path: User null or undefined", async () => {
+  test("TC2 - Error Path: User null", async () => {
     await expect(
       AgentService.createAgent(
         null,
@@ -53,7 +53,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow();
   });
 
-  test("TC3 - Error Path: Agent null or undefined", async () => {
+  test("TC3 - Error Path: Agent null", async () => {
     await expect(
       AgentService.createAgent(
         validUserModel,
@@ -65,7 +65,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow();
   });
 
-  test("TC4 - Error Path: Manager null or undefined", async () => {
+  test("TC4 - Error Path: Manager null", async () => {
     await expect(
       AgentService.createAgent(
         validUserModel,
@@ -199,5 +199,82 @@ describe("AgentService, R-WECT", () => {
         { ...validDto, profileImage: "" },
       ),
     ).rejects.toThrow("Profile image is required");
+  });
+
+  test("TC15 - Error Path: User undefined", async () => {
+    await expect(
+      AgentService.createAgent(
+        undefined,
+        validAgentModel,
+        validManagerModel,
+        validManagerId,
+        validDto,
+      ),
+    ).rejects.toThrow();
+  });
+
+  test("TC16 - Error Path: User is {}", async () => {
+    validUserModel.create.mockResolvedValue({});
+
+    await expect(
+      AgentService.createAgent(
+        validUserModel,
+        validAgentModel,
+        validManagerModel,
+        validManagerId,
+        validDto,
+      ),
+    ).rejects.toThrow("User not created");
+  });
+
+  test("TC17 - Error Path: Agent undefined", async () => {
+    await expect(
+      AgentService.createAgent(
+        validUserModel,
+        undefined,
+        validManagerModel,
+        validManagerId,
+        validDto,
+      ),
+    ).rejects.toThrow();
+  });
+
+  test("TC18 - Error Path: Agent is {}", async () => {
+    validAgentModel.create.mockResolvedValue({});
+
+    await expect(
+      AgentService.createAgent(
+        validUserModel,
+        validAgentModel,
+        validManagerModel,
+        validManagerId,
+        validDto,
+      ),
+    ).rejects.toThrow();
+  });
+
+  test("TC19 - Error Path: Manager undefined", async () => {
+    await expect(
+      AgentService.createAgent(
+        validUserModel,
+        validAgentModel,
+        undefined,
+        validManagerId,
+        validDto,
+      ),
+    ).rejects.toThrow();
+  });
+
+  test("TC20 - Error Path: Manager is {}", async () => {
+    validManagerModel.findByPk.mockResolvedValue({});
+    await expect(
+      AgentService.createAgent(
+        validUserModel,
+        validAgentModel,
+        validManagerModel,
+        validManagerId,
+        validDto,
+      ),
+    ).rejects.toThrow();
   });
 });

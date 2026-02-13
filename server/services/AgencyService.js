@@ -128,7 +128,7 @@ export class AgencyService {
         },
       ],
     });
-    if (!agency) {
+    if (!agency || !agency.idAgency) {
       throw new Error("Agency not found");
     }
     return agency;

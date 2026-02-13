@@ -3,6 +3,18 @@ import { EmailTemplates } from "../config/mailer.js";
 
 export class AgentService {
   static async createAgent(User, Agent, Manager, ManagerId, dto) {
+    if (!User?.findOne || !User?.create) {
+      throw new Error("User model is invalid");
+    }
+
+    if (!Agent?.create) {
+      throw new Error("Agent model is invalid");
+    }
+
+    if (!Manager?.findByPk) {
+      throw new Error("Manager model is invalid");
+    }
+
     if (!dto?.email) {
       throw new Error("Email is required");
     }
@@ -36,9 +48,12 @@ export class AgentService {
       profileImage: dto.profileImage,
       role: "agent",
     });
+    if (!newUser || !newUser.idUser) {
+      throw new Error("User not created");
+    }
 
     const manager = await Manager.findByPk(ManagerId);
-    if (!manager) {
+    if (!manager || !manager.idAgency) {
       throw new Error("Manager not found");
     }
     const agencyId = manager.idAgency;
@@ -47,6 +62,9 @@ export class AgentService {
       idManager: ManagerId,
       idAgency: agencyId,
     });
+    if (!newAgent || !newAgent.idAgent) {
+      throw new Error("Agent not created");
+    }
 
     //Invio Email
     try {
