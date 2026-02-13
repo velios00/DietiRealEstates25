@@ -17,10 +17,13 @@ import {
   createCounterOffer,
   updateCounterOfferStatus,
   updateOfferStatus,
+  createExternalOffer,
 } from "../../../../services/OfferService";
+import { getUserAgencyId } from "../../../../services/UserService";
 import { Offer } from "../../../models/Offer.model";
 import OfferCard from "./OfferCard";
 import CounterOfferModal from "./CounterOfferModal";
+import ExternalOfferModal from "./ExternalOfferModal";
 import { Roles } from "../../../enums/Roles.enum";
 import { useUser } from "../../../hooks/useUser";
 import toast from "react-hot-toast";
@@ -31,6 +34,7 @@ interface OfferModalProps {
   estateId: number;
   estatePrice: number;
   onSubmit: (offerPrice: number) => Promise<void>;
+  estateAgencyId?: number;
 }
 
 export default function OfferModal({
@@ -39,6 +43,7 @@ export default function OfferModal({
   estateId,
   estatePrice,
   onSubmit,
+  estateAgencyId,
 }: OfferModalProps) {
   const userContext = useUser();
   const navigate = useNavigate();
@@ -48,6 +53,8 @@ export default function OfferModal({
   const [offerPrice, setOfferPrice] = useState<string>("");
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(false);
+  const [externalOfferOpen, setExternalOfferOpen] = useState(false);
+  const [externalSubmitting, setExternalSubmitting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [statusUpdatingId, setStatusUpdatingId] = useState<number | null>(null);
   const [counterOfferOpen, setCounterOfferOpen] = useState(false);
@@ -56,6 +63,35 @@ export default function OfferModal({
   const [counterStatusUpdatingId, setCounterStatusUpdatingId] = useState<
     number | null
   >(null);
+  const [userAgencyId, setUserAgencyId] = useState<number | null>(null);
+
+  const canManageEstateOffers =
+    isManagerOrAgent &&
+    userAgencyId !== null &&
+    estateAgencyId !== undefined &&
+    userAgencyId === estateAgencyId;
+
+  useEffect(() => {
+    const fetchAgencyId = async () => {
+      if (!isManagerOrAgent || !currentUserId) {
+        setUserAgencyId(null);
+        return;
+      }
+
+      try {
+        const response = await getUserAgencyId(Number(currentUserId));
+        const agencyId = response.data?.idAgency;
+        setUserAgencyId(
+          agencyId !== undefined && agencyId !== null ? Number(agencyId) : null,
+        );
+      } catch (error) {
+        console.error("Errore nel recupero dell'agenzia utente:", error);
+        setUserAgencyId(null);
+      }
+    };
+
+    fetchAgencyId();
+  }, [isManagerOrAgent, currentUserId]);
 
   const handleSubmit = async () => {
     if (!userContext?.user) {
@@ -87,7 +123,10 @@ export default function OfferModal({
     idOffer: number,
     status: "accepted" | "rejected",
   ) => {
-    if (!isManagerOrAgent) return;
+    if (!canManageEstateOffers) {
+      toast.error("Non puoi gestire offerte di immobili di altre agenzie.");
+      return;
+    }
 
     setStatusUpdatingId(idOffer);
     try {
@@ -105,7 +144,10 @@ export default function OfferModal({
   };
 
   const handleOpenCounterOffer = (idOffer: number) => {
-    if (!isManagerOrAgent) return;
+    if (!canManageEstateOffers) {
+      toast.error("Non puoi gestire offerte di immobili di altre agenzie.");
+      return;
+    }
     setCounterOfferId(idOffer);
     setCounterOfferOpen(true);
   };
@@ -117,6 +159,10 @@ export default function OfferModal({
 
   const handleSubmitCounterOffer = async (amount: number) => {
     if (!counterOfferId) return;
+    if (!canManageEstateOffers) {
+      toast.error("Non puoi gestire offerte di immobili di altre agenzie.");
+      return;
+    }
 
     setCounterSubmitting(true);
     try {
@@ -152,6 +198,36 @@ export default function OfferModal({
       toast.error("Errore nell'aggiornamento della controfferta. Riprova.");
     } finally {
       setCounterStatusUpdatingId(null);
+    }
+  };
+
+  const handleOpenExternalOffer = () => {
+    if (!canManageEstateOffers) return;
+    setExternalOfferOpen(true);
+  };
+
+  const handleCloseExternalOffer = () => {
+    setExternalOfferOpen(false);
+  };
+
+  const handleSubmitExternalOffer = async (amount: number) => {
+    if (!isManagerOrAgent) return;
+
+    setExternalSubmitting(true);
+    try {
+      await createExternalOffer({
+        idRealEstate: estateId,
+        amount,
+        inSistem: false,
+      });
+      toast.success("Offerta esterna registrata con successo.");
+      handleCloseExternalOffer();
+      await fetchOffers();
+    } catch (error) {
+      console.error("Errore nella registrazione dell'offerta esterna:", error);
+      toast.error("Errore nella registrazione dell'offerta esterna. Riprova.");
+    } finally {
+      setExternalSubmitting(false);
     }
   };
 
@@ -282,7 +358,7 @@ export default function OfferModal({
                     isManagerOrAgent={isManagerOrAgent}
                   />
                 </Box>
-                {isManagerOrAgent && offer.status === "pending" && (
+                {canManageEstateOffers && offer.status === "pending" && (
                   <Box sx={{ display: "flex", gap: 1 }}>
                     <Button
                       size="small"
@@ -449,6 +525,24 @@ export default function OfferModal({
         >
           Annulla
         </Button>
+        {canManageEstateOffers && (
+          <Button
+            onClick={handleOpenExternalOffer}
+            variant="contained"
+            sx={{
+              bgcolor: "#62A1BA",
+              textTransform: "none",
+              fontSize: "1rem",
+              borderRadius: 2,
+              px: 3,
+              "&:hover": {
+                bgcolor: "#4a90a4",
+              },
+            }}
+          >
+            Registra Offerta Esterna
+          </Button>
+        )}
         {!isManagerOrAgent && (
           <Button
             onClick={handleSubmit}
@@ -481,6 +575,13 @@ export default function OfferModal({
         onSubmit={handleSubmitCounterOffer}
         submitting={counterSubmitting}
         minAmount={estatePrice}
+      />
+      <ExternalOfferModal
+        open={externalOfferOpen}
+        onClose={handleCloseExternalOffer}
+        onSubmit={handleSubmitExternalOffer}
+        submitting={externalSubmitting}
+        maxPrice={estatePrice}
       />
     </Dialog>
   );

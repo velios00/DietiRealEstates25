@@ -40,6 +40,7 @@ export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
             };
 
             userContext?.setUser(authUser);
+            userContext?.setRole(authUser.role);
 
             // Controlla i ruoli dopo aver settato l'utente
             if (allowedRoles && !allowedRoles.includes(authUser.role)) {

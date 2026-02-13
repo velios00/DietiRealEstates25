@@ -24,4 +24,7 @@ export interface Estate {
     pois?: Poi[];
   };
   creationDate: string;
+  idAgent?: number;
+  idManager?: number;
+  idAgency?: number;
 }

@@ -165,6 +165,7 @@ export default function EstateView() {
         estateId={estate.idRealEstate}
         estatePrice={estate.price}
         onSubmit={handleSubmitOffer}
+        estateAgencyId={estate.idAgency}
       />
     </>
   );
