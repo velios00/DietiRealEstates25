@@ -72,8 +72,8 @@ export class AgentService {
         dto.email,
         dto.name,
         "agent",
-        null,
         randomPassword,
+        null,
       );
     } catch (emailError) {
       console.error("Errore nell'invio dell'email a:", dto.email, emailError);

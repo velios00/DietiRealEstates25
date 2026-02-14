@@ -69,8 +69,8 @@ export class AgencyService {
         dto.manager.email,
         dto.manager.name,
         "manager",
-        dto.agencyName,
         temporaryPassword,
+        dto.agencyName,
       );
 
       return { agency: newAgency, manager: newUser };

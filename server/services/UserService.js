@@ -97,8 +97,8 @@ export class UserService {
       dto.email,
       dto.name,
       "admin",
-      null,
       temporaryPassword,
+      null,
     );
 
     return {
