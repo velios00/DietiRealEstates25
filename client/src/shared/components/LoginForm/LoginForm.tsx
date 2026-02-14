@@ -1,7 +1,16 @@
 import { validateEmail } from "../../utils/validation";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState, FormEvent, useContext } from "react";
-import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { loginUser, googleLoginUser } from "../../../services/AuthService";
 import { LoginRequest } from "../../models/AuthRequest.model";
@@ -16,6 +25,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 export function LoginForm() {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -154,7 +164,7 @@ export function LoginForm() {
             <TextField
               label="Password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               fullWidth
               sx={{
                 "& .MuiInputLabel-root": {
@@ -177,6 +187,19 @@ export function LoginForm() {
                   password: e.target.value,
                 })
               }
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
           </Grid>
 
