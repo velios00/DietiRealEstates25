@@ -68,6 +68,21 @@ export function RegisterForm() {
     [navigate, registerData],
   );
 
+  const roundedFieldStyle = {
+    "& .MuiInputLabel-root": {
+      top: "50%",
+      transform: "translate(14px, -50%) scale(1)",
+    },
+    "& .MuiInputLabel-shrink": {
+      top: 0,
+      transform: "translate(14px, -9px) scale(0.75)",
+    },
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 6,
+      padding: "8px 14px",
+    },
+  };
+
   return (
     <>
       <Grid container spacing={2} justifyContent="center">
@@ -100,20 +115,7 @@ export function RegisterForm() {
                     label="Email"
                     name="email"
                     fullWidth
-                    sx={{
-                      "& .MuiInputLabel-root": {
-                        top: "50%",
-                        transform: "translate(14px, -50%) scale(1)",
-                      },
-                      "& .MuiInputLabel-shrink": {
-                        top: 0,
-                        transform: "translate(14px, -9px) scale(0.75)",
-                      },
-                      "&. MuiOutlinedInput-root": {
-                        borderRadius: 6,
-                        padding: "8px 14px",
-                      },
-                    }}
+                    sx={roundedFieldStyle}
                     value={registerData.email.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -132,6 +134,7 @@ export function RegisterForm() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     fullWidth
+                    sx={roundedFieldStyle}
                     value={registerData.password.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -166,20 +169,7 @@ export function RegisterForm() {
                     label="Nome"
                     name="name"
                     fullWidth
-                    sx={{
-                      "& .MuiInputLabel-root": {
-                        top: "50%",
-                        transform: "translate(14px, -50%) scale(1)",
-                      },
-                      "& .MuiInputLabel-shrink": {
-                        top: 0,
-                        transform: "translate(14px, -9px) scale(0.75)",
-                      },
-                      "&. MuiOutlinedInput-root": {
-                        borderRadius: 6,
-                        padding: "8px 14px",
-                      },
-                    }}
+                    sx={roundedFieldStyle}
                     value={registerData.name.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -197,20 +187,7 @@ export function RegisterForm() {
                     label="Cognome"
                     name="surname"
                     fullWidth
-                    sx={{
-                      "& .MuiInputLabel-root": {
-                        top: "50%",
-                        transform: "translate(14px, -50%) scale(1)",
-                      },
-                      "& .MuiInputLabel-shrink": {
-                        top: 0,
-                        transform: "translate(14px, -9px) scale(0.75)",
-                      },
-                      "&. MuiOutlinedInput-root": {
-                        borderRadius: 6,
-                        padding: "8px 14px",
-                      },
-                    }}
+                    sx={roundedFieldStyle}
                     value={registerData.surname.value}
                     onChange={(e) =>
                       setRegisterData({
@@ -228,20 +205,7 @@ export function RegisterForm() {
                     label="Indirizzo"
                     name="userAddress"
                     fullWidth
-                    sx={{
-                      "& .MuiInputLabel-root": {
-                        top: "50%",
-                        transform: "translate(14px, -50%) scale(1)",
-                      },
-                      "& .MuiInputLabel-shrink": {
-                        top: 0,
-                        transform: "translate(14px, -9px) scale(0.75)",
-                      },
-                      "&. MuiOutlinedInput-root": {
-                        borderRadius: 6,
-                        padding: "8px 14px",
-                      },
-                    }}
+                    sx={roundedFieldStyle}
                     value={registerData.userAddress.value}
                     onChange={(e) =>
                       setRegisterData({

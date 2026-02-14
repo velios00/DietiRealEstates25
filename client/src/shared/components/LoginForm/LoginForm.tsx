@@ -166,6 +166,20 @@ export function LoginForm() {
               name="password"
               type={showPassword ? "text" : "password"}
               fullWidth
+              sx={{
+                "& .MuiInputLabel-root": {
+                  top: "50%",
+                  transform: "translate(14px, -50%) scale(1)",
+                },
+                "& .MuiInputLabel-shrink": {
+                  top: 0,
+                  transform: "translate(14px, -9px) scale(0.75)",
+                },
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 6,
+                  padding: "8px 14px",
+                },
+              }}
               value={loginData.password}
               onChange={(e) =>
                 setLoginData({
