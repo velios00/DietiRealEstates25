@@ -40,7 +40,8 @@ export default function ExternalOfferModal({
 
   const parsedAmount = parseFloat(amount);
   const hasValidAmount = amount !== "" && !isNaN(parsedAmount);
-  const isValid = hasValidAmount && parsedAmount > 0 && parsedAmount < maxPrice;
+  const isValid =
+    hasValidAmount && parsedAmount > 0 && parsedAmount <= maxPrice;
 
   return (
     <Dialog
@@ -95,7 +96,7 @@ export default function ExternalOfferModal({
                 ? "Offerta valida"
                 : parsedAmount <= 0
                   ? "L'importo deve essere maggiore di 0"
-                  : "L'offerta deve essere inferiore al prezzo"}
+                  : "L'offerta non può superare il prezzo"}
             </Typography>
           </Box>
         )}

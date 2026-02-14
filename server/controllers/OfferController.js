@@ -29,7 +29,7 @@ export class OfferController {
       if (err.message === "Invalid offer amount") {
         return res.status(400).json({
           error:
-            "L'offerta deve essere maggiore di 0 e minore del prezzo dell'immobile",
+            "L'offerta deve essere maggiore di 0 e non può superare il prezzo dell'immobile",
         });
       }
       next(err);

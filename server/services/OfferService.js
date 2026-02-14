@@ -10,7 +10,7 @@ export class OfferService {
     if (estate.idAgent === userId || estate.idManager === userId) {
       throw new Error("Cannot make an offer on your own estate");
     }
-    if (dto.amount <= 0 || dto.amount >= estate.price) {
+    if (dto.amount <= 0 || dto.amount > estate.price) {
       throw new Error("Invalid offer amount");
     }
 
@@ -46,7 +46,7 @@ export class OfferService {
     if (offer.status !== "pending") {
       throw new Error("Can only counter a pending offer");
     }
-    if (counterAmount <= 0 || counterAmount >= estate.price) {
+    if (counterAmount <= 0 || counterAmount > estate.price) {
       throw new Error("Invalid counter offer amount");
     }
     if (counterAmount <= offer.amount) {
@@ -133,7 +133,7 @@ export class OfferService {
       throw new Error("Only agent or manager can add external offers");
     }
 
-    if (dto.amount <= 0 || dto.amount >= estate.price) {
+    if (dto.amount <= 0 || dto.amount > estate.price) {
       throw new Error("Invalid offer amount");
     }
 

@@ -6,7 +6,6 @@ export class AgentMapper {
       name: body.name,
       surname: body.surname,
       email: body.email,
-      profileImage: body.profileImage,
     });
   }
 
@@ -17,7 +16,6 @@ export class AgentMapper {
       name: user.name,
       surname: user.surname,
       email: user.email,
-      profileImage: user.profileImage,
     };
   }
 }

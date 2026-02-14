@@ -93,6 +93,20 @@ export default function OfferModal({
     fetchAgencyId();
   }, [isManagerOrAgent, currentUserId]);
 
+  const validateOffer = (price: number): boolean => {
+    if (price <= 0) {
+      toast.error("L'offerta deve essere maggiore di 0");
+      return false;
+    }
+
+    if (price > estatePrice) {
+      toast.error("L'offerta deve essere inferiore al prezzo di partenza");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
     if (!userContext?.user) {
       toast.error("Devi accedere per proporre un'offerta.");
@@ -101,19 +115,34 @@ export default function OfferModal({
       return;
     }
 
-    if (!offerPrice || isNaN(parseFloat(offerPrice))) return;
+    if (!offerPrice || isNaN(parseFloat(offerPrice))) {
+      toast.error("Inserisci un importo valido");
+      return;
+    }
 
     const price = parseFloat(offerPrice);
+
+    // Validazione lato client
+    if (!validateOffer(price)) {
+      return;
+    }
+
     setSubmitting(true);
 
     try {
       await onSubmit(price);
       setOfferPrice("");
+      toast.success("Offerta inviata con successo!");
       // Ricarica le offerte per mostrare quella appena creata
       await fetchOffers();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Errore nell'invio dell'offerta:", error);
-      toast.error("Errore nell'invio dell'offerta. Riprova.");
+      // Gestione errori specifici dal backend
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Errore nell'invio dell'offerta. Riprova.");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -256,78 +285,90 @@ export default function OfferModal({
     onClose();
   };
 
+  // Calcola se l'offerta è valida per lo stato del pulsante
+  const parsedOfferPrice = parseFloat(offerPrice);
+  const isOfferValid =
+    offerPrice &&
+    !isNaN(parsedOfferPrice) &&
+    parsedOfferPrice > 0 &&
+    parsedOfferPrice <= estatePrice;
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="md"
       fullWidth
+      maxWidth="sm"
+      scroll="paper"
       slotProps={{
         paper: {
           sx: {
-            borderRadius: 10,
-            boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+            borderRadius: 3,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            maxHeight: "90vh",
           },
         },
       }}
     >
       <DialogTitle
         sx={{
-          position: "relative",
-          textAlign: "center",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          py: 2,
+          px: 3,
           borderBottom: "1px solid #e0e0e0",
-          pb: 2,
         }}
       >
         <Typography
           variant="h6"
-          component="span"
-          sx={{ fontWeight: 700, display: "block" }}
-        >
-          Proponi Offerta
-        </Typography>
-        <IconButton
-          onClick={handleClose}
-          size="small"
           sx={{
-            color: "text.secondary",
-            "&:hover": { bgcolor: "action.hover" },
-            position: "absolute",
-            right: 12,
-            top: "50%",
-            transform: "translateY(-50%)",
+            fontWeight: 700,
+            color: "#333",
           }}
         >
+          Gestione Offerte
+        </Typography>
+        <IconButton onClick={handleClose} size="small">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ py: 3 }}>
-        {/* Prezzo di partenza */}
-        <Box sx={{ mb: 4, textAlign: "center", mt: 3 }}>
+      <DialogContent
+        sx={{
+          flex: "1 1 auto",
+          overflowY: "auto",
+          p: 3,
+        }}
+      >
+        {/* Info Prezzo */}
+        <Box
+          sx={{
+            mb: 3,
+            p: 2,
+            bgcolor: "#f9f9f9",
+            borderRadius: 2,
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="body2" sx={{ color: "#666", mb: 0.5 }}>
+            Prezzo Immobile
+          </Typography>
           <Typography
-            variant="h4"
+            variant="h5"
             sx={{
               fontWeight: 700,
               color: "#62A1BA",
-              mb: 0.5,
             }}
           >
-            ${estatePrice.toLocaleString("it-IT")}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#999",
-              fontSize: "0.9rem",
-            }}
-          >
-            Prezzo di partenza
+            {estatePrice.toLocaleString("it-IT")} €
           </Typography>
         </Box>
 
-        {/* Storico Offerte */}
-        <Box sx={{ mb: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+        {/* Storico offerte */}
+        <Box sx={{ mb: 3 }}>
           <Typography
             variant="subtitle2"
             sx={{
@@ -485,22 +526,22 @@ export default function OfferModal({
               />
             </Box>
 
-            {/* Messaggio informativo */}
-            {offerPrice && !isNaN(parseFloat(offerPrice)) && (
+            {/* Messaggio informativo con validazione visiva */}
+            {offerPrice && !isNaN(parsedOfferPrice) && (
               <Typography
                 variant="caption"
                 sx={{
-                  color:
-                    parseFloat(offerPrice) <= estatePrice
-                      ? "#4caf50"
-                      : "#ff9800",
+                  color: isOfferValid ? "#4caf50" : "#f44336",
                   display: "block",
                   textAlign: "center",
+                  fontWeight: 500,
                 }}
               >
-                {parseFloat(offerPrice) <= estatePrice
-                  ? "Offerta idonea"
-                  : "Offerta superiore al prezzo di partenza"}
+                {parsedOfferPrice <= 0
+                  ? "L'offerta deve essere maggiore di 0"
+                  : parsedOfferPrice > estatePrice
+                    ? "L'offerta deve essere inferiore al prezzo di partenza"
+                    : "Offerta valida"}
               </Typography>
             )}
           </>
@@ -547,9 +588,7 @@ export default function OfferModal({
           <Button
             onClick={handleSubmit}
             variant="contained"
-            disabled={
-              !offerPrice || isNaN(parseFloat(offerPrice)) || submitting
-            }
+            disabled={!isOfferValid || submitting}
             sx={{
               bgcolor: "#4a90a4",
               textTransform: "none",

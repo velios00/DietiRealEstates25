@@ -27,10 +27,6 @@ export class AgentService {
       throw new Error("Surname is required");
     }
 
-    if (!dto?.profileImage) {
-      throw new Error("Profile image is required");
-    }
-
     const existingUser = await User.findOne({
       where: { email: dto.email },
     });
@@ -45,7 +41,6 @@ export class AgentService {
       password: randomPassword,
       name: dto.name,
       surname: dto.surname,
-      profileImage: dto.profileImage,
       role: "agent",
     });
     if (!newUser || !newUser.idUser) {

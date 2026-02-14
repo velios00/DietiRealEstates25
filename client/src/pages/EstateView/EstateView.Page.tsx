@@ -59,18 +59,13 @@ export default function EstateView() {
   const handleSubmitOffer = async (offerAmount: number) => {
     if (!estate || !user) return;
 
-    try {
-      await createOffer(estate.idRealEstate, {
-        amount: offerAmount,
-        inSistem: true,
-      });
+    // La validazione e la gestione degli errori sono gestite da OfferModal
+    await createOffer(estate.idRealEstate, {
+      amount: offerAmount,
+      inSistem: true,
+    });
 
-      setOpenOfferModal(false);
-      // Optional: Re-fetch or update local state here if needed
-    } catch (error) {
-      console.error("Errore nell'invio dell'offerta:", error);
-      alert("Si è verificato un errore durante l'invio dell'offerta.");
-    }
+    setOpenOfferModal(false);
   };
 
   if (loading) return <Box sx={{ p: 4 }}>Caricamento in corso...</Box>;
