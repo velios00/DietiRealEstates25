@@ -14,6 +14,7 @@ export default function RegisterPage() {
         alignItems: "center",
         p: 3,
         backgroundColor: "#d4d2d2",
+        background: "linear-gradient(-180deg, #62A1BA 0%, #FFFFFF 50%)",
       }}
     >
       <Box

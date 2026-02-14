@@ -92,6 +92,14 @@ export function RegisterForm() {
                     name="email"
                     fullWidth
                     sx={{
+                      "& .MuiInputLabel-root": {
+                        top: "50%",
+                        transform: "translate(14px, -50%) scale(1)",
+                      },
+                      "& .MuiInputLabel-shrink": {
+                        top: 0,
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
                       "&. MuiOutlinedInput-root": {
                         borderRadius: 6,
                         padding: "8px 14px",
@@ -116,6 +124,14 @@ export function RegisterForm() {
                     type="password"
                     fullWidth
                     sx={{
+                      "& .MuiInputLabel-root": {
+                        top: "50%",
+                        transform: "translate(14px, -50%) scale(1)",
+                      },
+                      "& .MuiInputLabel-shrink": {
+                        top: 0,
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
                       "&. MuiOutlinedInput-root": {
                         borderRadius: 6,
                         padding: "8px 14px",
@@ -139,6 +155,14 @@ export function RegisterForm() {
                     name="name"
                     fullWidth
                     sx={{
+                      "& .MuiInputLabel-root": {
+                        top: "50%",
+                        transform: "translate(14px, -50%) scale(1)",
+                      },
+                      "& .MuiInputLabel-shrink": {
+                        top: 0,
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
                       "&. MuiOutlinedInput-root": {
                         borderRadius: 6,
                         padding: "8px 14px",
@@ -162,6 +186,14 @@ export function RegisterForm() {
                     name="surname"
                     fullWidth
                     sx={{
+                      "& .MuiInputLabel-root": {
+                        top: "50%",
+                        transform: "translate(14px, -50%) scale(1)",
+                      },
+                      "& .MuiInputLabel-shrink": {
+                        top: 0,
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
                       "&. MuiOutlinedInput-root": {
                         borderRadius: 6,
                         padding: "8px 14px",
@@ -185,6 +217,14 @@ export function RegisterForm() {
                     name="userAddress"
                     fullWidth
                     sx={{
+                      "& .MuiInputLabel-root": {
+                        top: "50%",
+                        transform: "translate(14px, -50%) scale(1)",
+                      },
+                      "& .MuiInputLabel-shrink": {
+                        top: 0,
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
                       "&. MuiOutlinedInput-root": {
                         borderRadius: 6,
                         padding: "8px 14px",
