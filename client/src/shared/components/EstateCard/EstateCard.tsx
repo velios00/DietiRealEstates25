@@ -65,9 +65,9 @@ export default function EstateCard({ listing }: ListingCardProps) {
   const getOfferStatusConfig = (status: string) => {
     const configs = {
       pending: { color: "#FFA726", label: "In Attesa" },
-      accepted: { color: "#66BB6A", label: "Accettata" },
+      accepted: { color: "#62A1BA", label: "Accettata" },
       rejected: { color: "#EF5350", label: "Rifiutata" },
-      countered: { color: "#42A5F5", label: "Controproposta" },
+      countered: { color: "#FFA726", label: "Controproposta" },
     };
     return configs[status as keyof typeof configs] || configs.pending;
   };

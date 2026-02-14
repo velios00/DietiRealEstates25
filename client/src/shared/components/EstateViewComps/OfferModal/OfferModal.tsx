@@ -108,6 +108,7 @@ export default function OfferModal({
 
     try {
       await onSubmit(price);
+      toast.success("Offerta proposta con successo.");
       setOfferPrice("");
       // Ricarica le offerte per mostrare quella appena creata
       await fetchOffers();
