@@ -49,6 +49,17 @@ export default function CreateEstateModal({
 
   const energyClasses = ["A+", "A", "B", "C", "D", "E", "F", "G"];
 
+  // Verifica se tutti i campi obbligatori sono compilati
+  const isFormValid =
+    formData.title.trim() !== "" &&
+    formData.price.trim() !== "" &&
+    formData.size.trim() !== "" &&
+    formData.address.trim() !== "" &&
+    formData.city.trim() !== "" &&
+    formData.nRooms.trim() !== "" &&
+    formData.nBathrooms.trim() !== "" &&
+    selectedFiles.length >= 3;
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
@@ -142,6 +153,9 @@ export default function CreateEstateModal({
         }
         if (selectedFiles.length < 3) {
           throw new Error("Aggiungi almeno 3 foto");
+        }
+        if (selectedFiles.length > 10) {
+          throw new Error("Puoi caricare al massimo 10 foto");
         }
 
         const estateData = new FormData();
@@ -314,13 +328,17 @@ export default function CreateEstateModal({
         <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={loading || !isFormValid}
           sx={{
             backgroundColor: "#62A1BA",
             borderRadius: 4,
             px: 4,
             "&:hover": {
               backgroundColor: "#4299b5",
+            },
+            "&.Mui-disabled": {
+              backgroundColor: "#ccc",
+              color: "#888",
             },
           }}
         >

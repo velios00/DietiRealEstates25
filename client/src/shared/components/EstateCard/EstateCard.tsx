@@ -100,7 +100,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
         sx={{
           position: "relative",
           width: "100%",
-          aspectRatio: "16 / 9",
+          aspectRatio: "16 / 8",
           overflow: "hidden",
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -205,6 +205,9 @@ export default function EstateCard({ listing }: ListingCardProps) {
               fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem" },
               color: "#2c3e50",
               lineHeight: 1.3,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {listing.title}
@@ -244,12 +247,16 @@ export default function EstateCard({ listing }: ListingCardProps) {
 
           {/* Mostra dettagli offerta se presente */}
           {listing.offerAmount && (
-            <Box sx={{ mt: 1, pt: 1, borderTop: "1px solid #eee" }}>
+            <Box sx={{ mt: 0.5, pt: 0.5, borderTop: "1px solid #eee" }}>
               <Typography
                 variant="body2"
-                sx={{ color: "#7f8c8d", fontSize: "0.85rem" }}
+                sx={{
+                  color: "#7f8c8d",
+                  fontSize: { xs: "0.75rem", md: "0.8rem" },
+                  lineHeight: 1.3,
+                }}
               >
-                La tua offerta:{" "}
+                Offerta:{" "}
                 <strong style={{ color: "#2c3e50" }}>
                   € {listing.offerAmount.toLocaleString()}
                 </strong>
@@ -259,12 +266,13 @@ export default function EstateCard({ listing }: ListingCardProps) {
                   variant="body2"
                   sx={{
                     color: "#42A5F5",
-                    fontSize: "0.85rem",
+                    fontSize: { xs: "0.75rem", md: "0.8rem" },
                     fontWeight: 600,
-                    mt: 0.5,
+                    mt: 0.3,
+                    lineHeight: 1.3,
                   }}
                 >
-                  Controproposta:{" "}
+                  Contro:{" "}
                   <strong>
                     € {listing.counterOfferAmount.toLocaleString()}
                   </strong>

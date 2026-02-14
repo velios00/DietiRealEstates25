@@ -4,7 +4,7 @@ import ImageIcon from "@mui/icons-material/Image";
 
 export interface PhotoUploadSectionProps {
   selectedFiles: File[];
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFileUploadClick: () => void;
   onRemoveFile: (index: number) => void;
