@@ -56,7 +56,7 @@ export function RegisterForm() {
       registerUser(registerRequest)
         .then(() => {
           toast.success("Registrazione effettuata con successo");
-          navigate("/");
+          navigate("/login");
         })
         .catch((error) => {
           toast.error(

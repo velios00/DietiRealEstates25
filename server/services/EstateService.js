@@ -244,7 +244,12 @@ export class EstateService {
           required: true,
         },
       ],
-      order: [[orderBy === "createdAt" ? "createdAt" : "price", "ASC"]],
+      order: [
+        [
+          orderBy === "createdAt" ? "createdAt" : "price",
+          orderBy === "createdAt" ? "DESC" : "ASC",
+        ],
+      ],
       limit: limit,
       offset: offset,
     });
