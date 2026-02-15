@@ -1,4 +1,5 @@
 import { Card, CardContent, Box, Typography, Button } from "@mui/material";
+import { useState } from "react";
 import { SquareFoot, Bed, Bathroom } from "@mui/icons-material";
 import { Estate } from "../../../models/Estate.model";
 import { Agency } from "../../../models/Agency.model";
@@ -15,6 +16,16 @@ export default function EstateInfoCard({
   agency,
   onOfferClick,
 }: EstateInfoCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const agencyInitials = agency.agencyName
+    ? agency.agencyName
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join("")
+    : "A";
+
   return (
     <Card
       sx={{
@@ -136,23 +147,42 @@ export default function EstateInfoCard({
             borderTop: "1px solid #e0e0e0",
           }}
         >
-          <Box
-            sx={{
-              width: 60,
-              height: 60,
-              borderRadius: "50%",
-              bgcolor: "#52A875",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              fontWeight: 700,
-              fontSize: "1.5rem",
-              mb: 1.5,
-            }}
-          >
-            {agency.profileImage}
-          </Box>
+          {agency.profileImage && !imageError && (
+            <Box
+              component="img"
+              src={agency.profileImage}
+              alt={agency.agencyName}
+              sx={{
+                width: 60,
+                height: 60,
+                borderRadius: "50%",
+                bgcolor: "#52A875",
+                display: "block",
+                objectFit: "cover",
+                mb: 1.5,
+              }}
+              onError={() => setImageError(true)}
+            />
+          )}
+          {(!agency.profileImage || imageError) && (
+            <Box
+              sx={{
+                width: 60,
+                height: 60,
+                borderRadius: "50%",
+                bgcolor: "#52A875",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "white",
+                fontWeight: 700,
+                fontSize: "1.5rem",
+                mb: 1.5,
+              }}
+            >
+              {agencyInitials}
+            </Box>
+          )}
           <Box>
             <Typography
               variant="body2"
