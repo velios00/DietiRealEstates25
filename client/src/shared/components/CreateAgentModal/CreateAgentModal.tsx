@@ -145,11 +145,11 @@ export default function CreateAgentModal({
           justifyContent: "space-between",
         }}
       >
+        <Box width={40} />
+        <Typography fontWeight={800}>Crea Nuovo Agente</Typography>
         <IconButton onClick={handleClose} disabled={loading}>
           <CloseIcon />
         </IconButton>
-        <Typography fontWeight={800}>Crea Nuovo Agente</Typography>
-        <Box width={40} />
       </Box>
 
       {/* CONTENUTO SCROLLABILE */}

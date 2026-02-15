@@ -151,11 +151,11 @@ export default function CreateAdminModal({
           justifyContent: "space-between",
         }}
       >
+        <Box width={40} />
+        <Typography fontWeight={800}>Crea Nuovo Amministratore</Typography>
         <IconButton onClick={handleClose} disabled={loading}>
           <CloseIcon />
         </IconButton>
-        <Typography fontWeight={800}>Crea Nuovo Amministratore</Typography>
-        <Box width={40} /> {/* Spazio per bilanciare la larghezza */}
       </Box>
 
       {/* CONTENUTO SCROLLABILE */}

@@ -169,9 +169,9 @@ export default function AccountButton() {
           />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ fontSize: { xs: "0.85rem", md: "1rem" } }}
+          slotProps={{ primary: { fontSize: { xs: "0.85rem", md: "1rem" } } }}
         >
-          Dashboard
+          Profilo
         </ListItemText>
       </MenuItem>,
     );

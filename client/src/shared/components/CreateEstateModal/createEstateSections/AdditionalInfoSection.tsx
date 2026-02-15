@@ -36,6 +36,11 @@ export default function AdditionalInfoSection({
         SelectProps={{
           native: true,
         }}
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+          },
+        }}
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: 3,

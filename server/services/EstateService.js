@@ -13,6 +13,28 @@ export class EstateService {
     apiKey,
     files,
   ) {
+    if (!dto.photos || dto.photos.length < 3) {
+      throw new Error("Sono richieste almeno 3 foto");
+    }
+    if (dto.photos.length > 10) {
+      throw new Error("Massimo 10 foto consentite");
+    }
+
+    // Validazione prezzo
+    if (!dto.price || dto.price <= 0) {
+      throw new Error("Il prezzo deve essere maggiore di 0");
+    }
+    if (!Number.isInteger(Number(dto.price))) {
+      throw new Error("Il prezzo deve essere un numero intero");
+    }
+
+    // Validazione bagni < locali
+    if (dto.nBathrooms >= dto.nRooms) {
+      throw new Error(
+        "Il numero di bagni deve essere inferiore al numero di locali",
+      );
+    }
+
     // Handle image uploads and fallback to body photos
     const uploadedPhotos = files?.length
       ? await Promise.all(files.map((file) => ImageService.uploadImage(file)))

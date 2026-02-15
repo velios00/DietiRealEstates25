@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import {
   Alert,
   Dialog,
@@ -9,8 +9,8 @@ import {
   Divider,
   CircularProgress,
   InputAdornment,
-  TextField, // Aggiunto per le icone
-} from "@mui/material"; // Aggiunto InputAdornment
+  TextField,
+} from "@mui/material";
 import {
   Close as CloseIcon,
   Business as BusinessIcon,
@@ -23,12 +23,7 @@ import {
   AddPhotoAlternate as AddPhotoIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
-import { CreateAgency } from "../../models/Agency.model";
 import { createAgency } from "../../../services/AgencyService";
-import BasicInfoSection from "./AgencyModalSections/BasicInfoSection";
-import DescriptionSection from "./AgencyModalSections/DescriptionSection";
-import LogoUploadSection from "./AgencyModalSections/LogoUploadSection";
-import ManagerInfoSection from "./AgencyModalSections/ManagerInfoSection";
 
 interface CreateAgencyModalProps {
   open: boolean;
@@ -61,6 +56,68 @@ export default function CreateAgencyModal({
     },
   });
 
+  const validationResult = useMemo(() => {
+    // Nome agenzia
+    if (!formData.agencyName.trim()) {
+      return { isValid: false, error: "Il nome agenzia è obbligatorio" };
+    }
+
+    // Indirizzo
+    if (!formData.address.trim()) {
+      return { isValid: false, error: "L'indirizzo è obbligatorio" };
+    }
+
+    // Telefono
+    if (!formData.phoneNumber.trim()) {
+      return { isValid: false, error: "Il telefono è obbligatorio" };
+    }
+    // Validazione formato telefono (base)
+    if (!/^\+?[0-9\s\-()]{8,}$/.test(formData.phoneNumber.trim())) {
+      return { isValid: false, error: "Formato telefono non valido" };
+    }
+
+    // Descrizione
+    if (!formData.description.trim()) {
+      return { isValid: false, error: "La descrizione è obbligatoria" };
+    }
+
+    // Nome manager
+    if (!formData.manager.name.trim()) {
+      return { isValid: false, error: "Il nome del manager è obbligatorio" };
+    }
+
+    // Cognome manager
+    if (!formData.manager.surname.trim()) {
+      return { isValid: false, error: "Il cognome del manager è obbligatorio" };
+    }
+
+    // Email manager
+    if (!formData.manager.email.trim()) {
+      return { isValid: false, error: "L'email del manager è obbligatoria" };
+    }
+    // Validazione formato email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.manager.email)) {
+      return { isValid: false, error: "Formato email non valido" };
+    }
+
+    // Logo
+    if (!selectedFile) {
+      return { isValid: false, error: "Il logo agenzia è obbligatorio" };
+    }
+
+    // URL (opzionale ma se presente deve essere valido)
+    if (formData.url.trim() && !/^https?:\/\/.+/.test(formData.url)) {
+      return {
+        isValid: false,
+        error: "Formato URL non valido (deve iniziare con http:// o https://)",
+      };
+    }
+
+    return { isValid: true, error: null };
+  }, [formData, selectedFile]);
+
+  const isFormValid = validationResult.isValid;
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
@@ -68,6 +125,8 @@ export default function CreateAgencyModal({
         ...prev,
         [name]: value,
       }));
+
+      setError(null);
     },
     [],
   );
@@ -80,6 +139,8 @@ export default function CreateAgencyModal({
         [field]: value,
       },
     }));
+
+    setError(null);
   }, []);
 
   const handleFileSelect = useCallback(
@@ -94,6 +155,8 @@ export default function CreateAgencyModal({
           setLogoPreview(reader.result as string);
         };
         reader.readAsDataURL(file);
+
+        setError(null);
       }
     },
     [],
@@ -141,7 +204,7 @@ export default function CreateAgencyModal({
       setError(null);
 
       try {
-        // Validazione
+        // Validazione (già garantita da isFormValid, ma manteniamo per sicurezza)
         if (!formData.agencyName.trim()) {
           throw new Error("Il nome agenzia è obbligatorio");
         }
@@ -163,19 +226,22 @@ export default function CreateAgencyModal({
         if (!formData.manager.email.trim()) {
           throw new Error("L'email del manager è obbligatoria");
         }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.manager.email)) {
+          throw new Error("Formato email non valido");
+        }
         if (!selectedFile) {
           throw new Error("Il logo agenzia è obbligatorio");
         }
 
         const agencyData = new FormData();
-        agencyData.append("agencyName", formData.agencyName);
-        agencyData.append("address", formData.address);
-        agencyData.append("description", formData.description);
-        agencyData.append("phoneNumber", formData.phoneNumber);
-        agencyData.append("url", formData.url);
-        agencyData.append("managerName", formData.manager.name);
-        agencyData.append("managerSurname", formData.manager.surname);
-        agencyData.append("managerEmail", formData.manager.email);
+        agencyData.append("agencyName", formData.agencyName.trim());
+        agencyData.append("address", formData.address.trim());
+        agencyData.append("description", formData.description.trim());
+        agencyData.append("phoneNumber", formData.phoneNumber.trim());
+        agencyData.append("url", formData.url.trim());
+        agencyData.append("managerName", formData.manager.name.trim());
+        agencyData.append("managerSurname", formData.manager.surname.trim());
+        agencyData.append("managerEmail", formData.manager.email.trim());
         if (selectedFile) {
           agencyData.append("profileImage", selectedFile);
         }
@@ -224,29 +290,27 @@ export default function CreateAgencyModal({
           justifyContent: "space-between",
         }}
       >
+        <Box width={40} />
+        <Typography fontWeight={800}>Crea Agenzia</Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon />
         </IconButton>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography fontWeight={800}>Crea Agenzia</Typography>
-        </Box>
-        <Box width={40} /> {/* Spazio per bilanciare la larghezza */}
       </Box>
 
       {/* CONTENUTO SCROLLABILE */}
       <Box sx={{ p: 3, flex: "1 1 auto", overflowY: "auto" }}>
-        {error && (
+        {(error || (!isFormValid && validationResult.error)) && (
           <Alert
             severity="error"
             sx={{ mb: 3, borderRadius: 2 }}
             onClose={() => setError(null)}
           >
-            {error}
+            {error || validationResult.error}
           </Alert>
         )}
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          {/* BasicInfoSection con icone */}
+          {/* Informazioni Base */}
           <Box>
             <Typography variant="subtitle1" fontWeight={600} mb={2}>
               Informazioni Base
@@ -254,7 +318,7 @@ export default function CreateAgencyModal({
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <TextField
                 fullWidth
-                label="Nome Agenzia"
+                label="Nome Agenzia *"
                 name="agencyName"
                 value={formData.agencyName}
                 onChange={handleChange}
@@ -275,7 +339,7 @@ export default function CreateAgencyModal({
               />
               <TextField
                 fullWidth
-                label="Indirizzo"
+                label="Indirizzo *"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
@@ -296,7 +360,7 @@ export default function CreateAgencyModal({
               />
               <TextField
                 fullWidth
-                label="Telefono"
+                label="Telefono *"
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
@@ -321,6 +385,7 @@ export default function CreateAgencyModal({
                 name="url"
                 value={formData.url}
                 onChange={handleChange}
+                placeholder="https://esempio.com"
                 slotProps={{
                   input: {
                     startAdornment: (
@@ -339,7 +404,7 @@ export default function CreateAgencyModal({
             </Box>
           </Box>
 
-          {/* DescriptionSection con icona */}
+          {/* Descrizione */}
           <Box>
             <Typography variant="subtitle1" fontWeight={600} mb={2}>
               Descrizione
@@ -348,7 +413,7 @@ export default function CreateAgencyModal({
               fullWidth
               multiline
               rows={4}
-              label="Descrizione Agenzia"
+              label="Descrizione Agenzia *"
               name="description"
               value={formData.description}
               onChange={handleChange}
@@ -372,10 +437,10 @@ export default function CreateAgencyModal({
             />
           </Box>
 
-          {/* LogoUploadSection con icona */}
+          {/* Logo Upload */}
           <Box>
             <Typography variant="subtitle1" fontWeight={600} mb={2}>
-              Logo Agenzia
+              Logo Agenzia *
             </Typography>
             <Box
               sx={{
@@ -433,7 +498,7 @@ export default function CreateAgencyModal({
 
           <Divider />
 
-          {/* ManagerInfoSection con icone */}
+          {/* Informazioni Manager */}
           <Box>
             <Typography variant="subtitle1" fontWeight={600} mb={2}>
               Informazioni Manager
@@ -441,7 +506,7 @@ export default function CreateAgencyModal({
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <TextField
                 fullWidth
-                label="Nome Manager"
+                label="Nome Manager *"
                 value={formData.manager.name}
                 onChange={(e) => handleManagerChange("name", e.target.value)}
                 slotProps={{
@@ -461,7 +526,7 @@ export default function CreateAgencyModal({
               />
               <TextField
                 fullWidth
-                label="Cognome Manager"
+                label="Cognome Manager *"
                 value={formData.manager.surname}
                 onChange={(e) => handleManagerChange("surname", e.target.value)}
                 slotProps={{
@@ -481,7 +546,7 @@ export default function CreateAgencyModal({
               />
               <TextField
                 fullWidth
-                label="Email Manager"
+                label="Email Manager *"
                 type="email"
                 value={formData.manager.email}
                 onChange={(e) => handleManagerChange("email", e.target.value)}
@@ -544,6 +609,7 @@ export default function CreateAgencyModal({
         <Button
           color="inherit"
           onClick={handleClose}
+          disabled={loading}
           sx={{
             borderRadius: 4,
             px: 3,
@@ -558,7 +624,7 @@ export default function CreateAgencyModal({
         <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={loading || !isFormValid}
           sx={{
             backgroundColor: "#62A1BA",
             borderRadius: 4,
@@ -568,6 +634,10 @@ export default function CreateAgencyModal({
             gap: 1,
             "&:hover": {
               backgroundColor: "#4299b5",
+            },
+            "&.Mui-disabled": {
+              backgroundColor: "#ccc",
+              color: "#888",
             },
           }}
         >

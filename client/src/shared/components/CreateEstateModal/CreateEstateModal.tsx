@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useMemo } from "react";
 import { createEstate } from "../../../services/EstateService";
 import {
   Dialog,
@@ -49,16 +49,84 @@ export default function CreateEstateModal({
 
   const energyClasses = ["A+", "A", "B", "C", "D", "E", "F", "G"];
 
-  // Verifica se tutti i campi obbligatori sono compilati
-  const isFormValid =
-    formData.title.trim() !== "" &&
-    formData.price.trim() !== "" &&
-    formData.size.trim() !== "" &&
-    formData.address.trim() !== "" &&
-    formData.city.trim() !== "" &&
-    formData.nRooms.trim() !== "" &&
-    formData.nBathrooms.trim() !== "" &&
-    selectedFiles.length >= 3;
+  const validationResult = useMemo(() => {
+    // Campi testuali obbligatori
+    if (!formData.title.trim()) {
+      return { isValid: false, error: "Il titolo è obbligatorio" };
+    }
+    if (!formData.address.trim()) {
+      return { isValid: false, error: "L'indirizzo è obbligatorio" };
+    }
+    if (!formData.city.trim()) {
+      return { isValid: false, error: "La città è obbligatoria" };
+    }
+
+    // Prezzo: deve essere > 0 e intero
+    if (!formData.price) {
+      return { isValid: false, error: "Il prezzo è obbligatorio" };
+    }
+    if (parseFloat(formData.price) <= 0) {
+      return { isValid: false, error: "Il prezzo deve essere maggiore di 0" };
+    }
+    if (!Number.isInteger(Number(formData.price))) {
+      return { isValid: false, error: "Il prezzo non può avere centesimi" };
+    }
+
+    // Metratura: deve essere > 0 e intero
+    if (!formData.size) {
+      return { isValid: false, error: "La metratura è obbligatoria" };
+    }
+    if (parseFloat(formData.size) <= 0) {
+      return {
+        isValid: false,
+        error: "La metratura deve essere maggiore di 0",
+      };
+    }
+    if (!Number.isInteger(Number(formData.size))) {
+      return { isValid: false, error: "La metratura non può avere decimali" };
+    }
+
+    // Numero locali: deve essere > 0
+    if (!formData.nRooms) {
+      return { isValid: false, error: "Il numero di locali è obbligatorio" };
+    }
+    if (parseInt(formData.nRooms) <= 0) {
+      return {
+        isValid: false,
+        error: "Il numero di locali deve essere maggiore di 0",
+      };
+    }
+
+    // Numero bagni: deve essere > 0
+    if (!formData.nBathrooms) {
+      return { isValid: false, error: "Il numero di bagni è obbligatorio" };
+    }
+    if (parseInt(formData.nBathrooms) <= 0) {
+      return {
+        isValid: false,
+        error: "Il numero di bagni deve essere maggiore di 0",
+      };
+    }
+
+    if (parseInt(formData.nBathrooms) >= parseInt(formData.nRooms)) {
+      return {
+        isValid: false,
+        error: "Il numero di bagni deve essere inferiore al numero di locali",
+      };
+    }
+
+    // Foto: almeno 3, massimo 10
+    if (selectedFiles.length < 3) {
+      return { isValid: false, error: "Aggiungi almeno 3 foto" };
+    }
+    if (selectedFiles.length > 10) {
+      return { isValid: false, error: "Puoi caricare al massimo 10 foto" };
+    }
+
+    return { isValid: true, error: null };
+  }, [formData, selectedFiles]);
+
+  const isFormValid = validationResult.isValid;
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -67,6 +135,7 @@ export default function CreateEstateModal({
         ...prev,
         [name]: value,
       }));
+      setError(null);
     },
     [],
   );
@@ -77,6 +146,7 @@ export default function CreateEstateModal({
         const filesArray = Array.from(e.target.files);
         const newFiles = [...selectedFiles, ...filesArray].slice(0, 10);
         setSelectedFiles(newFiles);
+        setError(null);
       }
     },
     [selectedFiles],
@@ -84,6 +154,7 @@ export default function CreateEstateModal({
 
   const handleRemoveFile = useCallback((index: number) => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setError(null);
   }, []);
 
   const handleFileUploadClick = useCallback(() => {
@@ -124,9 +195,6 @@ export default function CreateEstateModal({
         if (!formData.title.trim()) {
           throw new Error("Il titolo è obbligatorio");
         }
-        if (!formData.description.trim()) {
-          throw new Error("La descrizione è obbligatoria");
-        }
         if (!formData.price || parseFloat(formData.price) <= 0) {
           throw new Error("Il prezzo deve essere maggiore di 0");
         }
@@ -156,6 +224,11 @@ export default function CreateEstateModal({
         }
         if (selectedFiles.length > 10) {
           throw new Error("Puoi caricare al massimo 10 foto");
+        }
+        if (parseInt(formData.nBathrooms) >= parseInt(formData.nRooms)) {
+          throw new Error(
+            "Il numero di bagni deve essere inferiore al numero di locali",
+          );
         }
 
         const estateData = new FormData();
@@ -223,16 +296,16 @@ export default function CreateEstateModal({
           justifyContent: "space-between",
         }}
       >
+        <Box width={40} />
+        <Typography fontWeight={800}>Crea Immobile</Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon />
         </IconButton>
-        <Typography fontWeight={800}>Crea Immobile</Typography>
-        <Box width={40} />
       </Box>
 
       {/* CONTENUTO SCROLLABILE */}
       <Box sx={{ p: 3, flex: "1 1 auto", overflowY: "auto" }}>
-        {error && (
+        {(error || (!isFormValid && validationResult.error)) && (
           <Box
             sx={{
               bgcolor: "#fee",
@@ -243,7 +316,7 @@ export default function CreateEstateModal({
             }}
           >
             <Typography sx={{ color: "#c00", fontSize: 14 }}>
-              {error}
+              {error || validationResult.error}
             </Typography>
           </Box>
         )}
