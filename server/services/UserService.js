@@ -32,7 +32,7 @@ export class UserService {
       dto.newPassword.length < 8 ||
       !/[A-Z]/.test(dto.newPassword) ||
       !/[a-z]/.test(dto.newPassword) ||
-      !/[0-9]/.test(dto.newPassword) ||
+      !/\d/.test(dto.newPassword) ||
       !/[^A-Za-z0-9]/.test(dto.newPassword)
     ) {
       throw new Error("Invalid new password");

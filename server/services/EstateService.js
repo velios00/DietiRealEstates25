@@ -13,92 +13,16 @@ export class EstateService {
     apiKey,
     files,
   ) {
-    if (!dto.photos || dto.photos.length < 3) {
-      throw new Error("Sono richieste almeno 3 foto");
-    }
-    if (dto.photos.length > 10) {
-      throw new Error("Massimo 10 foto consentite");
-    }
+    this.validatePrice(dto.price);
+    this.validateBathrooms(dto.nBathrooms, dto.nRooms);
 
-    // Validazione prezzo
-    if (!dto.price || dto.price <= 0) {
-      throw new Error("Il prezzo deve essere maggiore di 0");
-    }
-    if (!Number.isInteger(Number(dto.price))) {
-      throw new Error("Il prezzo deve essere un numero intero");
-    }
+    dto.photos = await this.processPhotos(files, dto.photos);
+    this.validatePhotos(dto.photos);
 
-    // Validazione bagni < locali
-    if (dto.nBathrooms >= dto.nRooms) {
-      throw new Error(
-        "Il numero di bagni deve essere inferiore al numero di locali",
-      );
-    }
+    const { agencyId, createdBy, idManager, idAgent } =
+      await this.getUserAgencyInfo(Manager, Agent, userId);
 
-    // Handle image uploads and fallback to body photos
-    const uploadedPhotos = files?.length
-      ? await Promise.all(files.map((file) => ImageService.uploadImage(file)))
-      : [];
-
-    let fallbackPhotos;
-
-    if (Array.isArray(dto.photos)) {
-      fallbackPhotos = dto.photos;
-    } else if (typeof dto.photos === "string") {
-      fallbackPhotos = dto.photos
-        .split(",")
-        .map((p) => p.trim())
-        .filter(Boolean);
-    } else {
-      fallbackPhotos = [];
-    }
-
-    dto.photos = uploadedPhotos.length ? uploadedPhotos : fallbackPhotos;
-
-    let agencyId = null;
-    let idManager = null;
-    let idAgent = null;
-    let createdBy = null;
-
-    const manager = await Manager.findByPk(userId);
-    if (manager) {
-      //refactor possibile
-      agencyId = manager.idAgency;
-      createdBy = "manager";
-      idManager = manager.idManager;
-    } else {
-      const agent = await Agent.findByPk(userId);
-      if (agent) {
-        agencyId = agent.idAgency;
-        createdBy = "agent";
-        idAgent = agent.idAgent;
-      }
-    }
-    if (!agencyId) {
-      throw new Error("User is neither a manager nor an agent");
-    }
-
-    const addressForGeocode = dto.city
-      ? `${dto.address}, ${dto.city}`
-      : dto.address;
-    const geo = await geoCodeAddress(addressForGeocode, apiKey);
-
-    let place = await Place.findOne({
-      where: {
-        lat: geo.lat,
-        lon: geo.lon,
-      },
-    });
-    //Se non esiste crea e aggiungi POI
-    if (!place) {
-      const pois = await getPOIs(geo.lat, geo.lon, apiKey);
-
-      place = await Place.create({
-        ...geo,
-        city: geo.city || dto.city,
-        pois: JSON.stringify(pois),
-      });
-    }
+    const place = await this.getOrCreatePlace(Place, dto, apiKey);
 
     const newEstate = await RealEstate.create({
       title: dto.title,
@@ -117,7 +41,105 @@ export class EstateService {
       idManager,
       idPlace: place.idPlace,
     });
+
     return newEstate;
+  }
+
+  static validatePhotos(photos) {
+    if (!photos || photos.length < 3) {
+      throw new Error("Sono richieste almeno 3 foto");
+    }
+    if (photos.length > 10) {
+      throw new Error("Massimo 10 foto consentite");
+    }
+  }
+
+  static validatePrice(price) {
+    if (!price || price <= 0) {
+      throw new Error("Il prezzo deve essere maggiore di 0");
+    }
+    if (!Number.isInteger(Number(price))) {
+      throw new Error("Il prezzo deve essere un numero intero");
+    }
+  }
+
+  static validateBathrooms(nBathrooms, nRooms) {
+    if (nBathrooms >= nRooms) {
+      throw new Error(
+        "Il numero di bagni deve essere inferiore al numero di locali",
+      );
+    }
+  }
+
+  static async processPhotos(files, dtoPhotos) {
+    const uploadedPhotos = files?.length
+      ? await Promise.all(files.map((file) => ImageService.uploadImage(file)))
+      : [];
+
+    if (uploadedPhotos.length) {
+      return uploadedPhotos;
+    }
+
+    return this.parseFallbackPhotos(dtoPhotos);
+  }
+
+  static parseFallbackPhotos(photos) {
+    if (Array.isArray(photos)) {
+      return photos;
+    }
+    if (typeof photos === "string") {
+      return photos
+        .split(",")
+        .map((p) => p.trim())
+        .filter(Boolean);
+    }
+    return [];
+  }
+
+  static async getUserAgencyInfo(Manager, Agent, userId) {
+    const manager = await Manager.findByPk(userId);
+    if (manager) {
+      return {
+        agencyId: manager.idAgency,
+        createdBy: "manager",
+        idManager: manager.idManager,
+        idAgent: null,
+      };
+    }
+
+    const agent = await Agent.findByPk(userId);
+    if (agent) {
+      return {
+        agencyId: agent.idAgency,
+        createdBy: "agent",
+        idManager: null,
+        idAgent: agent.idAgent,
+      };
+    }
+
+    throw new Error("User is neither a manager nor an agent");
+  }
+
+  static async getOrCreatePlace(Place, dto, apiKey) {
+    const addressForGeocode = dto.city
+      ? `${dto.address}, ${dto.city}`
+      : dto.address;
+    const geo = await geoCodeAddress(addressForGeocode, apiKey);
+
+    let place = await Place.findOne({
+      where: { lat: geo.lat, lon: geo.lon },
+    });
+
+    if (!place) {
+      const pois = await getPOIs(geo.lat, geo.lon, apiKey);
+      place = await Place.create({
+        ...geo,
+        city: geo.city || dto.city,
+        pois: JSON.stringify(pois),
+      });
+    }
+
+    return place;
   }
 
   static async getEstateById(Estate, Place, idRealEstate) {

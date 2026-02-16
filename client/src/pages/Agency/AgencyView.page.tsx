@@ -20,11 +20,16 @@ import { CreateAgent } from "../../shared/models/Agent.model";
 import { mapEstateToListing } from "../../mappers/EstateToListing.mapper";
 import CreateEstateModal from "../../shared/components/CreateEstateModal/CreateEstateModal";
 import { toast } from "react-hot-toast";
-import { useIsAgencyUser } from "../../shared/hooks/useIsAgencyUser";
+import { useAgencyAccess } from "../../shared/hooks/useAgencyAccess";
 
 export default function AgencyView() {
   const { id } = useParams<{ id: string }>();
-  const { isAgencyUser, isManager, isAgent } = useIsAgencyUser();
+  const {
+    canManageAgency,
+    canManageAgentsInAgency,
+    loading: agencyAccessLoading,
+  } = useAgencyAccess();
+
   const [estates, setEstates] = useState<Estate[]>([]);
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,8 +39,9 @@ export default function AgencyView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
 
-  // canManageEstates is true if user is manager or agent
-  const canManageEstates = isAgencyUser;
+  // Verifica permessi per questa specifica agenzia
+  const canManageEstates = canManageAgency(Number(id));
+  const canManageAgents = canManageAgentsInAgency(Number(id));
 
   const fetchAgencyData = async () => {
     if (!id) return;
@@ -127,7 +133,8 @@ export default function AgencyView() {
     }
   };
 
-  const isLoading = loading || agencyLoading || estatesLoading;
+  const isLoading =
+    loading || agencyLoading || estatesLoading || agencyAccessLoading;
 
   if (isLoading && !agency && estates.length === 0) {
     return (
@@ -166,7 +173,9 @@ export default function AgencyView() {
                 idAgency={Number(id) || 0}
                 onAddEstate={canManageEstates ? handleOpenModal : undefined}
                 onAddAgent={
-                  isManager ? () => setIsCreateAgentModalOpen(true) : undefined
+                  canManageAgents
+                    ? () => setIsCreateAgentModalOpen(true)
+                    : undefined
                 }
               />
             </Box>
@@ -221,8 +230,8 @@ export default function AgencyView() {
         onEstateCreated={handleEstateCreated}
       />
 
-      {/* Create Agent Modal */}
-      {isManager && (
+      {/* Create Agent Modal - mostra solo se può gestire agenti in questa agenzia */}
+      {canManageAgents && (
         <CreateAgentModal
           open={isCreateAgentModalOpen}
           onClose={() => setIsCreateAgentModalOpen(false)}
