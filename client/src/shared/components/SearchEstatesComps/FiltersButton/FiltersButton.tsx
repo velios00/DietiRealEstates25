@@ -24,6 +24,7 @@ export function FiltersButton(props: FiltersButtonProps) {
           borderRadius: 28,
           px: 3,
           whiteSpace: "nowrap",
+          fontWeight: "bold",
         }}
       >
         Filtri
