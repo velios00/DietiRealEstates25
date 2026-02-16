@@ -7,7 +7,6 @@ import {
   TextField,
   Button,
   Box,
-  Alert,
   IconButton,
   InputAdornment,
   Typography,
@@ -18,6 +17,7 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import { changePassword } from "../../../services/UserService";
+import toast from "react-hot-toast"; // <-- importato toast
 
 interface ChangePasswordModalProps {
   open: boolean;
@@ -44,9 +44,7 @@ export default function ChangePasswordModal({
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // stati error/success rimossi
 
   // Validazione password
   const validatePassword = (password: string): PasswordValidation => {
@@ -65,27 +63,24 @@ export default function ChangePasswordModal({
     newPassword === confirmPassword && confirmPassword !== "";
 
   const handleSubmit = async () => {
-    setError(null);
-    setSuccess(false);
-
     // Validazioni frontend
     if (!oldPassword || !newPassword || !confirmPassword) {
-      setError("Tutti i campi sono obbligatori");
+      toast.error("Tutti i campi sono obbligatori");
       return;
     }
 
     if (!isPasswordValid) {
-      setError("La nuova password non soddisfa i requisiti di sicurezza");
+      toast.error("La nuova password non soddisfa i requisiti di sicurezza");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Le password non corrispondono");
+      toast.error("Le password non corrispondono");
       return;
     }
 
     if (oldPassword === newPassword) {
-      setError("La nuova password deve essere diversa da quella attuale");
+      toast.error("La nuova password deve essere diversa da quella attuale");
       return;
     }
 
@@ -96,9 +91,7 @@ export default function ChangePasswordModal({
         newPassword,
       });
 
-      setSuccess(true);
-      setError(null);
-
+      toast.success("Password modificata con successo!");
       // Chiudi il modale dopo 1.5 secondi
       setTimeout(() => {
         handleClose();
@@ -106,7 +99,7 @@ export default function ChangePasswordModal({
       }, 1500);
     } catch (err: any) {
       console.error("Errore cambio password:", err);
-      setError(
+      toast.error(
         err.response?.data?.message ||
           "Errore durante il cambio password. Verifica che la password attuale sia corretta.",
       );
@@ -119,8 +112,6 @@ export default function ChangePasswordModal({
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
-    setError(null);
-    setSuccess(false);
     setShowOldPassword(false);
     setShowNewPassword(false);
     setShowConfirmPassword(false);
@@ -162,17 +153,7 @@ export default function ChangePasswordModal({
 
       <DialogContent>
         <Box sx={{ pt: 2 }}>
-          {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {error}
-            </Alert>
-          )}
-
-          {success && (
-            <Alert severity="success" sx={{ mb: 3 }}>
-              Password modificata con successo!
-            </Alert>
-          )}
+          {/* Alert rimossi, ora usiamo toast */}
 
           {/* Password Attuale */}
           <TextField
@@ -182,7 +163,7 @@ export default function ChangePasswordModal({
             value={oldPassword}
             onChange={(e) => setOldPassword(e.target.value)}
             margin="normal"
-            disabled={loading || success}
+            disabled={loading}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -205,7 +186,7 @@ export default function ChangePasswordModal({
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             margin="normal"
-            disabled={loading || success}
+            disabled={loading}
             error={newPassword !== "" && !isPasswordValid}
             InputProps={{
               endAdornment: (
@@ -287,7 +268,7 @@ export default function ChangePasswordModal({
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             margin="normal"
-            disabled={loading || success}
+            disabled={loading}
             error={confirmPassword !== "" && !passwordsMatch}
             helperText={
               confirmPassword !== "" && !passwordsMatch
@@ -319,7 +300,6 @@ export default function ChangePasswordModal({
           variant="contained"
           disabled={
             loading ||
-            success ||
             !oldPassword ||
             !newPassword ||
             !confirmPassword ||

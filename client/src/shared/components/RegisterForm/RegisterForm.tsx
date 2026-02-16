@@ -1,4 +1,4 @@
-import { validateEmail, validatePassword } from "../../utils/validation";
+import { validateEmail } from "../../utils/validation";
 import { RegisterData } from "../../models/RegisterData.model";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState, FormEvent } from "react";
@@ -10,23 +10,47 @@ import {
   Paper,
   TextField,
   Typography,
+  Box,
 } from "@mui/material";
 import toast from "react-hot-toast";
 import { registerUser } from "../../../services/AuthService";
 import { RegisterRequest } from "../../models/AuthRequest.model";
 import { Roles } from "../../enums/Roles.enum";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+interface PasswordValidation {
+  minLength: boolean;
+  hasUpperCase: boolean;
+  hasLowerCase: boolean;
+  hasNumber: boolean;
+  hasSpecialChar: boolean;
+}
+
 export function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const [registerData, setRegisterData] = useState<RegisterData>({
     email: { value: "", validateCriteria: validateEmail },
-    password: { value: "", validateCriteria: validatePassword },
+    password: { value: "" },
     name: { value: "" },
     surname: { value: "" },
     userAddress: { value: "" },
   });
+
+  // Validazione password
+  const validatePassword = (password: string): PasswordValidation => {
+    return {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
+  };
+
+  const validation = validatePassword(registerData.password.value);
+  const isPasswordValid = Object.values(validation).every((v) => v);
 
   const handleSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
@@ -35,13 +59,19 @@ export function RegisterForm() {
       const emailError = registerData.email.validateCriteria?.(
         registerData.email.value,
       );
-      const passwordError = registerData.password.validateCriteria?.(
-        registerData.password.value,
-      );
 
-      if (emailError || passwordError) {
-        if (emailError) toast.error(emailError);
-        if (passwordError) toast.error(passwordError);
+      if (emailError) {
+        toast.error(emailError);
+        return;
+      }
+
+      if (!isPasswordValid) {
+        toast.error("La password non soddisfa i requisiti di sicurezza");
+        return;
+      }
+
+      if (!registerData.name.value || !registerData.surname.value) {
+        toast.error("Nome e cognome sono obbligatori");
         return;
       }
 
@@ -65,7 +95,7 @@ export function RegisterForm() {
           console.error("Errore nella registrazione: ", error);
         });
     },
-    [navigate, registerData],
+    [navigate, registerData, isPasswordValid],
   );
 
   const roundedFieldStyle = {
@@ -115,6 +145,7 @@ export function RegisterForm() {
                     label="Email"
                     name="email"
                     fullWidth
+                    required
                     sx={roundedFieldStyle}
                     value={registerData.email.value}
                     onChange={(e) =>
@@ -134,8 +165,12 @@ export function RegisterForm() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     fullWidth
+                    required
                     sx={roundedFieldStyle}
                     value={registerData.password.value}
+                    error={
+                      registerData.password.value !== "" && !isPasswordValid
+                    }
                     onChange={(e) =>
                       setRegisterData({
                         ...registerData,
@@ -163,12 +198,87 @@ export function RegisterForm() {
                       },
                     }}
                   />
+
+                  {/* Requisiti Password - visibili solo dopo che l'utente inizia a scrivere */}
+                  {registerData.password.value && (
+                    <Box sx={{ mt: 2, mb: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ mb: 1, display: "block" }}
+                      >
+                        Requisiti password:
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.5,
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          color={
+                            validation.minLength
+                              ? "success.main"
+                              : "text.secondary"
+                          }
+                        >
+                          {validation.minLength ? "✓" : "○"} Almeno 8 caratteri
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color={
+                            validation.hasUpperCase
+                              ? "success.main"
+                              : "text.secondary"
+                          }
+                        >
+                          {validation.hasUpperCase ? "✓" : "○"} Una lettera
+                          maiuscola
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color={
+                            validation.hasLowerCase
+                              ? "success.main"
+                              : "text.secondary"
+                          }
+                        >
+                          {validation.hasLowerCase ? "✓" : "○"} Una lettera
+                          minuscola
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color={
+                            validation.hasNumber
+                              ? "success.main"
+                              : "text.secondary"
+                          }
+                        >
+                          {validation.hasNumber ? "✓" : "○"} Un numero
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color={
+                            validation.hasSpecialChar
+                              ? "success.main"
+                              : "text.secondary"
+                          }
+                        >
+                          {validation.hasSpecialChar ? "✓" : "○"} Un carattere
+                          speciale (!@#$%^&*...)
+                        </Typography>
+                      </Box>
+                    </Box>
+                  )}
                 </Grid>
                 <Grid size={{ xs: 12 }}>
                   <TextField
                     label="Nome"
                     name="name"
                     fullWidth
+                    required
                     sx={roundedFieldStyle}
                     value={registerData.name.value}
                     onChange={(e) =>
@@ -187,6 +297,7 @@ export function RegisterForm() {
                     label="Cognome"
                     name="surname"
                     fullWidth
+                    required
                     sx={roundedFieldStyle}
                     value={registerData.surname.value}
                     onChange={(e) =>
@@ -198,7 +309,7 @@ export function RegisterForm() {
                         },
                       })
                     }
-                  ></TextField>
+                  />
                 </Grid>
                 <Grid size={{ xs: 12 }}>
                   <TextField
@@ -216,19 +327,23 @@ export function RegisterForm() {
                         },
                       })
                     }
-                  ></TextField>
+                  />
                 </Grid>
                 <Grid size={{ xs: 12 }}>
                   <Button
                     type="submit"
                     variant="contained"
                     fullWidth
+                    disabled={!isPasswordValid || !registerData.email.value}
                     sx={{
                       borderRadius: 4,
                       padding: "10px 0",
                       backgroundColor: "#62A1BA",
                       "&:hover": {
                         backgroundColor: "#4a8ba3",
+                      },
+                      "&:disabled": {
+                        backgroundColor: "#b0bec5",
                       },
                     }}
                   >
