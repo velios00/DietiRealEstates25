@@ -28,7 +28,7 @@ export default function PriceRangeSection({
           sx={{ borderColor: "#62A1BA", color: "#000000" }}
         />
         <Chip
-          label={`€ ${maxPrice.toLocaleString("it-IT")}`}
+          label={`€ ${maxPrice.toLocaleString("it-IT")}${maxPrice >= 5000000 ? "+" : ""}`}
           variant="outlined"
           sx={{ borderColor: "#62A1BA", color: "#000000" }}
         />

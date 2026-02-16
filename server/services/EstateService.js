@@ -64,7 +64,15 @@ export class EstateService {
   }
 
   static validateBathrooms(nBathrooms, nRooms) {
-    if (nBathrooms >= nRooms) {
+    const bathrooms = Number(nBathrooms);
+    const rooms = Number(nRooms);
+
+    // Controlla che siano numeri validi
+    if (isNaN(bathrooms) || isNaN(rooms)) {
+      throw new Error("I valori di bagni e locali devono essere numeri validi");
+    }
+
+    if (bathrooms >= rooms) {
       throw new Error(
         "Il numero di bagni deve essere inferiore al numero di locali",
       );
@@ -162,12 +170,15 @@ export class EstateService {
   static buildWhereConditions(filters) {
     const whereConditions = {};
 
-    // Range filters
+    // Range filters for price and size
+    const effectiveMaxPrice =
+      filters.maxPrice === 5000000 ? null : filters.maxPrice;
+
     this.addRangeFilter(
       whereConditions,
       "price",
       filters.minPrice,
-      filters.maxPrice,
+      effectiveMaxPrice,
     );
     this.addRangeFilter(
       whereConditions,
