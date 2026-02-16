@@ -14,7 +14,7 @@ dotenv.config();
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
-  : ["http://localhost:3000", "http://localhost:5173"];
+  : ["http://localhost:3000", "http://localhost:5173", "http://79.23.224.2"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
@@ -34,7 +34,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(helmet());
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(AuthenticationRouter);
 app.use("/real-estates", EstateRouter);
 app.use("/agency", AgencyRouter);
