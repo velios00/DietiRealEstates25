@@ -19,6 +19,7 @@ export function FiltersButton(props: FiltersButtonProps) {
         startIcon={<TuneIcon />}
         onClick={() => setOpen(true)}
         sx={{
+          color: "#62A1BA",
           height: 65,
           borderRadius: 28,
           px: 3,

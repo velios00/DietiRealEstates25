@@ -65,16 +65,16 @@ export default function RightSidebar({
             alignItems: "center",
           }}
         >
-          <Box sx={{ flex: 1, maxWidth: "calc(100% - 140px)" }}>
-            <SearchBar
-              onSearch={handleSearchChange}
-              onLocationSelect={handleLocationSelect}
-            />
-          </Box>
           <Box sx={{ minWidth: "110px", maxWidth: "130px" }}>
             <FiltersButton
               onFiltersChange={onFiltersChange}
               filters={filters}
+            />
+          </Box>
+          <Box sx={{ flex: 1, maxWidth: "calc(100% - 140px)" }}>
+            <SearchBar
+              onSearch={handleSearchChange}
+              onLocationSelect={handleLocationSelect}
             />
           </Box>
         </Box>
