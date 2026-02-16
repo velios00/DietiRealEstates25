@@ -191,7 +191,13 @@ export default function AgencyView() {
 
             <Typography
               variant="h5"
-              sx={{ fontWeight: 700, mb: 4, color: "#2c3e50" }}
+              sx={{
+                fontWeight: 700,
+                mb: { xs: 3, md: 4 },
+                color: "#2c3e50",
+                fontSize: { xs: "1.25rem", sm: "1.4rem", md: "1.5rem" },
+                lineHeight: { xs: 1.25, sm: 1.3, md: 1.35 },
+              }}
             >
               Le nostre proprietà ({estates.length})
             </Typography>

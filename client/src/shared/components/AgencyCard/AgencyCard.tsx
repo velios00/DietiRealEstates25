@@ -31,8 +31,9 @@ export default function AgencyCard({
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start",
-          gap: 3,
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "stretch", sm: "flex-start" },
+          gap: { xs: 2, sm: 3 },
           mb: 3,
         }}
       >
@@ -45,14 +46,21 @@ export default function AgencyCard({
             height: 120,
             border: "3px solid #62A1BA",
             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            alignSelf: { xs: "center", sm: "flex-start" },
           }}
         />
 
         {/* Informazioni Agenzia */}
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ flex: 1, textAlign: { xs: "center", sm: "left" } }}>
           <Typography
             variant="h4"
-            sx={{ fontWeight: 700, mb: 1, color: "#2c3e50" }}
+            sx={{
+              fontWeight: 700,
+              mb: 1,
+              color: "#2c3e50",
+              fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2.125rem" },
+              lineHeight: { xs: 1.2, sm: 1.25, md: 1.3 },
+            }}
           >
             {name}
           </Typography>
@@ -69,7 +77,15 @@ export default function AgencyCard({
         </Box>
 
         {/* Action Buttons in alto a destra */}
-        <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: "column",
+            alignItems: { xs: "stretch", sm: "flex-start" },
+            width: { xs: "100%", sm: "auto" },
+          }}
+        >
           {onAddEstate && (
             <Button
               variant="contained"
@@ -77,12 +93,13 @@ export default function AgencyCard({
               onClick={onAddEstate}
               sx={{
                 backgroundColor: "#62A1BA",
-                fontSize: "1rem",
+                fontSize: { xs: "0.875rem", sm: "0.95rem", md: "1rem" },
                 fontWeight: 600,
-                px: 3,
-                py: 1.5,
+                px: { xs: 2, sm: 2.5, md: 3 },
+                py: { xs: 1, sm: 1.25, md: 1.5 },
                 borderRadius: 3,
-                whiteSpace: "nowrap",
+                whiteSpace: { xs: "normal", sm: "nowrap" },
+                width: { xs: "100%", sm: "auto" },
                 "&:hover": {
                   backgroundColor: "#4a8ba3",
                 },
@@ -100,12 +117,13 @@ export default function AgencyCard({
               sx={{
                 borderColor: "#62A1BA",
                 color: "#62A1BA",
-                fontSize: "1rem",
+                fontSize: { xs: "0.875rem", sm: "0.95rem", md: "1rem" },
                 fontWeight: 600,
-                px: 3,
-                py: 1.5,
+                px: { xs: 2, sm: 2.5, md: 3 },
+                py: { xs: 1, sm: 1.25, md: 1.5 },
                 borderRadius: 3,
-                whiteSpace: "nowrap",
+                whiteSpace: { xs: "normal", sm: "nowrap" },
+                width: { xs: "100%", sm: "auto" },
                 "&:hover": {
                   borderColor: "#4a8ba3",
                   color: "#4a8ba3",

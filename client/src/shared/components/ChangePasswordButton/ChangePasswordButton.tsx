@@ -40,12 +40,14 @@ export default function ChangePasswordButton() {
         onClick={handleChangePassword}
         sx={{
           backgroundColor: "#62A1BA",
-          fontSize: "1rem",
+          fontSize: { xs: "0.875rem", sm: "0.95rem", md: "1rem" },
           fontWeight: 600,
-          px: 3,
-          py: 1.5,
+          px: { xs: 2, sm: 2.5, md: 3 },
+          py: { xs: 1, sm: 1.25, md: 1.5 },
           borderRadius: 3,
-          whiteSpace: "nowrap",
+          whiteSpace: { xs: "normal", sm: "nowrap" },
+          width: { xs: "100%", sm: "auto" },
+          borderRadius: 999,
           "&:hover": {
             backgroundColor: "#4a8ba3",
           },

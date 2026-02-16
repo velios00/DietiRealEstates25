@@ -94,13 +94,28 @@ export default function AdminDashboard() {
           <Paper sx={{ p: 3, borderRadius: 4 }}>
             <Box
               display="flex"
-              alignItems="center"
+              alignItems={{ xs: "stretch", sm: "center" }}
               justifyContent="space-between"
+              flexDirection={{ xs: "column", sm: "row" }}
+              gap={{ xs: 2, sm: 3 }}
             >
-              <Typography variant="h5" fontWeight="bold">
+              <Typography
+                variant="h5"
+                fontWeight="bold"
+                sx={{
+                  textAlign: { xs: "center", sm: "left" },
+                  fontSize: { xs: "1.25rem", sm: "1.4rem", md: "1.5rem" },
+                  lineHeight: { xs: 1.25, sm: 1.3, md: 1.35 },
+                }}
+              >
                 Gestione Amministrazione
               </Typography>
-              <Box display="flex" gap={2}>
+              <Box
+                display="flex"
+                gap={2}
+                flexDirection={{ xs: "column", sm: "row" }}
+                alignItems={{ xs: "stretch", sm: "center" }}
+              >
                 <ChangePasswordButton />
                 <Button
                   variant="contained"
@@ -108,11 +123,14 @@ export default function AdminDashboard() {
                   onClick={() => setIsCreateAdminModalOpen(true)}
                   sx={{
                     backgroundColor: "#62A1BA",
-                    fontSize: "1rem",
+                    fontSize: { xs: "0.875rem", sm: "0.95rem", md: "1rem" },
                     fontWeight: 600,
-                    px: 3,
-                    py: 1.5,
+                    px: { xs: 2, sm: 2.5, md: 3 },
+                    py: { xs: 1, sm: 1.25, md: 1.5 },
                     minHeight: 48,
+                    width: { xs: "100%", sm: "auto" },
+                    whiteSpace: { xs: "normal", sm: "nowrap" },
+                    borderRadius: 999,
                     "&:hover": {
                       backgroundColor: "#4a8ba3",
                     },
@@ -128,14 +146,29 @@ export default function AdminDashboard() {
         <Paper sx={{ p: 3, borderRadius: 4 }}>
           <Box
             display="flex"
-            alignItems="center"
+            alignItems={{ xs: "stretch", sm: "center" }}
             justifyContent="space-between"
+            flexDirection={{ xs: "column", sm: "row" }}
+            gap={{ xs: 2, sm: 3 }}
             mb={3}
           >
-            <Typography variant="h5" fontWeight="bold">
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              sx={{
+                textAlign: { xs: "center", sm: "left" },
+                fontSize: { xs: "1.25rem", sm: "1.4rem", md: "1.5rem" },
+                lineHeight: { xs: 1.25, sm: 1.3, md: 1.35 },
+              }}
+            >
               Gestione Agenzie
             </Typography>
-            <Box display="flex" gap={2}>
+            <Box
+              display="flex"
+              gap={2}
+              flexDirection={{ xs: "column", sm: "row" }}
+              alignItems={{ xs: "stretch", sm: "center" }}
+            >
               <Button
                 variant="outlined"
                 startIcon={<RefreshIcon />}
@@ -144,8 +177,13 @@ export default function AdminDashboard() {
                 sx={{
                   borderColor: "#62A1BA",
                   color: "#62A1BA",
-                  fontSize: "1rem",
+                  fontSize: { xs: "0.875rem", sm: "0.95rem", md: "1rem" },
                   fontWeight: 600,
+                  px: { xs: 2, sm: 2.5, md: 3 },
+                  py: { xs: 1, sm: 1.25, md: 1.5 },
+                  width: { xs: "100%", sm: "auto" },
+                  whiteSpace: { xs: "normal", sm: "nowrap" },
+                  borderRadius: 999,
                   "&:hover": {
                     borderColor: "#4a8ba3",
                     color: "#4a8ba3",
@@ -161,8 +199,13 @@ export default function AdminDashboard() {
                 onClick={() => setIsCreateAgencyModalOpen(true)}
                 sx={{
                   backgroundColor: "#62A1BA",
-                  fontSize: "1rem",
+                  fontSize: { xs: "0.875rem", sm: "0.95rem", md: "1rem" },
                   fontWeight: 600,
+                  px: { xs: 2, sm: 2.5, md: 3 },
+                  py: { xs: 1, sm: 1.25, md: 1.5 },
+                  width: { xs: "100%", sm: "auto" },
+                  whiteSpace: { xs: "normal", sm: "nowrap" },
+                  borderRadius: 999,
                   "&:hover": {
                     backgroundColor: "#4a8ba3",
                   },
