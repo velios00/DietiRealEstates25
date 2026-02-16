@@ -10,7 +10,6 @@ describe("AgentService, R-WECT", () => {
     email: "pipo@gmail.com",
     name: "Simone",
     surname: "Veniero",
-    profileImage: "valid-url",
   };
 
   const validManagerId = 10;
@@ -175,30 +174,6 @@ describe("AgentService, R-WECT", () => {
         { ...validDto, surname: "" },
       ),
     ).rejects.toThrow("Surname is required");
-  });
-
-  test("TC13 - Error Path: profileImage null or undefined (same behaviour)", async () => {
-    await expect(
-      AgentService.createAgent(
-        validUserModel,
-        validAgentModel,
-        validManagerModel,
-        validManagerId,
-        { ...validDto, profileImage: null },
-      ),
-    ).rejects.toThrow("Profile image is required");
-  });
-
-  test("TC14 - Error Path: profileImage empty string", async () => {
-    await expect(
-      AgentService.createAgent(
-        validUserModel,
-        validAgentModel,
-        validManagerModel,
-        validManagerId,
-        { ...validDto, profileImage: "" },
-      ),
-    ).rejects.toThrow("Profile image is required");
   });
 
   test("TC15 - Error Path: User undefined", async () => {
