@@ -136,6 +136,7 @@ export default function OfferModal({
       toast.success("Offerta inviata con successo!");
       // Ricarica le offerte per mostrare quella appena creata
       await fetchOffers();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Errore nell'invio dell'offerta:", error);
       // Gestione errori specifici dal backend

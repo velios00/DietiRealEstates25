@@ -93,7 +93,7 @@ export default function RightSidebar({
           isLoading={isLoading}
           center={
             filters.lat && filters.lon
-              ? [parseFloat(filters.lat), parseFloat(filters.lon)]
+              ? [filters.lat, filters.lon]
               : [40.8522, 14.2441] // Napoli se nessune coordinate specificate
           }
           radiusKm={
