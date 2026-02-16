@@ -4,6 +4,10 @@ import { SquareFoot, Bed, Bathroom } from "@mui/icons-material";
 import { Estate } from "../../../models/Estate.model";
 import { Agency } from "../../../models/Agency.model";
 import { cleanAddress } from "../../../../mappers/EstateToListing.mapper";
+import { Roles } from "../../../enums/Roles.enum";
+import { useUser } from "../../../hooks/useUser";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 interface EstateInfoCardProps {
   estate: Estate;
@@ -17,6 +21,18 @@ export default function EstateInfoCard({
   onOfferClick,
 }: EstateInfoCardProps) {
   const [imageError, setImageError] = useState(false);
+  const { user, role } = useUser();
+  const navigate = useNavigate();
+  const canMakeOffer = user && role !== Roles.ADMIN;
+
+  const handleOfferClick = () => {
+    if (!canMakeOffer) {
+      toast.error("Devi essere loggato per effettuare l'offerta");
+      navigate("/login");
+      return;
+    }
+    onOfferClick?.();
+  };
   const agencyInitials = agency.agencyName
     ? agency.agencyName
         .trim()
@@ -119,22 +135,24 @@ export default function EstateInfoCard({
         </Box>
 
         {/* Button Proponi Offerta */}
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={onOfferClick}
-          sx={{
-            bgcolor: "#62A1BA",
-            color: "white",
-            fontWeight: 600,
-            py: 1.5,
-            borderRadius: 2,
-            mb: 3,
-            "&:hover": { bgcolor: "#4a8aa3" },
-          }}
-        >
-          Proponi Offerta
-        </Button>
+        {role !== Roles.ADMIN && (
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleOfferClick}
+            sx={{
+              bgcolor: "#62A1BA",
+              color: "white",
+              fontWeight: 600,
+              py: 1.5,
+              borderRadius: 2,
+              mb: 3,
+              "&:hover": { bgcolor: "#4a8aa3" },
+            }}
+          >
+            Proponi Offerta
+          </Button>
+        )}
 
         {/* Info Agenzia */}
         <Box

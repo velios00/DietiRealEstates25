@@ -45,6 +45,18 @@ export default function EstateCard({ listing }: ListingCardProps) {
   const navigate = useNavigate();
   const isRent = listing.type?.toLowerCase() === "affitto";
 
+  // Tronca il titolo a 24 caratteri
+  const truncatedTitle =
+    listing.title.length > 24
+      ? listing.title.substring(0, 24) + "..."
+      : listing.title;
+
+  // Tronca l'indirizzo a 30 caratteri
+  const truncatedAddress =
+    listing.address.length > 30
+      ? listing.address.substring(0, 40) + "..."
+      : listing.address;
+
   const hasMultiplePhotos = listing.photos && listing.photos.length > 1;
 
   const handlePrevious = (e: React.MouseEvent) => {
@@ -81,7 +93,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
       onClick={() => navigate(`/estate/${listing.id}`)}
       sx={{
         width: { xs: 320, sm: 380, md: 420, lg: 480 },
-        height: { xs: 360, sm: 390, md: 405, lg: 420 },
+        minHeight: { xs: 280, sm: 340, md: 370, lg: 380 },
         borderRadius: 6,
         overflow: "hidden",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
@@ -205,12 +217,9 @@ export default function EstateCard({ listing }: ListingCardProps) {
               fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem" },
               color: "#2c3e50",
               lineHeight: 1.3,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
             }}
           >
-            {listing.title}
+            {truncatedTitle}
           </Typography>
 
           <Box
@@ -225,7 +234,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
               variant="body2"
               sx={{ fontSize: { xs: "0.75rem", sm: "0.8rem", md: "0.85rem" } }}
             >
-              {listing.address}
+              {truncatedAddress}
             </Typography>
           </Box>
 
@@ -247,7 +256,7 @@ export default function EstateCard({ listing }: ListingCardProps) {
 
           {/* Mostra dettagli offerta se presente */}
           {listing.offerAmount && (
-            <Box sx={{ mt: 0.5, pt: 0.5, borderTop: "1px solid #eee" }}>
+            <Box sx={{ mt: 0.5, pt: 0.5 }}>
               <Typography
                 variant="body2"
                 sx={{

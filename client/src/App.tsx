@@ -6,11 +6,12 @@ import { JwtPayload } from "./shared/models/JwtPayload.model";
 import { getCurrentUser } from "./services/UserService";
 import { UserContext } from "./shared/context/UserContext";
 import { Roles } from "./shared/enums/Roles.enum";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { Box, createTheme, ThemeProvider } from "@mui/material";
 import "@fontsource/montserrat/400.css";
 import "@fontsource/montserrat/700.css";
 import { Toaster } from "react-hot-toast";
 import Header from "./shared/components/Header/Header";
+import Footer from "./shared/components/Footer/Footer";
 import { AuthUser } from "./shared/models/AuthUser.model";
 const theme = createTheme({
   typography: {
@@ -71,6 +72,10 @@ function App() {
           {!hideHeader && <Header />}
           <Toaster />
           <Outlet />
+          {!hideHeader && (
+            <Box sx={{ height: { xs: "50px", md: "60px", lg: "75px" } }} />
+          )}
+          {!hideHeader && <Footer />}
         </UserContext.Provider>
       </ThemeProvider>
     </>
