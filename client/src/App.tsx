@@ -12,6 +12,7 @@ import "@fontsource/montserrat/700.css";
 import { Toaster } from "react-hot-toast";
 import Header from "./shared/components/Header/Header";
 import { AuthUser } from "./shared/models/AuthUser.model";
+import Footer from "./shared/components/Footer/Footer";
 const theme = createTheme({
   typography: {
     fontFamily: '"Montserrat", sans-serif',
@@ -71,6 +72,7 @@ function App() {
           {!hideHeader && <Header />}
           <Toaster />
           <Outlet />
+          <Footer />
         </UserContext.Provider>
       </ThemeProvider>
     </>

@@ -33,6 +33,11 @@ export default function EstateInfoCard({
     }
     onOfferClick?.();
   };
+  const handleAgencyNavigate = () => {
+    if (agency?.idAgency) {
+      navigate(`/agency/${agency.idAgency}`);
+    }
+  };
   const agencyInitials = agency.agencyName
     ? agency.agencyName
         .trim()
@@ -178,8 +183,10 @@ export default function EstateInfoCard({
                 display: "block",
                 objectFit: "cover",
                 mb: 1.5,
+                cursor: "pointer",
               }}
               onError={() => setImageError(true)}
+              onClick={handleAgencyNavigate}
             />
           )}
           {(!agency.profileImage || imageError) && (
@@ -196,7 +203,9 @@ export default function EstateInfoCard({
                 fontWeight: 700,
                 fontSize: "1.5rem",
                 mb: 1.5,
+                cursor: "pointer",
               }}
+              onClick={handleAgencyNavigate}
             >
               {agencyInitials}
             </Box>
@@ -204,7 +213,14 @@ export default function EstateInfoCard({
           <Box>
             <Typography
               variant="body2"
-              sx={{ fontWeight: 700, color: "#333", mb: 0.5 }}
+              sx={{
+                fontWeight: 700,
+                color: "#333",
+                mb: 0.5,
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={handleAgencyNavigate}
             >
               {agency.agencyName}
             </Typography>

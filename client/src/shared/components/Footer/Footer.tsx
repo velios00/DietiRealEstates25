@@ -5,7 +5,7 @@ export default function Footer() {
     <Box
       component="footer"
       style={{
-        position: "fixed",
+        position: "static",
         bottom: 0,
         left: 0,
         right: 0,
