@@ -44,7 +44,6 @@ export default function ChangePasswordButton() {
           fontWeight: 600,
           px: { xs: 2, sm: 2.5, md: 3 },
           py: { xs: 1, sm: 1.25, md: 1.5 },
-          borderRadius: 3,
           whiteSpace: { xs: "normal", sm: "nowrap" },
           width: { xs: "100%", sm: "auto" },
           borderRadius: 999,
