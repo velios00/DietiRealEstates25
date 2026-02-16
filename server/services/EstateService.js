@@ -13,11 +13,11 @@ export class EstateService {
     apiKey,
     files,
   ) {
-    this.validatePhotos(dto.photos);
     this.validatePrice(dto.price);
     this.validateBathrooms(dto.nBathrooms, dto.nRooms);
 
     dto.photos = await this.processPhotos(files, dto.photos);
+    this.validatePhotos(dto.photos);
 
     const { agencyId, createdBy, idManager, idAgent } =
       await this.getUserAgencyInfo(Manager, Agent, userId);
