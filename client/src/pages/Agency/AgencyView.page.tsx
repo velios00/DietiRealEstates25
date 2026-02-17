@@ -138,7 +138,7 @@ export default function AgencyView() {
 
   if (isLoading && !agency && estates.length === 0) {
     return (
-      <Box sx={{ minHeight: "100vh", backgroundColor: "#d4d2d2", py: 4 }}>
+      <Box sx={{ minHeight: "100vh", backgroundColor: "#f0f0f0", py: 4 }}>
         <Box sx={{ mb: 12 }}></Box>
         <Container>
           <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
@@ -150,7 +150,7 @@ export default function AgencyView() {
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#d4d2d2", py: 4 }}>
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#f0f0f0", py: 4 }}>
       <Box sx={{ mb: 12 }}></Box>
 
       <Container maxWidth="lg">

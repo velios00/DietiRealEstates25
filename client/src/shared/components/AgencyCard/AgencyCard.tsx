@@ -83,7 +83,7 @@ export default function AgencyCard({
             gap: 2,
             flexDirection: "column",
             alignItems: { xs: "stretch", sm: "flex-start" },
-            width: { xs: "100%", sm: "auto" },
+            width: { xs: "100%", sm: 250 },
           }}
         >
           {onAddEstate && (
@@ -99,7 +99,7 @@ export default function AgencyCard({
                 py: { xs: 1, sm: 1.25, md: 1.5 },
                 borderRadius: 3,
                 whiteSpace: { xs: "normal", sm: "nowrap" },
-                width: { xs: "100%", sm: "auto" },
+                width: "100%",
                 "&:hover": {
                   backgroundColor: "#4a8ba3",
                 },
@@ -123,7 +123,7 @@ export default function AgencyCard({
                 py: { xs: 1, sm: 1.25, md: 1.5 },
                 borderRadius: 3,
                 whiteSpace: { xs: "normal", sm: "nowrap" },
-                width: { xs: "100%", sm: "auto" },
+                width: "100%",
                 "&:hover": {
                   borderColor: "#4a8ba3",
                   color: "#4a8ba3",
