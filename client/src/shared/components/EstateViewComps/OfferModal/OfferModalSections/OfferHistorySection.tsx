@@ -52,7 +52,7 @@ export default function OfferHistorySection({
         filteredOffers.map((offer) => (
           <Box
             key={offer.idOffer}
-            sx={{ display: "flex", alignItems: "center", gap: 2 }}
+            sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}
           >
             <Box sx={{ flex: 1 }}>
               <OfferCard offer={offer} isManagerOrAgent={isManagerOrAgent} />
@@ -64,7 +64,15 @@ export default function OfferHistorySection({
                   variant="outlined"
                   disabled={statusUpdatingId === offer.idOffer}
                   onClick={() => onOpenCounterOffer(offer.idOffer)}
-                  sx={{ textTransform: "none" }}
+                  sx={{
+                    textTransform: "none",
+                    color: "#62A1BA",
+                    borderColor: "#62A1BA",
+                    "&:hover": {
+                      borderColor: "#4a90a4",
+                      bgcolor: "rgba(98, 161, 186, 0.08)",
+                    },
+                  }}
                 >
                   Controfferta
                 </Button>
@@ -73,7 +81,15 @@ export default function OfferHistorySection({
                   variant="outlined"
                   disabled={statusUpdatingId === offer.idOffer}
                   onClick={() => onStatusChange(offer.idOffer, "rejected")}
-                  sx={{ textTransform: "none" }}
+                  sx={{
+                    textTransform: "none",
+                    color: "#62A1BA",
+                    borderColor: "#62A1BA",
+                    "&:hover": {
+                      borderColor: "#4a90a4",
+                      bgcolor: "rgba(98, 161, 186, 0.08)",
+                    },
+                  }}
                 >
                   Rifiuta
                 </Button>
@@ -82,7 +98,13 @@ export default function OfferHistorySection({
                   variant="contained"
                   disabled={statusUpdatingId === offer.idOffer}
                   onClick={() => onStatusChange(offer.idOffer, "accepted")}
-                  sx={{ textTransform: "none" }}
+                  sx={{
+                    textTransform: "none",
+                    bgcolor: "#62A1BA",
+                    "&:hover": {
+                      bgcolor: "#4a90a4",
+                    },
+                  }}
                 >
                   Accetta
                 </Button>
@@ -97,7 +119,15 @@ export default function OfferHistorySection({
                   onClick={() =>
                     onCounterStatusChange(offer.idOffer, "rejected")
                   }
-                  sx={{ textTransform: "none" }}
+                  sx={{
+                    textTransform: "none",
+                    color: "#62A1BA",
+                    borderColor: "#62A1BA",
+                    "&:hover": {
+                      borderColor: "#4a90a4",
+                      bgcolor: "rgba(98, 161, 186, 0.08)",
+                    },
+                  }}
                 >
                   Rifiuta
                 </Button>
@@ -108,7 +138,13 @@ export default function OfferHistorySection({
                   onClick={() =>
                     onCounterStatusChange(offer.idOffer, "accepted")
                   }
-                  sx={{ textTransform: "none" }}
+                  sx={{
+                    textTransform: "none",
+                    bgcolor: "#62A1BA",
+                    "&:hover": {
+                      bgcolor: "#4a90a4",
+                    },
+                  }}
                 >
                   Accetta
                 </Button>
