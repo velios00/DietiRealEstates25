@@ -1,0 +1,33 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: dietirealestates-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - dietirealestates-network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: dietirealestates-client
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - dietirealestates-network
+    depends_on:
+      - server
+
+networks:
+  dietirealestates-network:
+    driver: bridge
