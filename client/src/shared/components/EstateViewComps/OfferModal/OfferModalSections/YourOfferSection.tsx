@@ -82,7 +82,7 @@ export default function YourOfferSection({
           {parsedOfferPrice <= 0
             ? "L'offerta deve essere maggiore di 0"
             : parsedOfferPrice > estatePrice
-              ? "L'offerta deve essere inferiore al prezzo di partenza"
+              ? "L'offerta deve essere inferiore o uguale al prezzo di partenza"
               : "Offerta valida"}
         </Typography>
       )}

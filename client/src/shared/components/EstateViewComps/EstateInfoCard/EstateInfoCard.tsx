@@ -6,6 +6,8 @@ import { Agency } from "../../../models/Agency.model";
 import { cleanAddress } from "../../../../mappers/EstateToListing.mapper";
 import { Roles } from "../../../enums/Roles.enum";
 import { useUser } from "../../../hooks/useUser";
+import { useIsAgencyUser } from "../../../hooks/useIsAgencyUser";
+import { useAgencyAccess } from "../../../hooks/useAgencyAccess";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -13,17 +15,26 @@ interface EstateInfoCardProps {
   estate: Estate;
   agency: Agency;
   onOfferClick?: () => void;
+  hasAcceptedOffer?: boolean;
 }
 
 export default function EstateInfoCard({
   estate,
   agency,
   onOfferClick,
+  hasAcceptedOffer = false,
 }: EstateInfoCardProps) {
   const [imageError, setImageError] = useState(false);
   const { user, role } = useUser();
+  const { isAgencyUser } = useIsAgencyUser();
+  const { belongsToAgency, loading: agencyLoading } = useAgencyAccess();
   const navigate = useNavigate();
-  const canMakeOffer = user && role !== Roles.ADMIN;
+
+  // Se è agency user, deve appartenere all'agenzia dell'immobile
+  const canMakeOffer =
+    user &&
+    role !== Roles.ADMIN &&
+    (!isAgencyUser || (estate.idAgency && belongsToAgency(estate.idAgency)));
 
   const handleOfferClick = () => {
     if (!canMakeOffer) {
@@ -139,24 +150,46 @@ export default function EstateInfoCard({
           </Typography>
         </Box>
 
-        {/* Button Proponi Offerta */}
-        {role !== Roles.ADMIN && (
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={handleOfferClick}
+        {/* Button Proponi Offerta o Immobile Venduto */}
+        {hasAcceptedOffer ? (
+          <Box
             sx={{
-              bgcolor: "#62A1BA",
-              color: "white",
-              fontWeight: 600,
+              textAlign: "center",
               py: 1.5,
-              borderRadius: 2,
               mb: 3,
-              "&:hover": { bgcolor: "#4a8aa3" },
+              bgcolor: "rgba(98, 161, 186, 0.1)",
+              borderRadius: 2,
             }}
           >
-            Proponi Offerta
-          </Button>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#62A1BA",
+                fontWeight: 600,
+              }}
+            >
+              Immobile Venduto
+            </Typography>
+          </Box>
+        ) : (
+          canMakeOffer && (
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleOfferClick}
+              sx={{
+                bgcolor: "#62A1BA",
+                color: "white",
+                fontWeight: 600,
+                py: 1.5,
+                borderRadius: 2,
+                mb: 3,
+                "&:hover": { bgcolor: "#4a8aa3" },
+              }}
+            >
+              Proponi Offerta
+            </Button>
+          )
         )}
 
         {/* Info Agenzia */}

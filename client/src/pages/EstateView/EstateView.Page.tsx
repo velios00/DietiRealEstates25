@@ -10,9 +10,13 @@ import { Estate } from "../../shared/models/Estate.model";
 import { LatLngTuple } from "leaflet";
 import { getEstateById } from "../../services/EstateService";
 import { useUser } from "../../shared/hooks/useUser";
-import { createOffer } from "../../services/OfferService";
+import {
+  createOffer,
+  getOffersByRealEstateId,
+} from "../../services/OfferService";
 import { Agency } from "../../shared/models/Agency.model";
 import { getAgencyById } from "../../services/AgencyService";
+import { Offer } from "../../shared/models/Offer.model";
 
 export default function EstateView() {
   const { idEstate } = useParams<{ idEstate: string }>();
@@ -23,6 +27,7 @@ export default function EstateView() {
   const [loading, setLoading] = useState(true);
   const [openOfferModal, setOpenOfferModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasAcceptedOffer, setHasAcceptedOffer] = useState(false);
 
   // Consolidated data fetching
   useEffect(() => {
@@ -42,6 +47,18 @@ export default function EstateView() {
           } catch (err) {
             console.error("Errore nel caricamento dell'agenzia:", err);
           }
+        }
+
+        // Verifica se c'è un'offerta accettata
+        try {
+          const offersResponse = await getOffersByRealEstateId(idEstate);
+          const offers: Offer[] = offersResponse.data;
+          const hasAccepted = offers.some(
+            (offer) => offer.status === "accepted",
+          );
+          setHasAcceptedOffer(hasAccepted);
+        } catch (err) {
+          console.error("Errore nel caricamento delle offerte:", err);
         }
 
         setError(null);
@@ -147,6 +164,7 @@ export default function EstateView() {
                   estate={estate}
                   agency={agency}
                   onOfferClick={() => setOpenOfferModal(true)}
+                  hasAcceptedOffer={hasAcceptedOffer}
                 />
               )}
             </Grid>

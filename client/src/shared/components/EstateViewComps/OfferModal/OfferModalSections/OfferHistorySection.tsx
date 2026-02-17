@@ -48,7 +48,7 @@ export default function OfferHistorySection({
       >
         Storico Offerte
       </Typography>
-      {offers && offers.length > 0 ? (
+      {filteredOffers.length > 0 ? (
         filteredOffers.map((offer) => (
           <Box
             key={offer.idOffer}
