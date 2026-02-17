@@ -23,8 +23,8 @@ import EstatePriceSection from "./OfferModalSections/EstatePriceSection";
 import ModalActionsSection from "./OfferModalSections/ModalActionSection";
 import OfferHistorySection from "./OfferModalSections/OfferHistorySection";
 import YourOfferSection from "./OfferModalSections/YourOfferSection";
-import { Roles } from "../../../enums/Roles.enum";
 import { useUser } from "../../../hooks/useUser";
+import { useIsAgencyUser } from "../../../hooks/useIsAgencyUser";
 import toast from "react-hot-toast";
 
 interface OfferModalProps {
@@ -46,8 +46,7 @@ export default function OfferModal({
 }: OfferModalProps) {
   const userContext = useUser();
   const navigate = useNavigate();
-  const isManagerOrAgent =
-    userContext?.role === Roles.MANAGER || userContext?.role === Roles.AGENT;
+  const { isAgencyUser: isManagerOrAgent } = useIsAgencyUser();
   const currentUserId = userContext?.user?.idUser;
   const [offerPrice, setOfferPrice] = useState<string>("");
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -58,6 +57,7 @@ export default function OfferModal({
   const [statusUpdatingId, setStatusUpdatingId] = useState<number | null>(null);
   const [counterOfferOpen, setCounterOfferOpen] = useState(false);
   const [counterOfferId, setCounterOfferId] = useState<number | null>(null);
+  const [counterOfferBaseAmount, setCounterOfferBaseAmount] = useState(0);
   const [counterSubmitting, setCounterSubmitting] = useState(false);
   const [counterStatusUpdatingId, setCounterStatusUpdatingId] = useState<
     number | null
@@ -178,11 +178,14 @@ export default function OfferModal({
       toast.error("Non puoi gestire offerte di immobili di altre agenzie.");
       return;
     }
+    const selectedOffer = offers.find((o) => o.idOffer === idOffer);
     setCounterOfferId(idOffer);
+    setCounterOfferBaseAmount(selectedOffer?.amount ?? 0);
     setCounterOfferOpen(true);
   };
 
   const handleCloseCounterOffer = () => {
+    setCounterOfferBaseAmount(0);
     setCounterOfferOpen(false);
     setCounterOfferId(null);
   };
@@ -288,8 +291,8 @@ export default function OfferModal({
 
   // Calcola se l'offerta è valida per lo stato del pulsante
   const parsedOfferPrice = parseFloat(offerPrice);
-  const isOfferValid =
-    offerPrice &&
+  const isOfferValid: boolean =
+    offerPrice !== "" &&
     !isNaN(parsedOfferPrice) &&
     parsedOfferPrice > 0 &&
     parsedOfferPrice <= estatePrice;
@@ -378,7 +381,7 @@ export default function OfferModal({
         onClose={handleCloseCounterOffer}
         onSubmit={handleSubmitCounterOffer}
         submitting={counterSubmitting}
-        minAmount={estatePrice}
+        minAmount={counterOfferBaseAmount}
       />
       <ExternalOfferModal
         open={externalOfferOpen}
