@@ -176,7 +176,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow("Surname is required");
   });
 
-  test("TC15 - Error Path: User undefined", async () => {
+  test("TC13 - Error Path: User undefined", async () => {
     await expect(
       AgentService.createAgent(
         undefined,
@@ -188,7 +188,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow();
   });
 
-  test("TC16 - Error Path: User is {}", async () => {
+  test("TC14 - Error Path: User is {}", async () => {
     validUserModel.create.mockResolvedValue({});
 
     await expect(
@@ -202,7 +202,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow("User not created");
   });
 
-  test("TC17 - Error Path: Agent undefined", async () => {
+  test("TC15 - Error Path: Agent undefined", async () => {
     await expect(
       AgentService.createAgent(
         validUserModel,
@@ -214,7 +214,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow();
   });
 
-  test("TC18 - Error Path: Agent is {}", async () => {
+  test("TC16 - Error Path: Agent is {}", async () => {
     validAgentModel.create.mockResolvedValue({});
 
     await expect(
@@ -228,7 +228,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow();
   });
 
-  test("TC19 - Error Path: Manager undefined", async () => {
+  test("TC17 - Error Path: Manager undefined", async () => {
     await expect(
       AgentService.createAgent(
         validUserModel,
@@ -240,7 +240,7 @@ describe("AgentService, R-WECT", () => {
     ).rejects.toThrow();
   });
 
-  test("TC20 - Error Path: Manager is {}", async () => {
+  test("TC18 - Error Path: Manager is {}", async () => {
     validManagerModel.findByPk.mockResolvedValue({});
     await expect(
       AgentService.createAgent(

@@ -30,6 +30,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js"
   }
 }

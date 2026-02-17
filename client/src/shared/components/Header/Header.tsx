@@ -1,8 +1,6 @@
 import {
   AppBar,
   Toolbar,
-  Divider,
-  Button,
   Container,
   Box,
 } from "@mui/material";
