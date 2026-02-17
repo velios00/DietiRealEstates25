@@ -55,7 +55,7 @@ export class UserService {
     });
   }
 
-  static async getAllAdmins(Admin) {
+  static async getAllAdmins(User) {
     return await User.findAll({
       where: { role: "admin" },
       attributes: { exclude: ["password"] }, // Exclude password from the result

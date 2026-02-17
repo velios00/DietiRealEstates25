@@ -9,6 +9,7 @@ import {
 
 import AccountButton from "../AccountButton/AccountButton";
 import { useNavigate } from "react-router-dom";
+import logo from "../../../assets/Dieticolorato.png";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export default function Header() {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Box
                   component="img"
-                  src="/src/assets/Dieticolorato.png"
+                  src={logo}
                   alt="DIETI Logo"
                   onClick={goHome}
                   sx={{

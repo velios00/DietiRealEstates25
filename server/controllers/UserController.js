@@ -43,7 +43,8 @@ export class UserController {
 
   static async createAdmin(req, res, next) {
     try {
-      const adminData = req.body.CreateAdminDTO || req.body;
+      const adminData =
+        req.body.CreateAdminDTO || req.body.createAdminDTO || req.body;
       const dto = new CreateAdminDTO(adminData);
       const admin = await UserService.createAdmin(User, Admin, dto);
       const result = UserMapper.toUserDTO(admin);
@@ -55,7 +56,7 @@ export class UserController {
 
   static async getAllAdmins(req, res, next) {
     try {
-      const admins = await UserService.getAllAdmins(Admin);
+      const admins = await UserService.getAllAdmins(User);
       const result = UserMapper.toUserDTOList(admins);
       res.status(200).json(result);
     } catch (err) {

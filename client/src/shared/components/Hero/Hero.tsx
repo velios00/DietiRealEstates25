@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { SearchBar } from "../SearchBar/SearchBar";
 import { Location } from "../../models/Location.model";
+import heroImage from "../../../assets/hero3.jpg";
 
 interface HeroProps {
   query: string;
@@ -43,7 +44,7 @@ export default function Hero({
       >
         <Box
           component="img"
-          src={"/src/assets/hero3.jpg"}
+          src={heroImage}
           alt="Sfondo immobiliare"
           sx={{
             width: "100%",
